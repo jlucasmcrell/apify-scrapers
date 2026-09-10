@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
+mcp-name: io.github.jlucasmcrell/apify-scrapers
 # Apify Public Data Scrapers & Extractors
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -255,3 +257,4 @@ Maintained by **[Joseph McRell](https://apify.com/captainhandsome)**.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
