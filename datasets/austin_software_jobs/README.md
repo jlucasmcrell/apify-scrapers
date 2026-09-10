@@ -1,3 +1,21 @@
+---
+language:
+- en
+license: mit
+task_categories:
+- tabular-classification
+- feature-extraction
+tags:
+- web-scraping
+- job-postings
+- glassdoor
+- labor-market
+- career-intelligence
+- apify
+size_categories:
+- n<1K
+---
+
 # Austin Software Engineer Job Postings with Normalized Dates
 
 ## Overview

@@ -1,3 +1,21 @@
+---
+language:
+- en
+license: mit
+task_categories:
+- tabular-classification
+- feature-extraction
+tags:
+- web-scraping
+- b2b-leads
+- business-data
+- apify
+- local-business
+- google-maps
+size_categories:
+- n<1K
+---
+
 # Phoenix HVAC Contractor & Local Business Leads (2026)
 
 ## Overview
@@ -23,7 +41,7 @@ Real verified extract of HVAC repair, installation, and commercial contractor bu
 - `website`: (e.g. `https://www.kenmuncy.com/`)
 - `rating`: (e.g. `5`)
 - `reviews_count`: (e.g. `317`)
-- `opening_hours_today`: (e.g. `Thursday, 7 AM–5 PM`)
+- `opening_hours_today`: (e.g. `Thursday, 7 AM5 PM`)
 - `plus_code`: (e.g. `85P8+J7 Chandler, Arizona`)
 - `latitude`: (e.g. `33.336571`)
 - `longitude`: (e.g. `-111.834342`)

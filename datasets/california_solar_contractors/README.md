@@ -1,3 +1,21 @@
+---
+language:
+- en
+license: mit
+task_categories:
+- tabular-classification
+- feature-extraction
+tags:
+- web-scraping
+- contractor-licenses
+- compliance
+- california
+- public-records
+- apify
+size_categories:
+- n<1K
+---
+
 # California State Licensed Contractors Sample Registry
 
 ## Overview

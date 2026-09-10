@@ -149,11 +149,11 @@ If you prefer runnable web UI tasks without writing any code, each actor include
 
 ## Free Sample Datasets
 
-Looking for clean data to benchmark, analyze, or train models? Verified sample bundles with metadata schemas are in [`datasets/`](datasets/):
+Looking for clean data to benchmark, analyze, or train models? Verified sample bundles with metadata schemas are available in [`datasets/`](datasets/) and hosted publicly on Hugging Face Datasets:
 
-1. **[Phoenix HVAC Leads](datasets/phoenix_hvac_leads/):** 20 verified HVAC contractor profiles with ratings, addresses, and phone numbers.
-2. **[California Solar Contractors](datasets/california_solar_contractors/):** Active C-46 and B licensed solar installers with state verification numbers.
-3. **[Austin Software Engineer Postings](datasets/austin_software_jobs/):** Normalized job listings with estimated posting dates and salary ranges.
+1. **Phoenix HVAC Contractor Leads:** [`datasets/phoenix_hvac_leads/`](datasets/phoenix_hvac_leads/) | [Hugging Face Hub](https://huggingface.co/datasets/joeygambino/phoenix-hvac-contractor-leads) (20 verified HVAC contractor profiles with ratings, addresses, and phone numbers).
+2. **California Licensed Contractors:** [`datasets/california_solar_contractors/`](datasets/california_solar_contractors/) | [Hugging Face Hub](https://huggingface.co/datasets/joeygambino/california-licensed-contractors) (Active C-46 and B licensed solar installers with state verification numbers).
+3. **Austin Software Engineer Postings:** [`datasets/austin_software_jobs/`](datasets/austin_software_jobs/) | [Hugging Face Hub](https://huggingface.co/datasets/joeygambino/austin-software-engineer-jobs) (Normalized job listings with estimated posting dates and salary ranges).
 
 ---
 
@@ -167,12 +167,12 @@ Add this to your `claude_desktop_config.json` or Cursor MCP settings:
 
 ```json
 {
-  "mcpServers": {
-    "apify": {
-      "command": "npx",
-      "args": ["-y", "@apify/mcp-server"],
-      "env": {
-        "APIFY_TOKEN": "YOUR_APIFY_API_TOKEN"
+  \"mcpServers\": {
+    \"apify\": {
+      \"command\": \"npx\",
+      \"args\": [\"-y\", \"@apify/mcp-server\"],
+      \"env\": {
+        \"APIFY_TOKEN\": \"YOUR_APIFY_API_TOKEN\"
       }
     }
   }
@@ -184,16 +184,16 @@ Add this to your `claude_desktop_config.json` or Cursor MCP settings:
 For local agent workflows without Node.js dependencies, a direct Python MCP server is included:
 
 ```bash
-export APIFY_TOKEN="your_token_here"
+export APIFY_TOKEN=\"your_token_here\"
 python mcp_server.py
 ```
 
 Inspect tools and capabilities via [`mcp.json`](mcp.json).
 
 ### Agent Prompts That Work Out-of-the-Box:
-- *"Search Google Maps for 50 commercial roofers in Atlanta with phone numbers and websites."*
-- *"Retrieve Apple and Microsoft Form 10-K filings from SEC EDGAR for the last 2 years."*
-- *"Find the 30 newest reviews for Duolingo on Google Play and analyze negative feedback."*
+- *\"Search Google Maps for 50 commercial roofers in Atlanta with phone numbers and websites.\"*
+- *\"Retrieve Apple and Microsoft Form 10-K filings from SEC EDGAR for the last 2 years.\"*
+- *\"Find the 30 newest reviews for Duolingo on Google Play and analyze negative feedback.\"*
 
 ---
 
@@ -202,7 +202,7 @@ Inspect tools and capabilities via [`mcp.json`](mcp.json).
 Technical case studies and problem-solution writeups are located in [`articles/`](articles/):
 
 - **[Bypassing Playwright Headless Pagination Hurdles on Airbnb](articles/airbnb_playwright_pagination_guide.md):** How to solve sticky overlay modal interruptions and viewport boundary clipping in large headless browser crawls.
-- **[Extracting & Normalizing Clean Job Posting Dates from Glassdoor](articles/glassdoor_posting_dates_guide.md):** Overcoming relative timestamp drift ("24h", "3d", "30d+") with deterministic parsing and ISO-8601 boundary tracking.
+- **[Extracting & Normalizing Clean Job Posting Dates from Glassdoor](articles/glassdoor_posting_dates_guide.md):** Overcoming relative timestamp drift (\"24h\", \"3d\", \"30d+\") with deterministic parsing and ISO-8601 boundary tracking.
 
 ---
 
@@ -247,6 +247,7 @@ Maintained by **[Joseph McRell](https://apify.com/captainhandsome)**.
 
 - **Apify Store:** [https://apify.com/captainhandsome](https://apify.com/captainhandsome)
 - **GitHub:** [@jlucasmcrell](https://github.com/jlucasmcrell)
+- **Hugging Face:** [@joeygambino](https://huggingface.co/joeygambino)
 - **Issues & Requests:** Please open an issue on this repository or submit a ticket on the respective Apify Actor Store page.
 
 ---
