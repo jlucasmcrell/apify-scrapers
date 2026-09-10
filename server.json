@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jlucasmcrell/apify-scrapers",
+  "description": "Developer SDK and code examples for public data extractors on Apify Store: Google Maps, Glassdoor, Airbnb, SEC EDGAR, USAspending, LinkedIn, and Twitch.",
+  "repository": {
+    "url": "https://github.com/jlucasmcrell/apify-scrapers",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "apify-data-scrapers",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Your API key for the service",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true,
+          "name": "YOUR_API_KEY"
+        }
+      ]
+    }
+  ]
+}
