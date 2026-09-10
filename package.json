@@ -1,0 +1,27 @@
+{
+  "name": "apify-data-scrapers",
+  "version": "1.0.0",
+  "description": "Developer SDK and code examples for public data extractors on Apify Store: Google Maps, Glassdoor, Airbnb, SEC EDGAR, USAspending, LinkedIn, and Twitch.",
+  "main": "examples/google_maps_leads.js",
+  "type": "module",
+  "scripts": {
+    "maps": "node examples/google_maps_leads.js",
+    "sec": "node examples/sec_filings.js"
+  },
+  "keywords": [
+    "apify",
+    "scraper",
+    "google-maps-scraper",
+    "glassdoor-scraper",
+    "airbnb-scraper",
+    "sec-edgar",
+    "usaspending",
+    "lead-generation",
+    "web-scraping"
+  ],
+  "author": "Joseph McRell",
+  "license": "MIT",
+  "dependencies": {
+    "apify-client": "^2.11.0"
+  }
+}
