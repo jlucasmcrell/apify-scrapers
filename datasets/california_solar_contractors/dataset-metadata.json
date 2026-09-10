@@ -1,0 +1,10 @@
+{
+  "title": "California State Licensed Contractors Sample Registry",
+  "id": "jlucasmcrell/california-contractors",
+  "licenses": [
+    {
+      "name": "CC0-1.0"
+    }
+  ],
+  "description": "Public registry extract of verified California licensed specialty and general building contractors from the California Contractors State License Board (CSLB). Includes business names, license numbers, current license status, issue dates, expiration dates, and classifications. Generated via Apify Actor captainhandsome/ca-contractor-license-search."
+}

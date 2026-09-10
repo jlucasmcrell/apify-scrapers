@@ -22,8 +22,9 @@ yarn-error.log
 .env.local
 *.token
 
-# Data outputs & exports
+# Data outputs & exports (allow curated benchmark datasets)
 *.csv
+!datasets/**/*.csv
 *.xlsx
 *.jsonl
 output/

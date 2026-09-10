@@ -1,0 +1,10 @@
+{
+  "title": "Phoenix HVAC Contractor & Local Business Leads (2026)",
+  "id": "jlucasmcrell/phoenix-hvac-leads",
+  "licenses": [
+    {
+      "name": "CC0-1.0"
+    }
+  ],
+  "description": "Real verified extract of HVAC repair, installation, and commercial contractor businesses across Phoenix, Arizona including business names, phone numbers, full addresses, ratings, review counts, Google Maps URLs, and website domains. Generated via Apify Actor captainhandsome/google-maps-business-search."
+}

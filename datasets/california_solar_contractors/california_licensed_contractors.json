@@ -1,0 +1,352 @@
+[
+  {
+    "contractor_name": "smith jay r",
+    "name_type": "previous",
+    "license_number": "1018539",
+    "city": "berkeley",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & breckenridge inc dba custom builders & design",
+    "name_type": "print",
+    "license_number": "409392",
+    "city": "yorba linda",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & company flooring dba c smith floorcovering",
+    "name_type": "print",
+    "license_number": "963795",
+    "city": "spring valley",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & sons construction",
+    "name_type": "print",
+    "license_number": "817526",
+    "city": "chico",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith builders",
+    "name_type": "print",
+    "license_number": "543574",
+    "city": "homeland",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith construction dba h l smith construction",
+    "name_type": "print",
+    "license_number": "619514",
+    "city": "bakersfield",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith electric company",
+    "name_type": "print",
+    "license_number": "653813",
+    "city": "garden valley",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith industries inc dba jay r smith industries inc",
+    "name_type": "print",
+    "license_number": "757045",
+    "city": "montgomery",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith l a",
+    "name_type": "print",
+    "license_number": "302677",
+    "city": "lake arrowhead",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith m swain",
+    "name_type": "print",
+    "license_number": "748707",
+    "city": "anaheim",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith plumbing",
+    "name_type": "print",
+    "license_number": "301212",
+    "city": "modesto",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith plumbing service",
+    "name_type": "print",
+    "license_number": "1111665",
+    "city": "novato",
+    "status": "inactive"
+  },
+  {
+    "contractor_name": "smith robert",
+    "name_type": "print",
+    "license_number": "346636",
+    "city": "ventura",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith tile and marble",
+    "name_type": "print",
+    "license_number": "657495",
+    "city": "santee",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith trim & construction co",
+    "name_type": "print",
+    "license_number": "528514",
+    "city": "clayton",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith world enterprises inc d k 1 tile & stone",
+    "name_type": "print",
+    "license_number": "895151",
+    "city": "mission viejo",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith + eastwood construction",
+    "name_type": "dba",
+    "license_number": "847269",
+    "city": "san clemente",
+    "status": "suspended"
+  },
+  {
+    "contractor_name": "smith & armani construction",
+    "name_type": "previous",
+    "license_number": "513648",
+    "city": "los angeles",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & associates",
+    "name_type": "dba",
+    "license_number": "303271",
+    "city": "valley center",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & associates",
+    "name_type": "dba",
+    "license_number": "518396",
+    "city": "san diego",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & associates",
+    "name_type": "dba",
+    "license_number": "704748",
+    "city": "grass valley",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & associates",
+    "name_type": "previous",
+    "license_number": "704748",
+    "city": "grass valley",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & associates",
+    "name_type": "previous",
+    "license_number": "708889",
+    "city": "anderson",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & bernal roofing",
+    "name_type": "dba",
+    "license_number": "727021",
+    "city": "walnut creek",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & breazeale",
+    "name_type": "dba",
+    "license_number": "306457",
+    "city": "cloverdale",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & breazeale inc",
+    "name_type": "dba",
+    "license_number": "401146",
+    "city": "cloverdale",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & breckenridge inc",
+    "name_type": "name",
+    "license_number": "409392",
+    "city": "yorba linda",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & butler construction inc",
+    "name_type": "dba",
+    "license_number": "844090",
+    "city": "carlsbad",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & co",
+    "name_type": "dba",
+    "license_number": "564436",
+    "city": "gualala",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & cochran inc",
+    "name_type": "dba",
+    "license_number": "532276",
+    "city": "benicia",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & company",
+    "name_type": "dba",
+    "license_number": "675166",
+    "city": "carlsbad",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & company",
+    "name_type": "previous",
+    "license_number": "774563",
+    "city": "pacheco",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & company flooring",
+    "name_type": "name",
+    "license_number": "963795",
+    "city": "spring valley",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & company remodeling incorporated",
+    "name_type": "dba",
+    "license_number": "774563",
+    "city": "pacheco",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & conner floor covering inc",
+    "name_type": "dba",
+    "license_number": "467258",
+    "city": "san francisco",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & de masters specialty repairs & acoustics",
+    "name_type": "dba",
+    "license_number": "356289",
+    "city": "porterville",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & denison engineers and contractors",
+    "name_type": "dba",
+    "license_number": "322548",
+    "city": "hayward",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & denison inc",
+    "name_type": "dba",
+    "license_number": "466196",
+    "city": "hayward",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & ellis construction",
+    "name_type": "dba",
+    "license_number": "816663",
+    "city": "marysville",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & enright landscaping",
+    "name_type": "dba",
+    "license_number": "490635",
+    "city": "salinas",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & gonzales inc",
+    "name_type": "dba",
+    "license_number": "290054",
+    "city": "glendora",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & green corp",
+    "name_type": "dba",
+    "license_number": "517517",
+    "city": "phoenix",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & green corp",
+    "name_type": "dba",
+    "license_number": "789334",
+    "city": "phoenix",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & gysbers",
+    "name_type": "dba",
+    "license_number": "591398",
+    "city": "san lorenzo",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & gysbers inc",
+    "name_type": "dba",
+    "license_number": "597218",
+    "city": "san leandro",
+    "status": "cancelled"
+  },
+  {
+    "contractor_name": "smith & hazlip construction inc",
+    "name_type": "dba",
+    "license_number": "339582",
+    "city": "woodland",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "smith & hinckley inc",
+    "name_type": "name",
+    "license_number": "679013",
+    "city": "davis",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & hinckley inc",
+    "name_type": "previous",
+    "license_number": "679013",
+    "city": "davis",
+    "status": "active"
+  },
+  {
+    "contractor_name": "smith & jacobson masonry",
+    "name_type": "dba",
+    "license_number": "472016",
+    "city": "santa cruz",
+    "status": "expired"
+  },
+  {
+    "contractor_name": "",
+    "name_type": "",
+    "license_number": "",
+    "city": null,
+    "status": ""
+  }
+]

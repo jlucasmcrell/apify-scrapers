@@ -16,9 +16,13 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 - [Available Extractors & Store Listings](#available-extractors--store-listings)
 - [Python Quickstart](#python-quickstart)
 - [Node.js Quickstart](#nodejs-quickstart)
+- [No-Code & Automation Workflows (n8n, Sheets, Slack)](#no-code--automation-workflows)
 - [Pre-Built Example Tasks (Zero Code)](#pre-built-example-tasks-zero-code)
-- [AI Agent & MCP Integration (Claude Desktop / Cursor)](#ai-agent--mcp-integration)
-- [Contributing & Author](#contributing--author)
+- [Free Sample Datasets](#free-sample-datasets)
+- [AI Agent & MCP Integration (Claude Desktop, Cursor, Custom Agent)](#ai-agent--mcp-integration)
+- [In-Depth Engineering Guides](#in-depth-engineering-guides)
+- [Repository Structure](#repository-structure)
+- [Contributing & Author](#author--support)
 
 ---
 
@@ -108,6 +112,15 @@ See [examples/sec_filings.js](examples/sec_filings.js) for the full script.
 
 ---
 
+## No-Code & Automation Workflows
+
+If you automate via n8n, Make, Zapier, or Google Sheets, ready-to-import blueprints are included in [`workflows/`](workflows/):
+
+- **[Google Maps Leads to Google Sheets (n8n)](workflows/n8n_google_maps_to_sheets.json):** Daily automated cron scrape piping HVAC/trade leads directly into Google Sheets with deduplication.
+- **[SEC EDGAR 10-K & 8-K Alerts to Slack (n8n)](workflows/n8n_sec_edgar_to_slack.json):** Hourly monitor alerting Slack or Discord when watchlisted public companies drop new filings.
+
+---
+
 ## Pre-Built Example Tasks (Zero Code)
 
 If you prefer runnable web UI tasks without writing any code, each actor includes pre-configured tasks published on Apify Store:
@@ -134,11 +147,21 @@ If you prefer runnable web UI tasks without writing any code, each actor include
 
 ---
 
+## Free Sample Datasets
+
+Looking for clean data to benchmark, analyze, or train models? Verified sample bundles with metadata schemas are in [`datasets/`](datasets/):
+
+1. **[Phoenix HVAC Leads](datasets/phoenix_hvac_leads/):** 20 verified HVAC contractor profiles with ratings, addresses, and phone numbers.
+2. **[California Solar Contractors](datasets/california_solar_contractors/):** Active C-46 and B licensed solar installers with state verification numbers.
+3. **[Austin Software Engineer Postings](datasets/austin_software_jobs/):** Normalized job listings with estimated posting dates and salary ranges.
+
+---
+
 ## AI Agent & MCP Integration
 
-All actors in this repository conform to OpenAPI and JSON Schema standards, making them directly callable by AI agents via the **Apify Model Context Protocol (MCP) server**:
+All actors in this repository conform to OpenAPI and JSON Schema standards, making them directly callable by AI agents via the Model Context Protocol (MCP):
 
-### Claude Desktop / Cursor Configuration
+### Option A: Hosted Apify MCP Server (Claude Desktop / Cursor)
 
 Add this to your `claude_desktop_config.json` or Cursor MCP settings:
 
@@ -156,10 +179,30 @@ Add this to your `claude_desktop_config.json` or Cursor MCP settings:
 }
 ```
 
+### Option B: Local Lightweight Python MCP Server
+
+For local agent workflows without Node.js dependencies, a direct Python MCP server is included:
+
+```bash
+export APIFY_TOKEN="your_token_here"
+python mcp_server.py
+```
+
+Inspect tools and capabilities via [`mcp.json`](mcp.json).
+
 ### Agent Prompts That Work Out-of-the-Box:
 - *"Search Google Maps for 50 commercial roofers in Atlanta with phone numbers and websites."*
 - *"Retrieve Apple and Microsoft Form 10-K filings from SEC EDGAR for the last 2 years."*
 - *"Find the 30 newest reviews for Duolingo on Google Play and analyze negative feedback."*
+
+---
+
+## In-Depth Engineering Guides
+
+Technical case studies and problem-solution writeups are located in [`articles/`](articles/):
+
+- **[Bypassing Playwright Headless Pagination Hurdles on Airbnb](articles/airbnb_playwright_pagination_guide.md):** How to solve sticky overlay modal interruptions and viewport boundary clipping in large headless browser crawls.
+- **[Extracting & Normalizing Clean Job Posting Dates from Glassdoor](articles/glassdoor_posting_dates_guide.md):** Overcoming relative timestamp drift ("24h", "3d", "30d+") with deterministic parsing and ISO-8601 boundary tracking.
 
 ---
 
@@ -171,15 +214,29 @@ apify-scrapers/
  LICENSE                                  # MIT License
  requirements.txt                         # Python client dependencies
  package.json                             # Node.js dependencies
- examples/
-     google_maps_leads_to_csv.py          # Google Maps -> CSV pipeline
-     sec_edgar_filings_downloader.py      # SEC EDGAR -> tabular filings
-     glassdoor_jobs_tracker.py            # Glassdoor -> salary & job data
-     airbnb_market_scraper.py             # Airbnb -> market rental listings
-     usaspending_defense_awards.py        # USAspending -> federal prime awards
-     twitch_live_stream_monitor.py        # Twitch -> live viewer monitoring
-     google_maps_leads.js                 # Node.js Google Maps client
-     sec_filings.js                       # Node.js SEC EDGAR client
+ mcp.json                                 # MCP tool registry specification
+ mcp_server.py                            # Native Python stdio MCP server
+ articles/                                # In-depth engineering case studies
+    airbnb_playwright_pagination_guide.md
+    glassdoor_posting_dates_guide.md
+    reddit_community_responses.md        # Reference technical answers for forums
+ datasets/                                # Sample benchmark datasets
+    phoenix_hvac_leads/
+    california_solar_contractors/
+    austin_software_jobs/
+ workflows/                               # No-code automation templates
+    n8n_google_maps_to_sheets.json
+    n8n_sec_edgar_to_slack.json
+    README.md
+ examples/                                # Standalone developer scripts
+     google_maps_leads_to_csv.py
+     sec_edgar_filings_downloader.py
+     glassdoor_jobs_tracker.py
+     airbnb_market_scraper.py
+     usaspending_defense_awards.py
+     twitch_live_stream_monitor.py
+     google_maps_leads.js
+     sec_filings.js
 ```
 
 ---

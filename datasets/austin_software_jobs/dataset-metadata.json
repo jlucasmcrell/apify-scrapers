@@ -1,0 +1,10 @@
+{
+  "title": "Austin Software Engineer Job Postings with Normalized Dates",
+  "id": "jlucasmcrell/austin-software-jobs",
+  "licenses": [
+    {
+      "name": "CC0-1.0"
+    }
+  ],
+  "description": "Clean structured extract of active software engineering, full stack, and AI developer job listings in the Austin, Texas metro area. Includes canonical job URLs, company names, employer ratings, location tags, salary estimates, raw posting age (e.g. 24h, 3d), and normalized estimated posting dates. Generated via Apify Actor captainhandsome/glassdoor-jobs-scraper."
+}

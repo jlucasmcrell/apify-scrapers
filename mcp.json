@@ -1,0 +1,56 @@
+{
+  "name": "apify-scrapers-mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for live B2B lead extraction, Glassdoor jobs, SEC EDGAR filings, and US federal contract intelligence via Apify.",
+  "author": {
+    "name": "Joseph McRell",
+    "github": "https://github.com/jlucasmcrell"
+  },
+  "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jlucasmcrell/apify-scrapers.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "cursor",
+    "apify",
+    "google-maps-scraper",
+    "glassdoor-scraper",
+    "sec-edgar",
+    "usaspending",
+    "lead-generation"
+  ],
+  "transport": {
+    "type": "stdio"
+  },
+  "entrypoint": "mcp_server.py",
+  "runtime": "python3",
+  "env": {
+    "APIFY_TOKEN": {
+      "description": "Personal Apify API token from https://console.apify.com/account/integrations",
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "google_maps_search",
+      "description": "Search local B2B leads, contractors, phone numbers, ratings, and addresses on Google Maps."
+    },
+    {
+      "name": "glassdoor_jobs_search",
+      "description": "Search Glassdoor job postings with canonical URLs and normalized posting dates."
+    },
+    {
+      "name": "sec_edgar_filings",
+      "description": "Search historical and recent SEC 10-K, 10-Q, and 8-K filings by stock ticker or company name."
+    },
+    {
+      "name": "usaspending_contracts",
+      "description": "Search federal awards, defense procurement contracts, and prime recipient obligations."
+    }
+  ]
+}
