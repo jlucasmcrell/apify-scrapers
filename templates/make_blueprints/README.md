@@ -1,94 +1,45 @@
-# Make.com (Integromat) Apify Integration Guide
+# Make.com (Integromat) Apify Integration Blueprints
 
-This guide details how to build and deploy automated lead generation and regulatory monitoring pipelines inside **Make.com** using Apify Actors.
-
----
-
-## Why Make.com?
-Make.com is the standard workflow automation engine for B2B marketing agencies, SDR teams, and revenue operations professionals. It offers a visual, no-code canvas that natively connects Apify actors directly to Google Sheets, Airtable, HubSpot, Slack, and PostgreSQL.
+Pre-built, 1-click **Make.com scenario blueprints** that connect production Apify actors to Google Sheets, CRMs, Slack, and webhooks with zero custom code.
 
 ---
 
-## Scenario 1: Google Maps Local Business Leads to Google Sheets
+## Ready-to-Import Blueprints in This Folder
 
-### Objective:
-Automatically scrape verified business names, telephone numbers, websites, review counts, and physical addresses from Google Maps and append them directly to a Google Sheet without third-party list brokers.
-
-### Blueprint Architecture:
-```
-[Schedule / On-Demand Trigger]
-             
-             
-   [Apify: Run an Actor and Get Dataset Items]
-      - Actor ID: captainhandsome~google-maps-business-search
-      - Input JSON:
-        {
-          "queries": ["HVAC Contractors, Phoenix AZ"],
-          "maxItems": 50
-        }
-             
-             
-   [Google Sheets: Add a Row]
-      - Spreadsheet: Your Target Lead Sheet
-      - Sheet: Leads
-      - Values:
-          - Business Name: {{1.title}}
-          - Phone: {{1.phone}}
-          - Website: {{1.website}}
-          - Rating: {{1.totalScore}}
-          - Reviews: {{1.reviewsCount}}
-          - Address: {{1.address}}
-          - Maps URL: {{1.url}}
-```
-
-### 3-Step Setup:
-1. In Make.com, click **Create a new scenario**.
-2. Click the center **`+`**, search for **Apify**, and select **Run an Actor and Get Dataset Items**:
-   - Connection: Add your Apify API Token.
-   - Actor: Choose `captainhandsome/google-maps-business-search`.
-   - Input: Paste target search queries and max item limits.
-3. Add a second module: search for **Google Sheets**, select **Add a Row**, choose your sheet, and map the columns to the Apify dataset fields.
-4. Click **Run once** to test, then set the schedule (e.g., Every Monday at 8:00 AM).
+| Scenario | Blueprint File | Description |
+| :--- | :--- | :--- |
+| **Google Maps Local Leads** | [`google_maps_leads_to_sheets_blueprint.json`](./google_maps_leads_to_sheets_blueprint.json) | Scrapes commercial businesses, phones, addresses, ratings directly to Google Sheets. |
+| **SEC EDGAR 10-K & 8-K Filings** | [`sec_edgar_to_slack_blueprint.json`](./sec_edgar_to_slack_blueprint.json) | Real-time regulatory disclosure monitor pushing alerts directly to Slack/Discord/Webhook. |
+| **California Contractor Licenses** | [`california_contractors_to_sheets_blueprint.json`](./california_contractors_to_sheets_blueprint.json) | Extracts verified state contractor licenses, bond statuses, and corporate entities into Sheets. |
+| **Glassdoor Active Job Postings** | [`glassdoor_jobs_to_sheets_blueprint.json`](./glassdoor_jobs_to_sheets_blueprint.json) | Tracks tech hiring, salary estimates, and company ratings into a live spreadsheet. |
 
 ---
 
-## Scenario 2: SEC EDGAR 10-K & 8-K Corporate Filings to Slack / Discord Alerts
+## How to Import a Blueprint Into Make.com (60 Seconds)
 
-### Objective:
-Monitor corporate filings (10-K annual reports, 8-K material events) in real time and post immediate summary alerts to an investor or research Slack channel.
-
-### Blueprint Architecture:
-```
-[Clock: Schedule Trigger (Every 4 Hours)]
-             
-             
-   [Apify: Run an Actor and Get Dataset Items]
-      - Actor ID: captainhandsome~sec-edgar-filings-search
-      - Input JSON:
-        {
-          "tickers": ["AAPL", "MSFT", "NVDA", "TSLA"],
-          "formTypes": ["10-K", "8-K"],
-          "maxItems": 10
-        }
-             
-             
-   [Slack / Discord: Create a Message]
-      - Message Content:
-          " New SEC {{1.formType}} Filing: *{{1.companyName}}* ({{1.ticker}})
-          Filed Date: {{1.filingDate}}
-          Document: {{1.filingUrl}}"
-```
+1. Open your [Make.com Dashboard](https://make.com) and click **Create a new scenario**.
+2. On the bottom canvas toolbar, click the **`...` (More)** menu icon.
+3. Click **`Import Blueprint`** and upload any of the `.json` files from this directory.
+4. The complete scenario appears on your canvas with all modules and field mappings pre-wired.
+5. Click **Module 1 (Apify)** to select your Apify API Token.
+6. Click the destination module (Google Sheets or Slack) to authorize your account.
+7. Click **Run once** to test.
 
 ---
 
-## Scenario 3: Universal HTTP Webhook Execution (Zero-Module Dependency)
+## Native Apify Mapping Architecture (The Dataset ID Pattern)
 
-If you prefer not to use the pre-built Apify Make module, you can trigger any of the 30 Apify actors using Make's native **HTTP** module:
+When chaining Make's official **Apify: Run an Actor** and **Apify: Get Dataset Items** modules:
 
-- **Module:** `HTTP > Make a request`
-- **URL:** `https://api.apify.com/v2/acts/captainhandsome~ACTOR_NAME/run-sync-get-dataset-items?token=YOUR_APIFY_TOKEN`
-- **Method:** `POST`
-- **Headers:**
-  - `Content-Type`: `application/json`
-- **Body:** Raw JSON input payload.
-- **Parse response:** `Yes`
+- In Module 2 (*Get Dataset Items*), map the **Dataset ID** using:
+  ```text
+  {{1.data.options.defaultDatasetId}}
+  ```
+  *(or `{{1.defaultDatasetId}}` depending on synchronous execution mode).*
+
+- In the destination module (e.g. Google Sheets), dataset records are accessed directly via the clean output schema:
+  - `{{2.title}}` or `{{2.name}}`
+  - `{{2.phone}}`
+  - `{{2.website}}`
+  - `{{2.address}}`
+  - `{{2.totalScore}}` or `{{2.rating}}`

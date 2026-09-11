@@ -1,0 +1,280 @@
+{
+  "name": "Apify SEC EDGAR Filings Alert to Slack or Webhook",
+  "flow": [
+    {
+      "id": 1,
+      "module": "apify:runActorNew",
+      "version": 1,
+      "parameters": {},
+      "filter": null,
+      "mapper": {
+        "actor_search_type": "user",
+        "runSync": true,
+        "actorId": "TC0kItzB0YS9OXnFs",
+        "inputBodyTC0kItzB0YS9OXnFs": "{\n  \"tickers\": [\n    \"AAPL\",\n    \"MSFT\",\n    \"NVDA\",\n    \"TSLA\"\n  ],\n  \"form_types\": [\n    \"10-K\",\n    \"8-K\"\n  ],\n  \"max_items\": 10\n}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Joseph's Apify API Token connection",
+              "data": {
+                "scoped": "true",
+                "connection": "apify"
+              }
+            }
+          },
+          "expect": {
+            "actor_search_type": {
+              "label": "Recently used Actors"
+            },
+            "runSync": {
+              "mode": "chose"
+            },
+            "memory": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "actorId": {
+              "mode": "chose",
+              "label": "Google Maps Business Search Scraper (captainhandsome/google-maps-business-search)"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:apify2,apify",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "actor_search_type",
+            "type": "select",
+            "label": "Search Actors from",
+            "required": true,
+            "validate": {
+              "enum": [
+                "user",
+                "store"
+              ]
+            }
+          },
+          {
+            "name": "runSync",
+            "type": "boolean",
+            "label": "Run synchronously",
+            "required": true
+          },
+          {
+            "name": "build",
+            "type": "text",
+            "label": "Build"
+          },
+          {
+            "name": "timeout",
+            "type": "uinteger",
+            "label": "Timeout"
+          },
+          {
+            "name": "memory",
+            "type": "select",
+            "label": "Memory",
+            "validate": {
+              "enum": [
+                128,
+                256,
+                512,
+                1024,
+                2048,
+                4096,
+                8192,
+                16384,
+                32768
+              ]
+            }
+          },
+          {
+            "name": "actorId",
+            "type": "select",
+            "label": "Actor",
+            "required": true
+          },
+          {
+            "name": "inputBodyTC0kItzB0YS9OXnFs",
+            "type": "text",
+            "label": "Input JSON",
+            "required": true
+          },
+          {
+            "name": "maxTotalChargeUsd",
+            "type": "number",
+            "label": "Maximum cost per run"
+          },
+          {
+            "name": "maxItems",
+            "type": "hidden",
+            "label": "Maximum charged results"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "apify:fetchDatasetItems",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "datasetId": "{{1.defaultDatasetId}}",
+        "type": "clean",
+        "format": "json",
+        "limit": "100"
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Joseph's Apify API Token connection (jlucasmcrell@gmail.com)",
+              "data": {
+                "scoped": "true",
+                "connection": "apify"
+              }
+            }
+          },
+          "expect": {
+            "type": {
+              "mode": "chose",
+              "label": "Clean"
+            },
+            "format": {
+              "mode": "chose",
+              "label": "JSON"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:apify2,apify",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "datasetId",
+            "type": "text",
+            "label": "Dataset ID",
+            "required": true
+          },
+          {
+            "name": "type",
+            "type": "select",
+            "label": "Data transformation",
+            "required": true,
+            "validate": {
+              "enum": [
+                "clean",
+                "simplified",
+                "none"
+              ]
+            }
+          },
+          {
+            "name": "format",
+            "type": "select",
+            "label": "Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "json",
+                "csv",
+                "html",
+                "xml",
+                "rss",
+                "xlsx"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "validate": {
+              "max": 100000,
+              "min": 1
+            }
+          },
+          {
+            "name": "offset",
+            "type": "uinteger",
+            "label": "Offset",
+            "validate": {
+              "min": 0
+            }
+          },
+          {
+            "name": "fields",
+            "type": "text",
+            "label": "Fields"
+          },
+          {
+            "name": "omit",
+            "type": "text",
+            "label": "Omit Fields"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:BasicWebhook",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": "{\"text\": \"\\ud83d\\udd14 *New SEC {{2.form_type}} Filing*\\n*Company:* {{2.company_name}} ({{2.ticker}})\\n*Filed Date:* {{2.filing_date}}\\n*Document:* {{2.filing_url}}\"}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us2.make.com",
+    "notes": []
+  }
+}
