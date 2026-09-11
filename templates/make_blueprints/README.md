@@ -31,11 +31,11 @@ Pre-built, 1-click **Make.com scenario blueprints** that connect production Apif
 
 When chaining Make's official **Apify: Run an Actor** and **Apify: Get Dataset Items** modules:
 
-- In Module 2 (*Get Dataset Items*), map the **Dataset ID** using:
+- In Module 2 (*Get Dataset Items*), map the **Dataset ID** directly to the root bundle property:
   ```text
-  {{1.data.options.defaultDatasetId}}
+  {{1.defaultDatasetId}}
   ```
-  *(or `{{1.defaultDatasetId}}` depending on synchronous execution mode).*
+  *(Note: Map the top-level `1. defaultDatasetId`, NOT the nested options dictionary under `data.options`).*
 
 - In the destination module (e.g. Google Sheets), dataset records are accessed directly via the clean output schema:
   - `{{2.title}}` or `{{2.name}}`
