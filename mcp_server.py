@@ -438,6 +438,69 @@ def run_actor_sync(actor_id: str, run_input: Dict[str, Any], timeout_secs: int =
     except Exception as e:
         raise RuntimeError(f"Actor run failed: {str(e)}")
 
+
+PROMPTS_DEFINITION = [
+    {
+        "name": "b2b_lead_search",
+        "description": "Extract verified B2B leads, trade contractors, and local business contacts from Google Maps.",
+        "arguments": [
+            {
+                "name": "search_query",
+                "description": "Target trade category and location (e.g. 'HVAC contractors in Phoenix AZ' or 'Commercial Electricians Dallas TX')",
+                "required": True
+            },
+            {
+                "name": "max_results",
+                "description": "Number of leads to retrieve (default 10, max 100)",
+                "required": False
+            }
+        ]
+    },
+    {
+        "name": "sec_filing_analysis",
+        "description": "Retrieve official SEC EDGAR 10-K, 10-Q, or 8-K regulatory filings for public companies.",
+        "arguments": [
+            {
+                "name": "ticker",
+                "description": "Stock ticker symbol (e.g. AAPL, MSFT, NVDA, TSLA)",
+                "required": True
+            },
+            {
+                "name": "form_type",
+                "description": "Filing form type (10-K, 10-Q, 8-K). Defaults to 10-K.",
+                "required": False
+            }
+        ]
+    },
+    {
+        "name": "federal_procurement_audit",
+        "description": "Search federal contract awards and prime obligations awarded to a recipient on USAspending.",
+        "arguments": [
+            {
+                "name": "recipient_name",
+                "description": "Corporate prime contractor or vendor name (e.g. 'Lockheed Martin', 'Palantir')",
+                "required": True
+            }
+        ]
+    }
+]
+
+RESOURCES_DEFINITION = [
+    {
+        "uri": "apify://actors/catalog",
+        "name": "Apify Scrapers Fleet Catalog",
+        "description": "Complete directory of backed Apify actors, capabilities, endpoints, and input parameters.",
+        "mimeType": "application/json"
+    },
+    {
+        "uri": "apify://docs/authentication",
+        "name": "Apify MCP Authentication Guide",
+        "description": "Setup guide for APIFY_TOKEN credentials, rate limits, and cloud execution.",
+        "mimeType": "text/markdown"
+    }
+]
+
+
 def serve_stdio():
     """Cross-platform synchronous stdio loop compatible with Docker, Cursor, Claude Desktop, and Glama introspection."""
     for line in sys.stdin:
@@ -459,11 +522,22 @@ def serve_stdio():
                 "id": req_id,
                 "result": {
                     "protocolVersion": "2024-11-05",
-                    "capabilities": {"tools": {}},
+                    "capabilities": {
+                        "tools": {"listChanged": False},
+                        "prompts": {"listChanged": False},
+                        "resources": {"subscribe": False, "listChanged": False}
+                    },
                     "serverInfo": {
                         "name": "apify-scrapers-mcp",
-                        "version": "1.0.4"
-                    }
+                        "version": "1.0.5"
+                    },
+                    "instructions": (
+                        "Apify Scrapers MCP provides enterprise-grade data extraction tools for "
+                        "B2B leads (Google Maps), employment vacancies (Glassdoor), corporate regulatory "
+                        "filings (SEC EDGAR), federal procurement obligations (USAspending), live streaming "
+                        "analytics (Twitch), and vacation rental pricing (Airbnb). All tools run synchronously "
+                        "in the cloud via dedicated Apify actors and require an APIFY_TOKEN environment variable."
+                    )
                 }
             }
             sys.stdout.write(json.dumps(res) + "\n")
@@ -477,6 +551,74 @@ def serve_stdio():
                 "jsonrpc": "2.0",
                 "id": req_id,
                 "result": {}
+            }
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif method == "prompts/list":
+            res = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {
+                    "prompts": PROMPTS_DEFINITION
+                }
+            }
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif method == "prompts/get":
+            p_name = params.get("name")
+            p_args = params.get("arguments", {})
+            res = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {
+                    "description": f"Workflow template for {p_name}",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": {
+                                "type": "text",
+                                "text": f"Execute data extraction workflow for {p_name} with parameters: {json.dumps(p_args)}"
+                            }
+                        }
+                    ]
+                }
+            }
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif method == "resources/list":
+            res = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {
+                    "resources": RESOURCES_DEFINITION
+                }
+            }
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif method == "resources/read":
+            uri = params.get("uri", "")
+            if uri == "apify://actors/catalog":
+                content = json.dumps({"actors": ACTORS, "maintainer": "jlucasmcrell", "registry": "io.github.jlucasmcrell/apify-scrapers"}, indent=2)
+                mime = "application/json"
+            else:
+                content = "# Apify MCP Authentication\n\nSet APIFY_TOKEN environment variable with your personal token from console.apify.com."
+                mime = "text/markdown"
+            res = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {
+                    "contents": [
+                        {
+                            "uri": uri,
+                            "mimeType": mime,
+                            "text": content
+                        }
+                    ]
+                }
             }
             sys.stdout.write(json.dumps(res) + "\n")
             sys.stdout.flush()
