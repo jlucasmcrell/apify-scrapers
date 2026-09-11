@@ -31,23 +31,7 @@ TOOLS_DEFINITION = [
     {
         "name": "google_maps_search",
         "title": "Google Maps Local Business and B2B Lead Extractor",
-        "description": (
-            "Extract verified commercial business listings, postal addresses, phone numbers, "
-            "customer review ratings, and canonical websites from Google Maps.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-maps-business-search'.\n"
-            "- Side Effects: Strictly read-only; does not modify external databases, accounts, or state.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 15-45 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use when the user requests local commercial directories, trade contractors, "
-            "physical retail storefronts, or B2B regional sales leads.\n"
-            "- When NOT to use: Do not use for employment job listings, corporate regulatory filings, "
-            "federal procurement awards, or short-term vacation rentals.\n"
-            "- Named alternatives: Use 'glassdoor_jobs_search' for employer vacancies, 'sec_edgar_filings' "
-            "for corporate SEC disclosures, 'usaspending_contracts' for government awards, or "
-            "'airbnb_listings_search' for vacation rentals."
-        ),
+        "description": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-maps-business-search'.\n- Side Effects: Strictly read-only; does not modify external databases, accounts, or state.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when the user requests local commercial directories, trade contractors, physical retail storefronts, or B2B regional sales leads.\n- When NOT to use: Do not use for employment job listings, corporate regulatory filings, federal procurement awards, or short-term vacation rentals.\n- Named alternatives: Use 'glassdoor_jobs_search' for employer vacancies, 'sec_edgar_filings' for corporate SEC disclosures, 'usaspending_contracts' for government awards, or 'airbnb_listings_search' for vacation rentals.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -64,25 +48,62 @@ TOOLS_DEFINITION = [
                     "description": "Maximum count of business lead records to extract and return. Defaults to 10."
                 }
             },
-            "required": ["search_query"]
+            "required": [
+                "search_query"
+            ]
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of verified commercial business entity records extracted from Google Maps.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "title": {"type": "string", "description": "Trading name or legal corporate title of the business."},
-                    "phone": {"type": "string", "description": "Primary commercial telephone number with regional area code."},
-                    "website": {"type": "string", "description": "Canonical HTTP/HTTPS business website or landing page."},
-                    "address": {"type": "string", "description": "Full formatted postal street address including city, state, and ZIP."},
-                    "totalScore": {"type": "number", "description": "Aggregate customer review rating on a 1.0 to 5.0 scale."},
-                    "reviewsCount": {"type": "integer", "description": "Total count of public Google reviews submitted by customers."},
-                    "categoryName": {"type": "string", "description": "Primary industry classification or business trade category."},
-                    "url": {"type": "string", "description": "Direct canonical Google Maps place URL."}
-                },
-                "required": ["title", "address"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of verified commercial business entity records extracted from Google Maps.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "title": {
+                                "type": "string",
+                                "description": "Trading name or legal corporate title of the business."
+                            },
+                            "phone": {
+                                "type": "string",
+                                "description": "Primary commercial telephone number with regional area code."
+                            },
+                            "website": {
+                                "type": "string",
+                                "description": "Canonical HTTP/HTTPS business website or landing page."
+                            },
+                            "address": {
+                                "type": "string",
+                                "description": "Full formatted postal street address including city, state, and ZIP."
+                            },
+                            "totalScore": {
+                                "type": "number",
+                                "description": "Aggregate customer review rating on a 1.0 to 5.0 scale."
+                            },
+                            "reviewsCount": {
+                                "type": "integer",
+                                "description": "Total count of public Google reviews submitted by customers."
+                            },
+                            "categoryName": {
+                                "type": "string",
+                                "description": "Primary industry classification or business trade category."
+                            },
+                            "url": {
+                                "type": "string",
+                                "description": "Direct canonical Google Maps place URL."
+                            }
+                        },
+                        "required": [
+                            "title",
+                            "address"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -94,22 +115,7 @@ TOOLS_DEFINITION = [
     {
         "name": "glassdoor_jobs_search",
         "title": "Glassdoor Active Job Postings and Salary Search",
-        "description": (
-            "Search active employment vacancies, hiring employers, estimated compensation bands, "
-            "and corporate ratings from Glassdoor.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/glassdoor-jobs-scraper'.\n"
-            "- Side Effects: Strictly read-only; does not modify external accounts or submit applications.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use when researching active job openings, hiring trends, employer compensation ranges, "
-            "or workplace ratings for specific professions.\n"
-            "- When NOT to use: Do not use for local commercial lead generation, corporate financial filings, "
-            "or live video streaming.\n"
-            "- Named alternatives: Use 'google_maps_search' for commercial trade directories, 'sec_edgar_filings' "
-            "for SEC corporate filings, or 'usaspending_contracts' for federal prime contractor records."
-        ),
+        "description": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/glassdoor-jobs-scraper'.\n- Side Effects: Strictly read-only; does not modify external accounts or submit applications.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when researching active job openings, hiring trends, employer compensation ranges, or workplace ratings for specific professions.\n- When NOT to use: Do not use for local commercial lead generation, corporate financial filings, or live video streaming.\n- Named alternatives: Use 'google_maps_search' for commercial trade directories, 'sec_edgar_filings' for SEC corporate filings, or 'usaspending_contracts' for federal prime contractor records.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -131,23 +137,54 @@ TOOLS_DEFINITION = [
                     "description": "Maximum number of active job listings to retrieve. Integer between 1 and 100. Defaults to 10."
                 }
             },
-            "required": ["job_title"]
+            "required": [
+                "job_title"
+            ]
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of active employment job postings extracted from Glassdoor.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "jobTitle": {"type": "string", "description": "Official employment position or vacancy title."},
-                    "companyName": {"type": "string", "description": "Name of the recruiting employer or corporate entity."},
-                    "location": {"type": "string", "description": "Geographic workplace location or remote designation."},
-                    "salaryEstimate": {"type": "string", "description": "Estimated annual or hourly compensation range when published."},
-                    "rating": {"type": "number", "description": "Employer workplace review rating on a 1.0 to 5.0 scale."},
-                    "jobUrl": {"type": "string", "description": "Direct canonical URL to the employment application posting."}
-                },
-                "required": ["jobTitle", "companyName"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of active employment job postings extracted from Glassdoor.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "jobTitle": {
+                                "type": "string",
+                                "description": "Official employment position or vacancy title."
+                            },
+                            "companyName": {
+                                "type": "string",
+                                "description": "Name of the recruiting employer or corporate entity."
+                            },
+                            "location": {
+                                "type": "string",
+                                "description": "Geographic workplace location or remote designation."
+                            },
+                            "salaryEstimate": {
+                                "type": "string",
+                                "description": "Estimated annual or hourly compensation range when published."
+                            },
+                            "rating": {
+                                "type": "number",
+                                "description": "Employer workplace review rating on a 1.0 to 5.0 scale."
+                            },
+                            "jobUrl": {
+                                "type": "string",
+                                "description": "Direct canonical URL to the employment application posting."
+                            }
+                        },
+                        "required": [
+                            "jobTitle",
+                            "companyName"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -159,22 +196,7 @@ TOOLS_DEFINITION = [
     {
         "name": "sec_edgar_filings",
         "title": "SEC EDGAR Public Corporate Filings Retrieval",
-        "description": (
-            "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings "
-            "including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n"
-            "- Side Effects: Strictly read-only; queries public federal securities disclosures.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use for public corporate financial statements, audited balance sheets, executive "
-            "compensation disclosures, and regulatory material event filings.\n"
-            "- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, "
-            "or local trade vendor lists.\n"
-            "- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, "
-            "'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends."
-        ),
+        "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n- Side Effects: Strictly read-only; queries public federal securities disclosures.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for public corporate financial statements, audited balance sheets, executive compensation disclosures, and regulatory material event filings.\n- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, or local trade vendor lists.\n- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, 'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -185,7 +207,12 @@ TOOLS_DEFINITION = [
                 },
                 "form_type": {
                     "type": "string",
-                    "enum": ["10-K", "10-Q", "8-K", "ALL"],
+                    "enum": [
+                        "10-K",
+                        "10-Q",
+                        "8-K",
+                        "ALL"
+                    ],
                     "default": "10-K",
                     "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing."
                 },
@@ -197,23 +224,55 @@ TOOLS_DEFINITION = [
                     "description": "Maximum count of chronological filing records to retrieve. Defaults to 5."
                 }
             },
-            "required": ["ticker"]
+            "required": [
+                "ticker"
+            ]
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of official SEC EDGAR corporate regulatory filing disclosures.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "formType": {"type": "string", "description": "Regulatory filing form designation code (e.g. 10-K, 10-Q, 8-K)."},
-                    "filingDate": {"type": "string", "description": "Official chronological submission date in YYYY-MM-DD format."},
-                    "accessionNumber": {"type": "string", "description": "Unique SEC EDGAR document accession identifier."},
-                    "companyName": {"type": "string", "description": "Official registered legal name of the filing corporation."},
-                    "cik": {"type": "string", "description": "Central Index Key (CIK) ten-digit company identifier assigned by the SEC."},
-                    "documentUrl": {"type": "string", "description": "Canonical HTTPS link to the full filing disclosure on SEC.gov."}
-                },
-                "required": ["formType", "filingDate", "documentUrl"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of official SEC EDGAR corporate regulatory filing disclosures.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "formType": {
+                                "type": "string",
+                                "description": "Regulatory filing form designation code (e.g. 10-K, 10-Q, 8-K)."
+                            },
+                            "filingDate": {
+                                "type": "string",
+                                "description": "Official chronological submission date in YYYY-MM-DD format."
+                            },
+                            "accessionNumber": {
+                                "type": "string",
+                                "description": "Unique SEC EDGAR document accession identifier."
+                            },
+                            "companyName": {
+                                "type": "string",
+                                "description": "Official registered legal name of the filing corporation."
+                            },
+                            "cik": {
+                                "type": "string",
+                                "description": "Central Index Key (CIK) ten-digit company identifier assigned by the SEC."
+                            },
+                            "documentUrl": {
+                                "type": "string",
+                                "description": "Canonical HTTPS link to the full filing disclosure on SEC.gov."
+                            }
+                        },
+                        "required": [
+                            "formType",
+                            "filingDate",
+                            "documentUrl"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -225,22 +284,7 @@ TOOLS_DEFINITION = [
     {
         "name": "usaspending_contracts",
         "title": "USAspending Federal Procurement and Defense Awards Search",
-        "description": (
-            "Search United States federal procurement contracts, defense department awards, and "
-            "prime agency obligations from the official USAspending database.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n"
-            "- Side Effects: Strictly read-only; queries public federal procurement databases.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use for government contracting intelligence, prime federal vendor tracking, "
-            "defense obligation amounts, and public procurement research.\n"
-            "- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, "
-            "or consumer vacation pricing.\n"
-            "- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' "
-            "for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data."
-        ),
+        "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n- Side Effects: Strictly read-only; queries public federal procurement databases.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for government contracting intelligence, prime federal vendor tracking, defense obligation amounts, and public procurement research.\n- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, or consumer vacation pricing.\n- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -257,23 +301,54 @@ TOOLS_DEFINITION = [
                     "description": "Maximum number of federal contract award records to retrieve. Defaults to 10."
                 }
             },
-            "required": ["recipient_name"]
+            "required": [
+                "recipient_name"
+            ]
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of official federal contract and award obligation records.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "recipientName": {"type": "string", "description": "Legal business or institutional name of the award recipient."},
-                    "awardingAgency": {"type": "string", "description": "Federal department or agency authorizing the procurement contract."},
-                    "obligationAmount": {"type": "number", "description": "Total monetary obligation amount funded by the federal government in USD."},
-                    "awardDescription": {"type": "string", "description": "Executive summary statement of the contracted goods or defense services."},
-                    "awardDate": {"type": "string", "description": "Action signing date in YYYY-MM-DD format."},
-                    "contractId": {"type": "string", "description": "Unique federal procurement award ID (PIID or FAIN)."}
-                },
-                "required": ["recipientName", "obligationAmount"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of official federal contract and award obligation records.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "recipientName": {
+                                "type": "string",
+                                "description": "Legal business or institutional name of the award recipient."
+                            },
+                            "awardingAgency": {
+                                "type": "string",
+                                "description": "Federal department or agency authorizing the procurement contract."
+                            },
+                            "obligationAmount": {
+                                "type": "number",
+                                "description": "Total monetary obligation amount funded by the federal government in USD."
+                            },
+                            "awardDescription": {
+                                "type": "string",
+                                "description": "Executive summary statement of the contracted goods or defense services."
+                            },
+                            "awardDate": {
+                                "type": "string",
+                                "description": "Action signing date in YYYY-MM-DD format."
+                            },
+                            "contractId": {
+                                "type": "string",
+                                "description": "Unique federal procurement award ID (PIID or FAIN)."
+                            }
+                        },
+                        "required": [
+                            "recipientName",
+                            "obligationAmount"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -285,22 +360,7 @@ TOOLS_DEFINITION = [
     {
         "name": "twitch_live_streams",
         "title": "Twitch Real-Time Live Stream Intelligence and Viewership",
-        "description": (
-            "Extract real-time live broadcasting streams, viewer counts, channel metadata, "
-            "and game categories from Twitch.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/twitch-live-streams-scraper'.\n"
-            "- Side Effects: Strictly read-only; queries active public Twitch broadcasts.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use for live video broadcasting metrics, concurrent esports viewership tracking, "
-            "influencer intelligence, and gaming category analysis.\n"
-            "- When NOT to use: Do not use for recorded video-on-demand archives, YouTube channels, "
-            "or employment job boards.\n"
-            "- Named alternatives: Use 'glassdoor_jobs_search' for corporate hiring data, 'google_maps_search' "
-            "for local retail directories, or 'airbnb_listings_search' for travel pricing."
-        ),
+        "description": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/twitch-live-streams-scraper'.\n- Side Effects: Strictly read-only; queries active public Twitch broadcasts.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for live video broadcasting metrics, concurrent esports viewership tracking, influencer intelligence, and gaming category analysis.\n- When NOT to use: Do not use for recorded video-on-demand archives, YouTube channels, or employment job boards.\n- Named alternatives: Use 'glassdoor_jobs_search' for corporate hiring data, 'google_maps_search' for local retail directories, or 'airbnb_listings_search' for travel pricing.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -324,20 +384,49 @@ TOOLS_DEFINITION = [
             }
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of active real-time Twitch stream broadcast records.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "channelName": {"type": "string", "description": "Twitch username or broadcaster channel handle."},
-                    "streamTitle": {"type": "string", "description": "Broadcaster headline title for the active live session."},
-                    "gameName": {"type": "string", "description": "Primary game title or stream category."},
-                    "viewerCount": {"type": "integer", "description": "Number of concurrent live spectators actively watching the stream."},
-                    "language": {"type": "string", "description": "Language code of the broadcast."},
-                    "streamUrl": {"type": "string", "description": "Canonical HTTPS stream link to the live broadcast channel."}
-                },
-                "required": ["channelName", "viewerCount"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of active real-time Twitch stream broadcast records.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "channelName": {
+                                "type": "string",
+                                "description": "Twitch username or broadcaster channel handle."
+                            },
+                            "streamTitle": {
+                                "type": "string",
+                                "description": "Broadcaster headline title for the active live session."
+                            },
+                            "gameName": {
+                                "type": "string",
+                                "description": "Primary game title or stream category."
+                            },
+                            "viewerCount": {
+                                "type": "integer",
+                                "description": "Number of concurrent live spectators actively watching the stream."
+                            },
+                            "language": {
+                                "type": "string",
+                                "description": "Language code of the broadcast."
+                            },
+                            "streamUrl": {
+                                "type": "string",
+                                "description": "Canonical HTTPS stream link to the live broadcast channel."
+                            }
+                        },
+                        "required": [
+                            "channelName",
+                            "viewerCount"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -349,22 +438,7 @@ TOOLS_DEFINITION = [
     {
         "name": "airbnb_listings_search",
         "title": "Airbnb Short-Term Rental Rates and Property Search",
-        "description": (
-            "Search vacation rental listings, nightly prices, occupancy ratings, and "
-            "property classifications from Airbnb.\n\n"
-            "Behavioral Transparency:\n"
-            "- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/airbnb-listings-search'.\n"
-            "- Side Effects: Strictly read-only; queries public hospitality and vacation listings.\n"
-            "- Authentication: Requires APIFY_TOKEN environment variable.\n"
-            "- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\n"
-            "Usage Guidelines:\n"
-            "- When to use: Use for short-term vacation rental market research, hospitality pricing comparisons, "
-            "and regional accommodation rate benchmarking.\n"
-            "- When NOT to use: Do not use for long-term residential apartment leases, MLS residential home sales, "
-            "or commercial office leasing.\n"
-            "- Named alternatives: Use 'google_maps_search' for hotel and lodging business contacts, "
-            "'glassdoor_jobs_search' for hospitality employment, or 'sec_edgar_filings' for public REIT financial filings."
-        ),
+        "description": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/airbnb-listings-search'.\n- Side Effects: Strictly read-only; queries public hospitality and vacation listings.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for short-term vacation rental market research, hospitality pricing comparisons, and regional accommodation rate benchmarking.\n- When NOT to use: Do not use for long-term residential apartment leases, MLS residential home sales, or commercial office leasing.\n- Named alternatives: Use 'google_maps_search' for hotel and lodging business contacts, 'glassdoor_jobs_search' for hospitality employment, or 'sec_edgar_filings' for public REIT financial filings.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -381,23 +455,54 @@ TOOLS_DEFINITION = [
                     "description": "Maximum number of rental properties to retrieve. Integer between 1 and 100. Defaults to 10."
                 }
             },
-            "required": ["location"]
+            "required": [
+                "location"
+            ]
         },
         "outputSchema": {
-            "type": "array",
-            "description": "Collection of short-term vacation rental property listings extracted from Airbnb.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "listingName": {"type": "string", "description": "Headline property title or host description."},
-                    "roomType": {"type": "string", "description": "Accommodation category (e.g. Entire home, Private room, Hotel room)."},
-                    "pricePerNight": {"type": "string", "description": "Nightly accommodation tariff rate in local currency."},
-                    "rating": {"type": "number", "description": "Aggregate guest cleanliness and satisfaction score on a 1.0 to 5.0 scale."},
-                    "reviewCount": {"type": "integer", "description": "Total number of verified guest reviews posted for the property."},
-                    "listingUrl": {"type": "string", "description": "Canonical HTTPS link to the Airbnb listing reservation page."}
-                },
-                "required": ["listingName", "pricePerNight"]
-            }
+            "type": "object",
+            "properties": {
+                "results": {
+                    "type": "array",
+                    "description": "Collection of short-term vacation rental property listings extracted from Airbnb.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "listingName": {
+                                "type": "string",
+                                "description": "Headline property title or host description."
+                            },
+                            "roomType": {
+                                "type": "string",
+                                "description": "Accommodation category (e.g. Entire home, Private room, Hotel room)."
+                            },
+                            "pricePerNight": {
+                                "type": "string",
+                                "description": "Nightly accommodation tariff rate in local currency."
+                            },
+                            "rating": {
+                                "type": "number",
+                                "description": "Aggregate guest cleanliness and satisfaction score on a 1.0 to 5.0 scale."
+                            },
+                            "reviewCount": {
+                                "type": "integer",
+                                "description": "Total number of verified guest reviews posted for the property."
+                            },
+                            "listingUrl": {
+                                "type": "string",
+                                "description": "Canonical HTTPS link to the Airbnb listing reservation page."
+                            }
+                        },
+                        "required": [
+                            "listingName",
+                            "pricePerNight"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "results"
+            ]
         },
         "annotations": {
             "readOnlyHint": True,
@@ -529,7 +634,7 @@ def serve_stdio():
                     },
                     "serverInfo": {
                         "name": "apify-scrapers-mcp",
-                        "version": "1.0.5"
+                        "version": "1.0.6"
                     },
                     "instructions": (
                         "Apify Scrapers MCP provides enterprise-grade data extraction tools for "

@@ -1,6 +1,6 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Model Context Protocol (MCP) server for Apify Scrapers Fleet. Extract B2B leads, jobs, SEC filings, federal awards, and real estate data.",
   "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
   "repository": {
@@ -51,49 +51,57 @@
         ]
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of verified commercial business entity records extracted from Google Maps.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string",
-              "description": "Trading name or legal corporate title of the business."
-            },
-            "phone": {
-              "type": "string",
-              "description": "Primary commercial telephone number with regional area code."
-            },
-            "website": {
-              "type": "string",
-              "description": "Canonical HTTP/HTTPS business website or landing page."
-            },
-            "address": {
-              "type": "string",
-              "description": "Full formatted postal street address including city, state, and ZIP."
-            },
-            "totalScore": {
-              "type": "number",
-              "description": "Aggregate customer review rating on a 1.0 to 5.0 scale."
-            },
-            "reviewsCount": {
-              "type": "integer",
-              "description": "Total count of public Google reviews submitted by customers."
-            },
-            "categoryName": {
-              "type": "string",
-              "description": "Primary industry classification or business trade category."
-            },
-            "url": {
-              "type": "string",
-              "description": "Direct canonical Google Maps place URL."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of verified commercial business entity records extracted from Google Maps.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Trading name or legal corporate title of the business."
+                },
+                "phone": {
+                  "type": "string",
+                  "description": "Primary commercial telephone number with regional area code."
+                },
+                "website": {
+                  "type": "string",
+                  "description": "Canonical HTTP/HTTPS business website or landing page."
+                },
+                "address": {
+                  "type": "string",
+                  "description": "Full formatted postal street address including city, state, and ZIP."
+                },
+                "totalScore": {
+                  "type": "number",
+                  "description": "Aggregate customer review rating on a 1.0 to 5.0 scale."
+                },
+                "reviewsCount": {
+                  "type": "integer",
+                  "description": "Total count of public Google reviews submitted by customers."
+                },
+                "categoryName": {
+                  "type": "string",
+                  "description": "Primary industry classification or business trade category."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Direct canonical Google Maps place URL."
+                }
+              },
+              "required": [
+                "title",
+                "address"
+              ]
             }
-          },
-          "required": [
-            "title",
-            "address"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
@@ -132,41 +140,49 @@
         ]
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of active employment job postings extracted from Glassdoor.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "jobTitle": {
-              "type": "string",
-              "description": "Official employment position or vacancy title."
-            },
-            "companyName": {
-              "type": "string",
-              "description": "Name of the recruiting employer or corporate entity."
-            },
-            "location": {
-              "type": "string",
-              "description": "Geographic workplace location or remote designation."
-            },
-            "salaryEstimate": {
-              "type": "string",
-              "description": "Estimated annual or hourly compensation range when published."
-            },
-            "rating": {
-              "type": "number",
-              "description": "Employer workplace review rating on a 1.0 to 5.0 scale."
-            },
-            "jobUrl": {
-              "type": "string",
-              "description": "Direct canonical URL to the employment application posting."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of active employment job postings extracted from Glassdoor.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "jobTitle": {
+                  "type": "string",
+                  "description": "Official employment position or vacancy title."
+                },
+                "companyName": {
+                  "type": "string",
+                  "description": "Name of the recruiting employer or corporate entity."
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Geographic workplace location or remote designation."
+                },
+                "salaryEstimate": {
+                  "type": "string",
+                  "description": "Estimated annual or hourly compensation range when published."
+                },
+                "rating": {
+                  "type": "number",
+                  "description": "Employer workplace review rating on a 1.0 to 5.0 scale."
+                },
+                "jobUrl": {
+                  "type": "string",
+                  "description": "Direct canonical URL to the employment application posting."
+                }
+              },
+              "required": [
+                "jobTitle",
+                "companyName"
+              ]
             }
-          },
-          "required": [
-            "jobTitle",
-            "companyName"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
@@ -211,42 +227,50 @@
         ]
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of official SEC EDGAR corporate regulatory filing disclosures.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "formType": {
-              "type": "string",
-              "description": "Regulatory filing form designation code (e.g. 10-K, 10-Q, 8-K)."
-            },
-            "filingDate": {
-              "type": "string",
-              "description": "Official chronological submission date in YYYY-MM-DD format."
-            },
-            "accessionNumber": {
-              "type": "string",
-              "description": "Unique SEC EDGAR document accession identifier."
-            },
-            "companyName": {
-              "type": "string",
-              "description": "Official registered legal name of the filing corporation."
-            },
-            "cik": {
-              "type": "string",
-              "description": "Central Index Key (CIK) ten-digit company identifier assigned by the SEC."
-            },
-            "documentUrl": {
-              "type": "string",
-              "description": "Canonical HTTPS link to the full filing disclosure on SEC.gov."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of official SEC EDGAR corporate regulatory filing disclosures.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "formType": {
+                  "type": "string",
+                  "description": "Regulatory filing form designation code (e.g. 10-K, 10-Q, 8-K)."
+                },
+                "filingDate": {
+                  "type": "string",
+                  "description": "Official chronological submission date in YYYY-MM-DD format."
+                },
+                "accessionNumber": {
+                  "type": "string",
+                  "description": "Unique SEC EDGAR document accession identifier."
+                },
+                "companyName": {
+                  "type": "string",
+                  "description": "Official registered legal name of the filing corporation."
+                },
+                "cik": {
+                  "type": "string",
+                  "description": "Central Index Key (CIK) ten-digit company identifier assigned by the SEC."
+                },
+                "documentUrl": {
+                  "type": "string",
+                  "description": "Canonical HTTPS link to the full filing disclosure on SEC.gov."
+                }
+              },
+              "required": [
+                "formType",
+                "filingDate",
+                "documentUrl"
+              ]
             }
-          },
-          "required": [
-            "formType",
-            "filingDate",
-            "documentUrl"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
@@ -280,41 +304,49 @@
         ]
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of official federal contract and award obligation records.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "recipientName": {
-              "type": "string",
-              "description": "Legal business or institutional name of the award recipient."
-            },
-            "awardingAgency": {
-              "type": "string",
-              "description": "Federal department or agency authorizing the procurement contract."
-            },
-            "obligationAmount": {
-              "type": "number",
-              "description": "Total monetary obligation amount funded by the federal government in USD."
-            },
-            "awardDescription": {
-              "type": "string",
-              "description": "Executive summary statement of the contracted goods or defense services."
-            },
-            "awardDate": {
-              "type": "string",
-              "description": "Action signing date in YYYY-MM-DD format."
-            },
-            "contractId": {
-              "type": "string",
-              "description": "Unique federal procurement award ID (PIID or FAIN)."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of official federal contract and award obligation records.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "recipientName": {
+                  "type": "string",
+                  "description": "Legal business or institutional name of the award recipient."
+                },
+                "awardingAgency": {
+                  "type": "string",
+                  "description": "Federal department or agency authorizing the procurement contract."
+                },
+                "obligationAmount": {
+                  "type": "number",
+                  "description": "Total monetary obligation amount funded by the federal government in USD."
+                },
+                "awardDescription": {
+                  "type": "string",
+                  "description": "Executive summary statement of the contracted goods or defense services."
+                },
+                "awardDate": {
+                  "type": "string",
+                  "description": "Action signing date in YYYY-MM-DD format."
+                },
+                "contractId": {
+                  "type": "string",
+                  "description": "Unique federal procurement award ID (PIID or FAIN)."
+                }
+              },
+              "required": [
+                "recipientName",
+                "obligationAmount"
+              ]
             }
-          },
-          "required": [
-            "recipientName",
-            "obligationAmount"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
@@ -350,41 +382,49 @@
         }
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of active real-time Twitch stream broadcast records.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "channelName": {
-              "type": "string",
-              "description": "Twitch username or broadcaster channel handle."
-            },
-            "streamTitle": {
-              "type": "string",
-              "description": "Broadcaster headline title for the active live session."
-            },
-            "gameName": {
-              "type": "string",
-              "description": "Primary game title or stream category."
-            },
-            "viewerCount": {
-              "type": "integer",
-              "description": "Number of concurrent live spectators actively watching the stream."
-            },
-            "language": {
-              "type": "string",
-              "description": "Language code of the broadcast."
-            },
-            "streamUrl": {
-              "type": "string",
-              "description": "Canonical HTTPS stream link to the live broadcast channel."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of active real-time Twitch stream broadcast records.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "channelName": {
+                  "type": "string",
+                  "description": "Twitch username or broadcaster channel handle."
+                },
+                "streamTitle": {
+                  "type": "string",
+                  "description": "Broadcaster headline title for the active live session."
+                },
+                "gameName": {
+                  "type": "string",
+                  "description": "Primary game title or stream category."
+                },
+                "viewerCount": {
+                  "type": "integer",
+                  "description": "Number of concurrent live spectators actively watching the stream."
+                },
+                "language": {
+                  "type": "string",
+                  "description": "Language code of the broadcast."
+                },
+                "streamUrl": {
+                  "type": "string",
+                  "description": "Canonical HTTPS stream link to the live broadcast channel."
+                }
+              },
+              "required": [
+                "channelName",
+                "viewerCount"
+              ]
             }
-          },
-          "required": [
-            "channelName",
-            "viewerCount"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
@@ -418,41 +458,49 @@
         ]
       },
       "outputSchema": {
-        "type": "array",
-        "description": "Collection of short-term vacation rental property listings extracted from Airbnb.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "listingName": {
-              "type": "string",
-              "description": "Headline property title or host description."
-            },
-            "roomType": {
-              "type": "string",
-              "description": "Accommodation category (e.g. Entire home, Private room, Hotel room)."
-            },
-            "pricePerNight": {
-              "type": "string",
-              "description": "Nightly accommodation tariff rate in local currency."
-            },
-            "rating": {
-              "type": "number",
-              "description": "Aggregate guest cleanliness and satisfaction score on a 1.0 to 5.0 scale."
-            },
-            "reviewCount": {
-              "type": "integer",
-              "description": "Total number of verified guest reviews posted for the property."
-            },
-            "listingUrl": {
-              "type": "string",
-              "description": "Canonical HTTPS link to the Airbnb listing reservation page."
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of short-term vacation rental property listings extracted from Airbnb.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "listingName": {
+                  "type": "string",
+                  "description": "Headline property title or host description."
+                },
+                "roomType": {
+                  "type": "string",
+                  "description": "Accommodation category (e.g. Entire home, Private room, Hotel room)."
+                },
+                "pricePerNight": {
+                  "type": "string",
+                  "description": "Nightly accommodation tariff rate in local currency."
+                },
+                "rating": {
+                  "type": "number",
+                  "description": "Aggregate guest cleanliness and satisfaction score on a 1.0 to 5.0 scale."
+                },
+                "reviewCount": {
+                  "type": "integer",
+                  "description": "Total number of verified guest reviews posted for the property."
+                },
+                "listingUrl": {
+                  "type": "string",
+                  "description": "Canonical HTTPS link to the Airbnb listing reservation page."
+                }
+              },
+              "required": [
+                "listingName",
+                "pricePerNight"
+              ]
             }
-          },
-          "required": [
-            "listingName",
-            "pricePerNight"
-          ]
-        }
+          }
+        },
+        "required": [
+          "results"
+        ]
       },
       "annotations": {
         "readOnlyHint": true,
