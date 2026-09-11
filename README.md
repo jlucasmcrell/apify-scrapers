@@ -164,39 +164,61 @@ Looking for clean data to benchmark, analyze, or train models? Verified sample b
 
 All actors in this repository conform to OpenAPI and JSON Schema standards, making them directly callable by AI agents via the Model Context Protocol (MCP):
 
-### Option A: Hosted Apify MCP Server (Claude Desktop / Cursor)
+### Option 1: Claude Desktop / Cursor with UVX (Recommended)
 
 Add this to your `claude_desktop_config.json` or Cursor MCP settings:
 
 ```json
 {
-  \"mcpServers\": {
-    \"apify\": {
-      \"command\": \"npx\",
-      \"args\": [\"-y\", \"@apify/mcp-server\"],
-      \"env\": {
-        \"APIFY_TOKEN\": \"YOUR_APIFY_API_TOKEN\"
+  "mcpServers": {
+    "apify-data-scrapers": {
+      "command": "uvx",
+      "args": ["apify-data-scrapers"],
+      "env": {
+        "APIFY_TOKEN": "YOUR_APIFY_API_TOKEN"
       }
     }
   }
 }
 ```
 
-### Option B: Local Lightweight Python MCP Server
+### Option 2: Docker Container (Glama / Cloud)
 
-For local agent workflows without Node.js dependencies, a direct Python MCP server is included:
+Run via Docker:
+
+```json
+{
+  "mcpServers": {
+    "apify-data-scrapers": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "-e", "APIFY_TOKEN", "glcr.b-cdn.net/jlucasmcrell/apify-scrapers:latest"],
+      "env": {
+        "APIFY_TOKEN": "YOUR_APIFY_API_TOKEN"
+      }
+    }
+  }
+}
+```
+
+### Option 3: Local Python Stdio Runner
+
+Install via pip or run directly:
 
 ```bash
-export APIFY_TOKEN=\"your_token_here\"
+pip install apify-data-scrapers
+export APIFY_TOKEN="your_token_here"
+apify-data-scrapers
+```
+
+Or from local source:
+```bash
 python mcp_server.py
 ```
 
-Inspect tools and capabilities via [`mcp.json`](mcp.json).
-
 ### Agent Prompts That Work Out-of-the-Box:
-- *\"Search Google Maps for 50 commercial roofers in Atlanta with phone numbers and websites.\"*
-- *\"Retrieve Apple and Microsoft Form 10-K filings from SEC EDGAR for the last 2 years.\"*
-- *\"Find the 30 newest reviews for Duolingo on Google Play and analyze negative feedback.\"*
+- *"Search Google Maps for 50 commercial roofers in Atlanta with phone numbers and websites."*
+- *"Retrieve Apple and Microsoft Form 10-K filings from SEC EDGAR for the last 2 years."*
+- *"Search Glassdoor for remote product manager jobs with salary estimates."*
 
 ---
 
