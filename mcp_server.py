@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import asyncio
 from typing import Any, Dict, List, Optional
 import urllib.request
 import urllib.error
@@ -57,20 +56,14 @@ def run_actor_sync(actor_id: str, run_input: Dict[str, Any], timeout_secs: int =
     except Exception as e:
         raise RuntimeError(f"Actor run failed: {str(e)}")
 
-# Standard JSON-RPC MCP server loop (stdio)
-async def handle_stdio():
-    reader = asyncio.StreamReader()
-    protocol = asyncio.StreamReaderProtocol(reader)
-    loop = asyncio.get_event_loop()
-    await loop.connect_read_pipe(lambda: protocol, sys.stdin)
-    writer = sys.stdout
-
-    while True:
-        line = await reader.readline()
+def serve_stdio():
+    """Cross-platform synchronous stdio loop compatible with Docker and Glama introspection."""
+    for line in sys.stdin:
+        line = line.strip()
         if not line:
-            break
+            continue
         try:
-            req = json.loads(line.decode("utf-8"))
+            req = json.loads(line)
         except Exception:
             continue
 
@@ -87,12 +80,24 @@ async def handle_stdio():
                     "capabilities": {"tools": {}},
                     "serverInfo": {
                         "name": "apify-scrapers-mcp",
-                        "version": "1.0.0"
+                        "version": "1.0.2"
                     }
                 }
             }
-            writer.write(json.dumps(res) + "\n")
-            writer.flush()
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif method == "notifications/initialized":
+            continue
+
+        elif method == "ping":
+            res = {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "result": {}
+            }
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
 
         elif method == "tools/list":
             res = {
@@ -114,7 +119,7 @@ async def handle_stdio():
                         },
                         {
                             "name": "glassdoor_jobs_search",
-                            "description": "Scrape Glassdoor job openings with canonical listing URLs and normalized posting dates. Backed by captainhandsome/glassdoor-jobs-scraper.",
+                            "description": "Search job listings with estimated posting dates from Glassdoor. Backed by captainhandsome/glassdoor-jobs-scraper.",
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {
@@ -149,12 +154,36 @@ async def handle_stdio():
                                 },
                                 "required": ["recipient_name"]
                             }
+                        },
+                        {
+                            "name": "twitch_live_streams",
+                            "description": "Scrape live streaming channels, viewer counts, and game categories from Twitch. Backed by captainhandsome/twitch-live-streams-scraper.",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "game_name": {"type": "string", "description": "e.g. 'Fortnite' or 'Just Chatting'"},
+                                    "language": {"type": "string", "default": "en"},
+                                    "max_results": {"type": "integer", "default": 10}
+                                }
+                            }
+                        },
+                        {
+                            "name": "airbnb_listings_search",
+                            "description": "Search short-term rental listings, nightly prices, and occupancy from Airbnb. Backed by captainhandsome/airbnb-listings-search.",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {
+                                    "location": {"type": "string", "description": "e.g. 'Austin, TX' or 'Miami, FL'"},
+                                    "max_results": {"type": "integer", "default": 10}
+                                },
+                                "required": ["location"]
+                            }
                         }
                     ]
                 }
             }
-            writer.write(json.dumps(res) + "\n")
-            writer.flush()
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
 
         elif method == "tools/call":
             tool_name = params.get("name")
@@ -178,6 +207,15 @@ async def handle_stdio():
                     rec = tool_args.get("recipient_name")
                     limit = int(tool_args.get("max_results", 10))
                     data = run_actor_sync(ACTORS["usaspending"], {"award_type": "contracts", "recipient_search_text": rec, "max_items": limit})
+                elif tool_name == "twitch_live_streams":
+                    game = tool_args.get("game_name", "")
+                    lang = tool_args.get("language", "en")
+                    limit = int(tool_args.get("max_results", 10))
+                    data = run_actor_sync(ACTORS["twitch_streams"], {"game": game, "language": lang, "max_items": limit})
+                elif tool_name == "airbnb_listings_search":
+                    loc = tool_args.get("location")
+                    limit = int(tool_args.get("max_results", 10))
+                    data = run_actor_sync(ACTORS["airbnb"], {"location": loc, "max_items": limit})
                 else:
                     raise ValueError(f"Unknown tool: {tool_name}")
 
@@ -199,8 +237,8 @@ async def handle_stdio():
                         "message": str(err)
                     }
                 }
-            writer.write(json.dumps(res) + "\n")
-            writer.flush()
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
 
 if __name__ == "__main__":
-    asyncio.run(handle_stdio())
+    serve_stdio()
