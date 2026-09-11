@@ -1,0 +1,28 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+#
+# This server is a stdlib-only Python stdio server published to PyPI as
+# apify-data-scrapers. It calls the user's OWN Apify account, so APIFY_TOKEN is
+# required rather than optional - without it every tool returns an auth error
+# rather than failing loudly at startup.
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - apifyToken
+    properties:
+      apifyToken:
+        type: string
+        description: >-
+          Apify API token from https://console.apify.com/settings/integrations.
+          Runs execute on the caller's own Apify account and are billed to it.
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({
+      "command": "python",
+      "args": ["-m", "mcp_server"],
+      "env": { "APIFY_TOKEN": config.apifyToken }
+    })
