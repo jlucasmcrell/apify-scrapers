@@ -1,0 +1,167 @@
+[
+  {
+    "cik": "0000789019",
+    "company_name": "MICROSOFT CORP",
+    "ticker": "MSFT",
+    "tickers": [
+      "MSFT"
+    ],
+    "exchanges": [
+      "Nasdaq"
+    ],
+    "sic": "7372",
+    "sic_description": "Services-Prepackaged Software",
+    "state_of_incorporation": "WA",
+    "fiscal_year_end": "0630",
+    "form": "10-K",
+    "is_amendment": false,
+    "filing_date": "2026-07-29",
+    "report_date": "2026-06-30",
+    "acceptance_datetime": "2026-07-29T20:08:01.000Z",
+    "accession_number": "0001193125-26-323660",
+    "act": "34",
+    "file_number": "001-37845",
+    "film_number": "261217433",
+    "items": null,
+    "size_bytes": 36328553,
+    "is_xbrl": true,
+    "is_inline_xbrl": true,
+    "primary_document": "msft-20260630.htm",
+    "primary_document_description": "10-K",
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/0001193125-26-323660-index.html",
+    "primary_document_url": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/msft-20260630.htm",
+    "company_submissions_url": "https://data.sec.gov/submissions/CIK0000789019.json"
+  },
+  {
+    "cik": "0000320193",
+    "company_name": "Apple Inc.",
+    "ticker": "AAPL",
+    "tickers": [
+      "AAPL"
+    ],
+    "exchanges": [
+      "Nasdaq"
+    ],
+    "sic": "3571",
+    "sic_description": "Electronic Computers",
+    "state_of_incorporation": "CA",
+    "fiscal_year_end": "0926",
+    "form": "10-K",
+    "is_amendment": false,
+    "filing_date": "2025-10-31",
+    "report_date": "2025-09-27",
+    "acceptance_datetime": "2025-10-31T10:01:26.000Z",
+    "accession_number": "0000320193-25-000079",
+    "act": "34",
+    "file_number": "001-36743",
+    "film_number": "251437791",
+    "items": null,
+    "size_bytes": 9392337,
+    "is_xbrl": true,
+    "is_inline_xbrl": true,
+    "primary_document": "aapl-20250927.htm",
+    "primary_document_description": "10-K",
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/0000320193-25-000079-index.html",
+    "primary_document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+    "company_submissions_url": "https://data.sec.gov/submissions/CIK0000320193.json"
+  },
+  {
+    "cik": "0000789019",
+    "company_name": "MICROSOFT CORP",
+    "ticker": "MSFT",
+    "tickers": [
+      "MSFT"
+    ],
+    "exchanges": [
+      "Nasdaq"
+    ],
+    "sic": "7372",
+    "sic_description": "Services-Prepackaged Software",
+    "state_of_incorporation": "WA",
+    "fiscal_year_end": "0630",
+    "form": "10-K",
+    "is_amendment": false,
+    "filing_date": "2025-07-30",
+    "report_date": "2025-06-30",
+    "acceptance_datetime": "2025-07-30T20:11:40.000Z",
+    "accession_number": "0000950170-25-100235",
+    "act": "34",
+    "file_number": "001-37845",
+    "film_number": "251167157",
+    "items": null,
+    "size_bytes": 34889671,
+    "is_xbrl": true,
+    "is_inline_xbrl": true,
+    "primary_document": "msft-20250630.htm",
+    "primary_document_description": "10-K",
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/0000950170-25-100235-index.html",
+    "primary_document_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+    "company_submissions_url": "https://data.sec.gov/submissions/CIK0000789019.json"
+  },
+  {
+    "cik": "0000320193",
+    "company_name": "Apple Inc.",
+    "ticker": "AAPL",
+    "tickers": [
+      "AAPL"
+    ],
+    "exchanges": [
+      "Nasdaq"
+    ],
+    "sic": "3571",
+    "sic_description": "Electronic Computers",
+    "state_of_incorporation": "CA",
+    "fiscal_year_end": "0926",
+    "form": "10-K",
+    "is_amendment": false,
+    "filing_date": "2024-11-01",
+    "report_date": "2024-09-28",
+    "acceptance_datetime": "2024-11-01T10:01:36.000Z",
+    "accession_number": "0000320193-24-000123",
+    "act": "34",
+    "file_number": "001-36743",
+    "film_number": "241416806",
+    "items": null,
+    "size_bytes": 9759333,
+    "is_xbrl": true,
+    "is_inline_xbrl": true,
+    "primary_document": "aapl-20240928.htm",
+    "primary_document_description": "10-K",
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/0000320193-24-000123-index.html",
+    "primary_document_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
+    "company_submissions_url": "https://data.sec.gov/submissions/CIK0000320193.json"
+  },
+  {
+    "cik": "0000789019",
+    "company_name": "MICROSOFT CORP",
+    "ticker": "MSFT",
+    "tickers": [
+      "MSFT"
+    ],
+    "exchanges": [
+      "Nasdaq"
+    ],
+    "sic": "7372",
+    "sic_description": "Services-Prepackaged Software",
+    "state_of_incorporation": "WA",
+    "fiscal_year_end": "0630",
+    "form": "10-K",
+    "is_amendment": false,
+    "filing_date": "2024-07-30",
+    "report_date": "2024-06-30",
+    "acceptance_datetime": "2024-07-30T20:06:22.000Z",
+    "accession_number": "0000950170-24-087843",
+    "act": "34",
+    "file_number": "001-37845",
+    "film_number": "241157360",
+    "items": null,
+    "size_bytes": 30375960,
+    "is_xbrl": true,
+    "is_inline_xbrl": true,
+    "primary_document": "msft-20240630.htm",
+    "primary_document_description": "10-K",
+    "filing_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/0000950170-24-087843-index.html",
+    "primary_document_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017024087843/msft-20240630.htm",
+    "company_submissions_url": "https://data.sec.gov/submissions/CIK0000789019.json"
+  }
+]
