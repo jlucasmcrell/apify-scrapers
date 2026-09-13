@@ -12,7 +12,7 @@ Why this exists instead of `mcpb pack`:
   that needs the caller's Apify token). Measured 2026-09-13.
 
 So: keep the committed manifest.json MCPB-valid (name/description tools), and at
-build time enrich a COPY with each tool's inputSchema/annotations lifted from
+build time enrich a COPY with each tool's inputSchema/outputSchema/annotations lifted from
 TOOLS_DEFINITION in mcp_server.py, then zip it with manifest.json at the archive
 root (the only structural requirement Smithery's CLI checks).
 
@@ -32,7 +32,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = ("mcp_server.py", "requirements.txt", "LICENSE", "README.md")
+FILES = ("mcp_server.py", "requirements.txt", "LICENSE", "README.md", "icon.png")
 
 
 def tools_from_server() -> dict[str, dict]:
@@ -52,8 +52,12 @@ def main() -> int:
     for t in manifest.get("tools", []):
         d = defs[t["name"]]
         t["inputSchema"] = d["inputSchema"]
-        if d.get("annotations"):
-            t["annotations"] = d["annotations"]
+        # Smithery's Quality Score counts outputSchema and annotations per tool
+        # (Output schemas 12pt, Annotations ~6pt); the read API echoes neither,
+        # so the dashboard is the only place their arrival is visible.
+        for k in ("outputSchema", "annotations"):
+            if d.get(k):
+                t[k] = d[k]
     if out.exists():
         out.unlink()
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
@@ -63,7 +67,8 @@ def main() -> int:
     with zipfile.ZipFile(out) as z:
         m = json.loads(z.read("manifest.json"))
         n = sum("inputSchema" in t for t in m.get("tools", []))
-        print(f"{out}  files={len(z.namelist())}  tools with inputSchema={n}/{len(m.get('tools', []))}  version={m.get('version')}")
+        o = sum("outputSchema" in t for t in m.get("tools", []))
+        print(f"{out}  files={len(z.namelist())}  tools with inputSchema={n}/{len(m.get('tools', []))}  outputSchema={o}  icon={m.get('icon')}  version={m.get('version')}")
     return 0
 
 

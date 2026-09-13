@@ -544,7 +544,9 @@ TOOLS_DEFINITION = [
 def get_token() -> str:
     token = os.environ.get("APIFY_TOKEN")
     if not token:
-        raise ValueError("APIFY_TOKEN environment variable is required to run Apify tools.")
+        raise ValueError("APIFY_TOKEN is not set. Tool calls run on your own Apify account: create a free token at "
+                         "https://console.apify.com/settings/integrations and put it in the server's APIFY_TOKEN "
+                         "environment variable (or the 'Apify API token' field of the Smithery/Claude install).")
     return token
 
 def run_actor_sync(actor_id: str, run_input: Dict[str, Any], timeout_secs: int = 120) -> List[Dict[str, Any]]:

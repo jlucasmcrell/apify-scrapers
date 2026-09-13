@@ -2,7 +2,8 @@
   "manifest_version": "0.3",
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
-  "version": "1.0.8",
+  "icon": "icon.png",
+  "version": "1.0.9",
   "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
   "long_description": "Six read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
@@ -37,9 +38,9 @@
     "apify_token": {
       "type": "string",
       "title": "Apify API token",
-      "description": "From https://console.apify.com/settings/integrations. Actor runs execute on your own Apify account and are billed to it.",
+      "description": "Personal API token from https://console.apify.com/settings/integrations (free account works). Actor runs execute on your own Apify account and are billed to it. Leave blank only if APIFY_TOKEN is already set in the environment the server starts in; without a token, tool listing works but every tool call returns an error explaining where to get one.",
       "sensitive": true,
-      "required": true
+      "required": false
     }
   },
   "tools": [

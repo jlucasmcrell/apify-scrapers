@@ -1,7 +1,7 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.0.6",
-  "description": "Model Context Protocol (MCP) server for Apify Scrapers Fleet. Extract B2B leads, jobs, SEC filings, federal awards, and real estate data.",
+  "version": "1.0.9",
+  "description": "MCP server exposing 20 Apify public-data scrapers as tools: Google Maps leads, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials, openFDA, state business registries, contractor licenses, Airbnb, YouTube, Twitch, Google Play reviews.",
   "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
   "repository": {
     "type": "git",
@@ -494,6 +494,1563 @@
               "required": [
                 "listingName",
                 "pricePerNight"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "alabama_business_search",
+      "title": "Alabama Business Entity Registry Search",
+      "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Strictly read-only; queries the public Alabama Secretary of State registry.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial Alabama business name to search (e.g. 'SMITH' or 'Smith Services LLC')."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of entity records to return and bill. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each result's detail page to add formation date, registered agent, and registered/principal addresses. Slower; leave off for a fast name-and-status lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of Alabama business-entity records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entity_id": {
+                  "type": "string",
+                  "description": "Alabama public entity identifier."
+                },
+                "entity_name": {
+                  "type": "string",
+                  "description": "Business name displayed by the Alabama public registry."
+                },
+                "entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry classification, such as LLC or corporation, when present."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current registry status when present (e.g. Exists, Dissolved, Revoked)."
+                },
+                "location": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry location text when present."
+                },
+                "formation_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date the entity was formed, from the detail record (requires include_details)."
+                },
+                "registered_agent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Name of the entity's registered agent (requires include_details)."
+                },
+                "principal_address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Principal place of business, where the state records one (requires include_details)."
+                }
+              },
+              "required": [
+                "entity_id",
+                "entity_name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "california_contractor_license_search",
+      "title": "California CSLB Contractor License Search",
+      "description": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ca-contractor-license-search'.\n- Side Effects: Strictly read-only; queries the public CSLB license lookup.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for subcontractor vetting, contractor license verification, or lead building against California licensed contractors and businesses.\n- When NOT to use: Do not use for Oregon-only licence lookups (use 'us_contractor_license_search' with states=['oregon']), business entity/registry searches, or non-contractor trades.\n- Named alternatives: Use 'us_contractor_license_search' to search California and Oregon in one call, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial contractor or business name to search in California CSLB records (e.g. 'SMITH' or 'Smith Construction')."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of licence records to return and bill. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each licence's CSLB detail page to add issue/expiration dates, business address and phone, classifications, bonding, and workers' comp status. Slower; leave off for a fast name-and-status lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of California contractor-license records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "contractor_name": {
+                  "type": "string",
+                  "description": "Contractor or business name shown in the CSLB result."
+                },
+                "license_number": {
+                  "type": "string",
+                  "description": "California CSLB contractor-license number."
+                },
+                "name_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "CSLB classification for the displayed name when present (e.g. print, previous)."
+                },
+                "city": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "California city displayed for the license record."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current license status displayed by CSLB (e.g. Active, Expired)."
+                },
+                "business_entity": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Legal form CSLB holds for the licensee, from the licence detail page (requires include_details)."
+                },
+                "issue_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date CSLB issued the licence (requires include_details)."
+                },
+                "expire_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date the licence expires (requires include_details)."
+                }
+              },
+              "required": [
+                "contractor_name",
+                "license_number"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "clinical_trials_search",
+      "title": "ClinicalTrials.gov Study Search",
+      "description": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/clinical-trials-search'.\n- Side Effects: Strictly read-only; queries the public ClinicalTrials.gov API v2, no login or write access.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for medical research surveillance, competitive drug-pipeline tracking, patient-recruitment intelligence, or sponsor and trial-portfolio analysis.\n- When NOT to use: Do not use for FDA drug/device approvals or adverse-event data, environmental compliance records, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'openfda_search' for FDA drug and device safety/approval data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political campaign funding, or 'french_company_search' for the French corporate registry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Keywords, condition, intervention, sponsor name, or other free-text search expression accepted by ClinicalTrials.gov (e.g. 'Alzheimer disease', 'semaglutide', 'Mayo Clinic')."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "RECRUITING",
+              "NOT_YET_RECRUITING",
+              "ACTIVE_NOT_RECRUITING",
+              "COMPLETED",
+              "TERMINATED",
+              "WITHDRAWN",
+              "SUSPENDED",
+              "ENROLLING_BY_INVITATION",
+              "UNKNOWN"
+            ],
+            "description": "Optional overall recruitment status filter. Omit to return studies in any status."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of study records to retrieve. Defaults to 10."
+          }
+        },
+        "required": [
+          "condition"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of ClinicalTrials.gov study records matching the search.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "nct_id": {
+                  "type": "string",
+                  "description": "Unique ClinicalTrials.gov study identifier."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Brief public title of the study."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current overall recruitment status, e.g. RECRUITING or COMPLETED."
+                },
+                "phase": {
+                  "type": "string",
+                  "description": "Trial phase, e.g. PHASE1, PHASE2, PHASE3."
+                },
+                "conditions": {
+                  "type": "string",
+                  "description": "Comma-separated medical conditions the study addresses."
+                },
+                "sponsor": {
+                  "type": "string",
+                  "description": "Lead sponsor organization name."
+                },
+                "enrollment": {
+                  "type": "integer",
+                  "description": "Actual or estimated participant enrollment count."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Canonical public ClinicalTrials.gov page for this study."
+                }
+              },
+              "required": [
+                "nct_id",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "epa_facility_search",
+      "title": "EPA ECHO Facility Compliance Search",
+      "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Strictly read-only; queries the public EPA ECHO service, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Two-letter US state code to search within (e.g. 'RI', 'CA')."
+          },
+          "facility_name": {
+            "type": "string",
+            "description": "Substring to match against the facility name."
+          },
+          "naics_code": {
+            "type": "string",
+            "description": "Industry NAICS code to filter by, e.g. '327910'."
+          },
+          "program": {
+            "type": "string",
+            "enum": [
+              "A",
+              "W",
+              "S",
+              "R"
+            ],
+            "description": "Environmental program to filter by: 'A' Clean Air Act, 'W' Clean Water Act, 'S' Safe Drinking Water Act, 'R' RCRA hazardous waste. Defaults to 'A' (Clean Air Act) when omitted."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of facility records to retrieve. Defaults to 10."
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of EPA-regulated facility records with compliance detail.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "registry_id": {
+                  "type": "string",
+                  "description": "EPA Facility Registry Service ID, the stable key for this facility."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Facility name as registered with EPA."
+                },
+                "city": {
+                  "type": "string",
+                  "description": "Facility city."
+                },
+                "state": {
+                  "type": "string",
+                  "description": "Two-letter state code."
+                },
+                "naics_codes": {
+                  "type": "string",
+                  "description": "Space-separated NAICS industry codes for the facility."
+                },
+                "compliance_status": {
+                  "type": "string",
+                  "description": "Overall current compliance status, e.g. 'Violation Identified'."
+                },
+                "total_penalties": {
+                  "type": "number",
+                  "description": "Total dollar amount of penalties assessed against the facility."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Direct link to the EPA ECHO detailed facility report."
+                }
+              },
+              "required": [
+                "registry_id",
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "fec_campaign_finance_search",
+      "title": "FEC Campaign Finance Search",
+      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Strictly read-only; queries the FEC's own public API, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data_type": {
+            "type": "string",
+            "enum": [
+              "candidates",
+              "committees",
+              "contributions"
+            ],
+            "default": "candidates",
+            "description": "Which register to search: federal candidates, committees and PACs, or individual contributions. Defaults to 'candidates'."
+          },
+          "name": {
+            "type": "string",
+            "description": "Candidate, committee, or contributor name to search for, depending on data_type."
+          },
+          "state": {
+            "type": "string",
+            "description": "Two-letter state code. For contributions this filters the contributor's state, not the recipient's."
+          },
+          "party": {
+            "type": "string",
+            "description": "Three-letter party code, e.g. 'DEM', 'REP', 'LIB'. Applies to candidates only."
+          },
+          "office": {
+            "type": "string",
+            "enum": [
+              "H",
+              "S",
+              "P"
+            ],
+            "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of records to retrieve. Defaults to 10."
+          }
+        },
+        "required": []
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of FEC candidate, committee, or contribution records.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "record_type": {
+                  "type": "string",
+                  "description": "Which search produced this row: candidate, committee, or contribution."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "FEC identifier for the row (candidate ID, committee ID, or transaction sub_id)."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Registered name of the candidate or committee. Null on contribution rows."
+                },
+                "party": {
+                  "type": "string",
+                  "description": "Full party name as filed."
+                },
+                "office": {
+                  "type": "string",
+                  "description": "Office sought, expanded to a readable label. Candidate rows only."
+                },
+                "state": {
+                  "type": "string",
+                  "description": "Two-letter state code relevant to the record."
+                },
+                "district": {
+                  "type": "string",
+                  "description": "Congressional district. House candidates only."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Canonical FEC.gov URL for the record."
+                }
+              },
+              "required": [
+                "record_type",
+                "id"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "florida_new_filings_search",
+      "title": "Florida Sunbiz Business Entity Search",
+      "description": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sos-new-filings'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Florida LLC/corporation lookup by company name, due-diligence checks, or monitoring new Florida business filings.\n- When NOT to use: Do not use to search by a person's or officer's name (use 'florida_officer_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_officer_search' to find companies tied to a person or registered agent, 'us_business_entity_search' for a multi-state lookup that includes Florida, or 'alabama_business_search' for Alabama-only records.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial Florida business name to search on Sunbiz (e.g. 'SMITH' or 'Smith Services LLC')."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of entity records to return and bill. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each result's Sunbiz detail page to add date filed, FEI/EIN, registered agent, principal/mailing addresses, officers, and annual-report history. Slower; leave off for a fast name-and-status lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of Florida Sunbiz business-entity records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entity_name": {
+                  "type": "string",
+                  "description": "Legal entity name displayed in the Sunbiz result."
+                },
+                "document_number": {
+                  "type": "string",
+                  "description": "Florida Division of Corporations document number."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Entity status displayed in the Sunbiz result (e.g. Active, Inactive)."
+                },
+                "entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Florida registry classification, such as a domestic or foreign LLC or corporation."
+                },
+                "date_filed": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date the entity was filed with the Florida Division of Corporations (requires include_details)."
+                },
+                "fei_ein": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Federal employer identification number on file with the state, where recorded (requires include_details)."
+                },
+                "registered_agent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Name of the entity's Florida registered agent (requires include_details)."
+                },
+                "principal_address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Principal place of business on file with the state (requires include_details)."
+                }
+              },
+              "required": [
+                "entity_name",
+                "document_number"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "florida_officer_search",
+      "title": "Florida Sunbiz Officer and Registered Agent Search",
+      "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sunbiz-officer-search'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled (one extra page load per matched company); timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use to find every Florida company associated with a specific person's name (officer, director, or registered agent), for background research or ownership mapping.\n- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial officer, director, or registered-agent person name to search on Sunbiz (e.g. 'SMITH' or 'Smith, John')."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 10,
+            "description": "Maximum number of officer-to-entity records to return and bill. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each matched company's Sunbiz detail page to add status, filing date, FEI/EIN, addresses, the full officer list, and annual-report history. Slower; leave off for a fast person-to-company lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of Florida officer/registered-agent-to-entity records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "officer_name": {
+                  "type": "string",
+                  "description": "Officer or registered-agent name shown in Sunbiz."
+                },
+                "entity_name": {
+                  "type": "string",
+                  "description": "Florida business entity linked to the officer or agent."
+                },
+                "document_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Florida Division of Corporations document number."
+                },
+                "detail_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Direct link to the company's Sunbiz detail page for audit against the state registry."
+                },
+                "entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry classification, such as Florida LLC or Foreign Profit Corporation (requires include_details)."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current Florida registration status, normally ACTIVE or INACTIVE (requires include_details)."
+                },
+                "date_filed": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date the entity was first filed with the Florida Division of Corporations (requires include_details)."
+                },
+                "principal_address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Principal place of business on file (requires include_details)."
+                }
+              },
+              "required": [
+                "officer_name",
+                "entity_name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "french_company_search",
+      "title": "French Company Registry Search (SIRENE)",
+      "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/french-company-search'.\n- Side Effects: Strictly read-only; queries the French public company-data API backed by the SIRENE register, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for French corporate due diligence, company/officer lookups, industry (NAF) or regional market surveys, or B2B vendor verification in France.\n- When NOT to use: Do not use for US environmental compliance, US campaign finance, clinical trials, or FDA drug/device data.\n- Named alternatives: Use 'fec_campaign_finance_search' for US political funding, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Company name, trade name, or keyword to search for (e.g. 'boulangerie', 'Airbus')."
+          },
+          "department": {
+            "type": "string",
+            "description": "French department code to filter by, e.g. '75' or '13'."
+          },
+          "naf_code": {
+            "type": "string",
+            "description": "French NAF/APE economic activity code to filter by, e.g. '62.01Z'."
+          },
+          "active_only": {
+            "type": "boolean",
+            "default": true,
+            "description": "Return only companies currently marked active. Defaults to true."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of company records to retrieve. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of French company records from the SIRENE register.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "siren": {
+                  "type": "string",
+                  "description": "9-digit SIREN company identifier."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Organization or company name as published by the source."
+                },
+                "legal_name": {
+                  "type": "string",
+                  "description": "Registered legal name of the company."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current company status, e.g. 'active'."
+                },
+                "naf_code": {
+                  "type": "string",
+                  "description": "Main NAF/APE economic activity code."
+                },
+                "hq_city": {
+                  "type": "string",
+                  "description": "Headquarters city."
+                },
+                "employees": {
+                  "type": "string",
+                  "description": "Company-wide workforce size band."
+                },
+                "revenue": {
+                  "type": "number",
+                  "description": "Most recently reported annual revenue."
+                }
+              },
+              "required": [
+                "siren",
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "google_play_reviews_search",
+      "title": "Google Play App Reviews Search",
+      "description": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-play-reviews-scraper'.\n- Side Effects: Strictly read-only; does not modify any Google Play account, app listing, or review.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds per app; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for app-store sentiment research, competitor review monitoring, feature/complaint mining, or tracking developer response rates across one or more Android apps.\n- When NOT to use: Do not use for iOS App Store reviews, general web search, or employment/job data.\n- Named alternatives: Use 'linkedin_jobs_search' for hiring/job listings or 'youtube_video_search' for video content discovery; neither covers app-store review data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "app_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 25,
+            "description": "Android package IDs or full Google Play app URLs to pull reviews for, up to 25 (e.g. ['com.spotify.music', 'com.google.android.youtube'])."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25,
+            "description": "Maximum number of review records to return per app. Defaults to 25."
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "description": "Optional star-rating filter (1-5). Keep only reviews matching any of these ratings, e.g. [1, 2] for negative reviews. Omit to return all ratings."
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional list of words or phrases; keep only reviews whose text contains any of them (case-insensitive). Omit to skip this filter."
+          },
+          "recent_days": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Optional recency filter: keep only reviews posted within this many days of now (e.g. 30). Omit to return reviews of any age."
+          }
+        },
+        "required": [
+          "app_ids"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of Google Play review records extracted for the requested app(s).",
+            "items": {
+              "type": "object",
+              "properties": {
+                "app_id": {
+                  "type": "string",
+                  "description": "Android package identifier for the reviewed app."
+                },
+                "app_title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Display name of the reviewed app on Google Play."
+                },
+                "user_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public reviewer display name."
+                },
+                "score": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Integer star rating from one to five."
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Full public review body."
+                },
+                "reviewed_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "ISO 8601 timestamp when the review was posted."
+                },
+                "thumbs_up": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Number of users who marked the review helpful."
+                },
+                "developer_reply": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public developer response text when present."
+                }
+              },
+              "required": [
+                "app_id",
+                "text"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "linkedin_jobs_search",
+      "title": "LinkedIn Public Job Listings Search",
+      "description": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/linkedin-public-jobs-search'.\n- Side Effects: Strictly read-only; does not log in, apply to jobs, or modify any LinkedIn account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for hiring-trend research, talent-market mapping, competitor headcount signals, or sourcing public job openings by role and location.\n- When NOT to use: Do not use for LinkedIn people/profile search, private candidate data, or submitting job applications.\n- Named alternatives: Use 'glassdoor_jobs_search' for Glassdoor's own listings and employer ratings, or 'google_play_reviews_search'/'youtube_video_search' for app-review or video data instead of hiring data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Job title, skill, or keyword to search in public LinkedIn job listings (e.g. 'data engineer' or 'registered nurse')."
+          },
+          "location": {
+            "type": "string",
+            "default": "",
+            "description": "City, region, or country used to localize results (e.g. 'Seattle, WA'). Defaults to all locations if empty."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 10,
+            "description": "Maximum number of job listings to retrieve. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each job posting to add seniority level, employment type, job function, industries, applicant count, and full job description. Costs one extra request per job, so runs take noticeably longer. Defaults to false."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of public LinkedIn job listing records.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Job posting title."
+                },
+                "company": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Hiring company name."
+                },
+                "location": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Workplace location as displayed on the posting."
+                },
+                "url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Direct canonical URL to the job listing."
+                },
+                "posted_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Source-provided job posting date."
+                },
+                "posted_at_timestamp": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "posted_at parsed into a UTC ISO 8601 timestamp, when recognizable."
+                },
+                "job_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Numeric LinkedIn job posting ID, stable across runs."
+                },
+                "company_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "URL of the hiring organization's LinkedIn page."
+                }
+              },
+              "required": [
+                "title",
+                "company",
+                "url"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "openfda_search",
+      "title": "openFDA Drug and Device Search",
+      "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/openfda-search'.\n- Side Effects: Strictly read-only; queries the public openFDA API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for drug/device safety surveillance, regulatory approval history, adverse-event monitoring, or recall tracking.\n- When NOT to use: Do not use for clinical trial recruitment data (use 'clinical_trials_search'), environmental compliance, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string",
+            "enum": [
+              "drug_label",
+              "drug_approval",
+              "drug_event",
+              "drug_recall",
+              "device_recall",
+              "food_recall"
+            ],
+            "default": "drug_approval",
+            "description": "Which openFDA dataset to search. Defaults to 'drug_approval'."
+          },
+          "search": {
+            "type": "string",
+            "minLength": 2,
+            "description": "openFDA query. A plain word works (e.g. 'semaglutide'), or target a field, e.g. 'openfda.manufacturer_name:\"Pfizer\"'."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "Also look up each result's product NDC to add labeler, marketing category, and DEA schedule. Costs one extra request per 20 records. Defaults to false."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of records to retrieve. Defaults to 10."
+          }
+        },
+        "required": [
+          "search"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of openFDA records matching the search.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dataset": {
+                  "type": "string",
+                  "description": "Which openFDA dataset produced this row."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Primary identifier for the row (SPL id, application number, safety report id, or recall number)."
+                },
+                "brand_name": {
+                  "type": "string",
+                  "description": "FDA-reported brand or proprietary name."
+                },
+                "generic_name": {
+                  "type": "string",
+                  "description": "FDA-reported generic or nonproprietary name."
+                },
+                "manufacturer": {
+                  "type": "string",
+                  "description": "FDA-reported manufacturer name."
+                },
+                "substance": {
+                  "type": "string",
+                  "description": "Active substance names, comma separated."
+                },
+                "route": {
+                  "type": "string",
+                  "description": "Route(s) of administration, comma separated."
+                },
+                "application_number": {
+                  "type": "string",
+                  "description": "FDA application number (NDA, ANDA, or BLA) the product is marketed under."
+                }
+              },
+              "required": [
+                "dataset",
+                "id"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "us_business_entity_search",
+      "title": "US Multi-State Business Entity Search",
+      "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-business-entity-search'.\n- Side Effects: Strictly read-only; queries public state business registries.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when a company name lookup should span multiple states at once, or when the entity's state of registration is unknown among Florida, Alabama, Iowa, or Wisconsin.\n- When NOT to use: Do not use for a single known state where a dedicated tool exists and is faster (e.g. 'alabama_business_search' or 'florida_new_filings_search'), for states outside this coverage, for officer/person-name lookups (use 'florida_officer_search'), or for contractor licences.\n- Named alternatives: Use 'alabama_business_search' or 'florida_new_filings_search' for a single-state lookup, 'florida_officer_search' for a person-to-company search, or 'us_contractor_license_search'/'california_contractor_license_search' for licensed contractors rather than general business entities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial business name to search across the selected state registries (e.g. 'SMITH' or 'Smith Services LLC')."
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "florida",
+                "alabama",
+                "iowa",
+                "wisconsin"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "default": [
+              "florida",
+              "alabama",
+              "iowa",
+              "wisconsin"
+            ],
+            "description": "State registries to search. Defaults to all four supported states; narrow this to speed up a run when the state is already known."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 10,
+            "description": "Maximum number of normalized entity records to return and bill across all selected states. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each result's detail page to add formation date, registered agent, officers, and both address blocks. Adds one request per record and per state; leave off for a fast lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of normalized, source-tagged business-entity records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "State registry that produced the record (florida, alabama, iowa, or wisconsin)."
+                },
+                "entity_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Legal entity name displayed by the source registry."
+                },
+                "entity_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public document, filing, or entity identifier from the source registry."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry status when available."
+                },
+                "entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry entity classification when available."
+                },
+                "location": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registry location text when available."
+                },
+                "date_filed": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date the entity was filed, when the source registry records one."
+                },
+                "registered_agent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Name of the entity's registered agent, where recorded (requires include_details on most sources)."
+                }
+              },
+              "required": [
+                "source",
+                "entity_name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "us_contractor_license_search",
+      "title": "US Multi-State Contractor License Search",
+      "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-contractor-license-search'.\n- Side Effects: Strictly read-only; queries public state contractor-license boards.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for contractor vetting or lead building across California and Oregon in one call, or when it is not yet known which of the two states holds the licence.\n- When NOT to use: Do not use for a single known state where a dedicated tool is faster (e.g. 'california_contractor_license_search'), for states outside California/Oregon, or for general business-entity (non-licence) registry lookups.\n- Named alternatives: Use 'california_contractor_license_search' for a California-only lookup, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Business, qualifier, or person name to look up in the selected contractor-license registries (e.g. 'SMITH' or 'Smith Construction')."
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "california",
+                "oregon"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "default": [
+              "california",
+              "oregon"
+            ],
+            "description": "State licence sources to search. Defaults to both California and Oregon; narrow this to speed up a run when the state is already known."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 10,
+            "description": "Maximum number of licence records to return and bill across all selected states. Defaults to 10."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, opens each licence's detail page to add bonding, insurance, workers' compensation, classifications, disciplinary history, and issue/expiry dates. Adds one request per record; leave off for a fast lookup."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of normalized, source-tagged contractor-license records matching the search query.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "State licence registry that produced the record (california or oregon)."
+                },
+                "business_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Business name value returned by the upstream source."
+                },
+                "contractor_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Contractor or business name shown in the result."
+                },
+                "license_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public registry license identifier."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current status reported by the source registry."
+                },
+                "city": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "City displayed for the license record."
+                },
+                "name_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Structured name-type value returned by the upstream source."
+                },
+                "business_entity": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Legal form held for the licensee, from the licence detail page (requires include_details)."
+                }
+              },
+              "required": [
+                "source"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "youtube_video_search",
+      "title": "YouTube Video Search",
+      "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/youtube-search-scraper'.\n- Side Effects: Strictly read-only; does not modify any YouTube account, subscription, or playlist.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for content research, competitor video monitoring, trend discovery, or building a list of videos on a topic.\n- When NOT to use: Do not use for retrieving a video's transcript/captions, channel analytics dashboards, or non-YouTube platforms.\n- Named alternatives: Use 'google_play_reviews_search' for app-store sentiment or 'linkedin_jobs_search' for job-market data; neither covers video content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Keyword or phrase to search for on YouTube (e.g. 'small business marketing')."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 25,
+            "description": "Maximum number of unique video records to return. Defaults to 25."
+          }
+        },
+        "required": [
+          "search_query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of YouTube video search result records.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public title of the video."
+                },
+                "video_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Canonical YouTube watch-page URL."
+                },
+                "channel_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public name of the channel that published the video."
+                },
+                "channel_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public YouTube channel URL when available."
+                },
+                "views": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Human-readable view count displayed in search results."
+                },
+                "view_count": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "'views' parsed into a number, handling K/M/B suffixes and comma grouping."
+                },
+                "published": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Relative publication age displayed in search results (e.g. '2 years ago')."
+                },
+                "duration": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Displayed video duration in clock format."
+                }
+              },
+              "required": [
+                "title",
+                "video_url"
               ]
             }
           }
