@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jlucasmcrell/apify-scrapers",
-  "description": "MCP server exposing 20 Apify public-data scrapers as tools: Google Maps leads, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials, openFDA, state business registries, contractor licenses, Airbnb, YouTube, Twitch, Google Play reviews.",
+  "description": "20 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
   "repository": {
     "url": "https://github.com/jlucasmcrell/apify-scrapers",
     "source": "github"
