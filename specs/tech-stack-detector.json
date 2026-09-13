@@ -1,0 +1,219 @@
+{
+  "actor": "tech-stack-detector",
+  "tool": {
+    "name": "tech_stack_detector",
+    "title": "Website Tech Stack & Ecommerce Scanner",
+    "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Strictly read-only; fetches each site's homepage (and, with include_details, its robots.txt and one contact/about page) as a normal browser would, no login or API key required on the target site.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "urls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"]."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also fetch /robots.txt and a discovered contact or about page per site, adding the sitemap URL, crawl-rule count, and any extra emails/phones the homepage omits. Costs up to two extra requests per site. Defaults to false."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum number of site records to return. Defaults to 10."
+        }
+      },
+      "required": [
+        "urls"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "One record per analyzed website.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "Requested website URL, as normalized before the request."
+              },
+              "final_url": {
+                "type": "string",
+                "description": "Final URL after HTTP redirects."
+              },
+              "status": {
+                "type": "integer",
+                "description": "HTTP response status code."
+              },
+              "domain": {
+                "type": "string",
+                "description": "Registered host of the final URL with any leading www. removed."
+              },
+              "is_https": {
+                "type": "boolean",
+                "description": "True when the final URL was served over HTTPS."
+              },
+              "technologies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Detected technology names, e.g. Fastly, Next.js."
+              },
+              "count": {
+                "type": "integer",
+                "description": "Number of detected technologies."
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Distinct categories of detected technologies, e.g. cdn, framework."
+              },
+              "cms": {
+                "type": "string",
+                "description": "Detected content management systems, comma separated."
+              },
+              "ecommerce_platform": {
+                "type": "string",
+                "description": "Detected ecommerce platforms, comma separated."
+              },
+              "framework": {
+                "type": "string",
+                "description": "Detected web application frameworks, comma separated."
+              },
+              "analytics": {
+                "type": "string",
+                "description": "Detected analytics and tag-management tools, comma separated."
+              },
+              "payments": {
+                "type": "string",
+                "description": "Detected payment providers, comma separated."
+              },
+              "cdn": {
+                "type": "string",
+                "description": "Detected content delivery networks, comma separated."
+              },
+              "hosting": {
+                "type": "string",
+                "description": "Detected hosting and deployment platforms, comma separated."
+              },
+              "security_tech": {
+                "type": "string",
+                "description": "Detected bot-protection and CAPTCHA services, comma separated."
+              },
+              "title": {
+                "type": "string",
+                "description": "Contents of the HTML title tag."
+              },
+              "meta_description": {
+                "type": "string",
+                "description": "Meta description of the page."
+              },
+              "emails": {
+                "type": "string",
+                "description": "Email addresses published on the page (mailto: links plus same-domain plain-text addresses), comma separated."
+              },
+              "phones": {
+                "type": "string",
+                "description": "Phone numbers taken from tel: links, comma separated."
+              },
+              "linkedin_url": {
+                "type": "string",
+                "description": "First LinkedIn company, school, or member URL linked from the page."
+              },
+              "twitter_url": {
+                "type": "string",
+                "description": "First Twitter/X profile URL linked from the page."
+              },
+              "github_url": {
+                "type": "string",
+                "description": "First GitHub organization or repository URL linked from the page."
+              },
+              "contact_page_url": {
+                "type": "string",
+                "description": "Contact or about page found on the same host. Null unless include_details is on."
+              },
+              "robots_txt_found": {
+                "type": "boolean",
+                "description": "True when /robots.txt returned a real robots file. Null unless include_details is on."
+              },
+              "sitemap_url": {
+                "type": "string",
+                "description": "First sitemap URL declared in /robots.txt. Null unless include_details is on."
+              },
+              "error": {
+                "type": "string",
+                "description": "Fetch or processing error for this site, or null on success."
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "urls": {
+      "key": "urls",
+      "transform": "identity",
+      "required": true
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity",
+      "default": false
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "urls": [
+      "ghost.org"
+    ],
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "iPQVpZYZqFRA7gzIc",
+    "items": 1,
+    "token": "Netlify",
+    "relevant": true
+  },
+  "relevance": {
+    "input": {
+      "urls": [
+        "ghost.org"
+      ],
+      "max_items": 3
+    },
+    "tokens": [
+      "netlify"
+    ]
+  },
+  "readme_row": "| **Website Tech Stack & Ecommerce Scanner** | [`captainhandsome/tech-stack-detector`](https://apify.com/captainhandsome/tech-stack-detector) | technologies, cms, ecommerce_platform, payments, emails | Best for competitive tech research and B2B lead qualification across a batch of company websites. |",
+  "filter_audit": "urls carries a prefill/default of [\"stripe.com\",\"shopify.com\"]; main.py reads it as `[normalize(u) for u in (inp.get('urls') or []) if u and u.strip()]`, so a missing or empty urls list is tolerated (the fetch loop simply runs zero times, 0 items pushed, no crash). max_items has a truthy schema default of 2; main.py reads it as `int(inp.get('max_items', 100))`, but that 100 fallback is unreachable on the Apify platform - Actor.get_input() auto-fills any field omitted from the run input with its INPUT_SCHEMA.json default before main.py ever sees it, so an absent key actually resolves to 2, not 100 (verified live: 12 urls with no max_items set pushed exactly 2 items, run jSJILhb2Zkgb8Zsxo). An explicit null value is still NOT tolerated, but the rejection happens at the platform's input-validation layer before the run starts ('Field input.max_items must be integer', HTTP 400) rather than as a Python TypeError inside main.py (verified live). Because the true fallback is the schema's restrictive 2, payload_mapping.max_results now carries default:10 so a caller who omits max_results still gets the tool's documented default of 10 (verified live: same 12 urls, max_items omitted from the mapped payload, pushed 10 items) instead of silently only 2. include_details defaults to false (falsy), so it is out of scope for this audit."
+}

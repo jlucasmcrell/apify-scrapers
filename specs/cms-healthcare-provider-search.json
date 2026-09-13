@@ -1,0 +1,206 @@
+{
+  "actor": "cms-healthcare-provider-search",
+  "tool": {
+    "name": "cms_healthcare_provider_search",
+    "title": "CMS Healthcare Provider Search",
+    "description": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/cms-healthcare-provider-search'.\n- Side Effects: Strictly read-only; queries the public CMS Provider Data Catalog API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for healthcare facility due diligence, star-rating and quality comparisons, nursing-home staffing/inspection/fines research, or building a location-bounded list of Medicare-certified providers.\n- When NOT to use: Do not use for clinical trial recruitment data, environmental compliance, campaign finance, corporate registry lookups, or contractor licensing.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'us_business_entity_search' or 'us_contractor_license_search' for corporate/contractor registries, or 'europe_pmc_paper_search' for biomedical literature.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "provider_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "hospital",
+              "nursing_home",
+              "home_health",
+              "hospice",
+              "dialysis",
+              "long_term_care_hospital",
+              "inpatient_rehab"
+            ]
+          },
+          "description": "One or more CMS provider-directory types to search, e.g. ['hospital'] or ['nursing_home', 'hospice']. Omit to search hospitals only, the Actor's own fallback."
+        },
+        "state": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "description": "Two-letter US state or territory abbreviation to search within, e.g. 'TX'."
+        },
+        "city": {
+          "type": "string",
+          "description": "City name to filter by, matched exactly (case-insensitive, not a substring), e.g. 'Houston'."
+        },
+        "zip": {
+          "type": "string",
+          "description": "Five-digit US ZIP code to filter by, e.g. '77030'."
+        },
+        "county": {
+          "type": "string",
+          "description": "County name to filter by, matched exactly (case-insensitive), e.g. 'Harris'."
+        },
+        "name_contains": {
+          "type": "string",
+          "description": "Case-insensitive substring to match against the provider or facility name, e.g. 'Memorial'."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum number of provider records to retrieve and bill. Defaults to 10."
+        }
+      },
+      "required": [
+        "state"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of normalized Medicare-certified provider records matching the search.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "provider_type": {
+                "type": ["string", "null"],
+                "description": "Which CMS directory this row came from (hospital, nursing_home, home_health, hospice, dialysis, long_term_care_hospital, or inpatient_rehab)."
+              },
+              "ccn": {
+                "type": ["string", "null"],
+                "description": "CMS Certification Number, the stable identifier for the provider (hospitals use their facility ID here)."
+              },
+              "name": {
+                "type": ["string", "null"],
+                "description": "Facility or provider name as published by CMS."
+              },
+              "address": {
+                "type": ["string", "null"],
+                "description": "Public street address reported by CMS."
+              },
+              "city": {
+                "type": ["string", "null"],
+                "description": "City reported for the record."
+              },
+              "state": {
+                "type": ["string", "null"],
+                "description": "Two-letter US state or territory abbreviation."
+              },
+              "zip": {
+                "type": ["string", "null"],
+                "description": "Postal or ZIP code reported for the record."
+              },
+              "county": {
+                "type": ["string", "null"],
+                "description": "County reported for the record."
+              },
+              "phone": {
+                "type": ["string", "null"],
+                "description": "Public provider telephone number in CMS display format."
+              },
+              "ownership": {
+                "type": ["string", "null"],
+                "description": "Ownership or profit status as classified by CMS for this directory."
+              },
+              "subtype": {
+                "type": ["string", "null"],
+                "description": "Directory-specific subtype, e.g. hospital type for hospitals or provider type for nursing homes."
+              },
+              "star_rating": {
+                "type": ["number", "null"],
+                "description": "CMS overall one-to-five star rating for the provider, when the directory publishes one."
+              },
+              "certification_date": {
+                "type": ["string", "null"],
+                "description": "Date CMS certified the provider, in YYYY-MM-DD form where available."
+              },
+              "beds": {
+                "type": ["number", "null"],
+                "description": "Number of certified beds. Nursing homes and long-term care hospitals only."
+              },
+              "chain": {
+                "type": ["string", "null"],
+                "description": "Chain or corporate ownership group name, when CMS reports one. Nursing homes and dialysis facilities only."
+              },
+              "emergency_services": {
+                "type": ["string", "null"],
+                "description": "Whether the hospital reports emergency services ('Yes'/'No'). Hospitals only."
+              }
+            },
+            "required": [
+              "ccn",
+              "name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "provider_types": {
+      "key": "provider_types",
+      "transform": "identity"
+    },
+    "state": {
+      "key": "state",
+      "transform": "identity"
+    },
+    "city": {
+      "key": "city",
+      "transform": "identity"
+    },
+    "zip": {
+      "key": "zip",
+      "transform": "identity"
+    },
+    "county": {
+      "key": "county",
+      "transform": "identity"
+    },
+    "name_contains": {
+      "key": "name_contains",
+      "transform": "identity"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "provider_types": ["hospital"],
+    "state": "TX",
+    "city": "Houston",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "T8D6VAx3sCRF4sh1I",
+    "items": 3,
+    "token": "HOUSTON",
+    "relevant": true
+  },
+  "relevance": {
+    "input": {
+      "provider_types": ["hospital"],
+      "state": "TX",
+      "city": "Houston",
+      "max_items": 3
+    },
+    "tokens": ["houston"]
+  },
+  "readme_row": "| **CMS Healthcare Provider Search** | [`captainhandsome/cms-healthcare-provider-search`](https://apify.com/captainhandsome/cms-healthcare-provider-search) | name, provider_type, city, state, star_rating | Compare CMS-certified hospitals, nursing homes, and other Medicare providers by location, ownership, and star rating. |",
+  "filter_audit": "provider_types (filter; schema default ['hospital']): main.py does `kinds = inp.get('provider_types') or ['hospital']`, so a missing or null value is tolerated and falls back to hospital only. state (filter; schema prefill and default 'CA'): conditions() only appends the state condition when `inp.get('state')` is truthy, so a missing or null value is tolerated and simply omits the state filter (the 'CA' prefill only pre-populates the Apify Console UI form; it is not applied to API calls that omit the key). city, zip, county, and name_contains carry no prefill or default. max_items defaults to 10 but is a result-count cap, not a narrowing filter."
+}

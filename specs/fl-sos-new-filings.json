@@ -1,0 +1,137 @@
+{
+  "actor": "fl-sos-new-filings",
+  "tool": {
+    "name": "florida_new_filings_search",
+    "title": "Florida Sunbiz Business Entity Search",
+    "description": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sos-new-filings'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Florida LLC/corporation lookup by company name, due-diligence checks, or monitoring new Florida business filings.\n- When NOT to use: Do not use to search by a person's or officer's name (use 'florida_officer_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_officer_search' to find companies tied to a person or registered agent, 'us_business_entity_search' for a multi-state lookup that includes Florida, or 'alabama_business_search' for Alabama-only records.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Full or partial Florida business name to search on Sunbiz (e.g. 'SMITH' or 'Smith Services LLC')."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 10,
+          "description": "Maximum number of entity records to return and bill. Defaults to 10."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, opens each result's Sunbiz detail page to add date filed, FEI/EIN, registered agent, principal/mailing addresses, officers, and annual-report history. Slower; leave off for a fast name-and-status lookup."
+        }
+      },
+      "required": [
+        "search_query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of Florida Sunbiz business-entity records matching the search query.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_name": {
+                "type": "string",
+                "description": "Legal entity name displayed in the Sunbiz result."
+              },
+              "document_number": {
+                "type": "string",
+                "description": "Florida Division of Corporations document number."
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Entity status displayed in the Sunbiz result (e.g. Active, Inactive)."
+              },
+              "entity_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Florida registry classification, such as a domestic or foreign LLC or corporation."
+              },
+              "date_filed": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Date the entity was filed with the Florida Division of Corporations (requires include_details)."
+              },
+              "fei_ein": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Federal employer identification number on file with the state, where recorded (requires include_details)."
+              },
+              "registered_agent": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the entity's Florida registered agent (requires include_details)."
+              },
+              "principal_address": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Principal place of business on file with the state (requires include_details)."
+              }
+            },
+            "required": [
+              "entity_name",
+              "document_number"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "search_query": {
+      "key": "start_urls",
+      "transform": "sunbiz_entity_search_url",
+      "note": "The Actor takes start_urls (an array of Sunbiz result-page URLs), not a bare search term. URL-encode search_query (e.g. urllib.parse.quote), substitute it into 'https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm={value}', and wrap the single resulting URL string in a one-element list before assigning to start_urls."
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "search_query": "SMITH",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "YxpWFBcD40JJPChBC",
+    "items": 3,
+    "token": "smith",
+    "relevant": true,
+    "note": "POST https://api.apify.com/v2/acts/captainhandsome~fl-sos-new-filings/runs?build=latest&timeout=120 with {\"start_urls\":[\"https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults?inquiryType=EntityName&searchTerm=SMITH\"],\"max_items\":3}; polled to SUCCEEDED; fetched 3 dataset items, all with entity_name containing 'smith' (e.g. 'smith company, inc.', 'smith & co, inc.')."
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "actor": "google-play-reviews-scraper",
+  "tool": {
+    "name": "google_play_reviews_search",
+    "title": "Google Play App Reviews Search",
+    "description": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-play-reviews-scraper'.\n- Side Effects: Strictly read-only; does not modify any Google Play account, app listing, or review.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds per app; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for app-store sentiment research, competitor review monitoring, feature/complaint mining, or tracking developer response rates across one or more Android apps.\n- When NOT to use: Do not use for iOS App Store reviews, general web search, or employment/job data.\n- Named alternatives: Use 'linkedin_jobs_search' for hiring/job listings or 'youtube_video_search' for video content discovery; neither covers app-store review data.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "app_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 25,
+          "description": "Android package IDs or full Google Play app URLs to pull reviews for, up to 25 (e.g. ['com.spotify.music', 'com.google.android.youtube'])."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 25,
+          "description": "Maximum number of review records to return per app. Defaults to 25."
+        },
+        "scores": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "description": "Optional star-rating filter (1-5). Keep only reviews matching any of these ratings, e.g. [1, 2] for negative reviews. Omit to return all ratings."
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional list of words or phrases; keep only reviews whose text contains any of them (case-insensitive). Omit to skip this filter."
+        },
+        "recent_days": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Optional recency filter: keep only reviews posted within this many days of now (e.g. 30). Omit to return reviews of any age."
+        }
+      },
+      "required": [
+        "app_ids"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of Google Play review records extracted for the requested app(s).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "app_id": {
+                "type": "string",
+                "description": "Android package identifier for the reviewed app."
+              },
+              "app_title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Display name of the reviewed app on Google Play."
+              },
+              "user_name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Public reviewer display name."
+              },
+              "score": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Integer star rating from one to five."
+              },
+              "text": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Full public review body."
+              },
+              "reviewed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "ISO 8601 timestamp when the review was posted."
+              },
+              "thumbs_up": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Number of users who marked the review helpful."
+              },
+              "developer_reply": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Public developer response text when present."
+              }
+            },
+            "required": [
+              "app_id",
+              "text"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "app_ids": {
+      "key": "app_ids",
+      "transform": "identity"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    },
+    "scores": {
+      "key": "scores",
+      "transform": "int_list_to_str_list",
+      "note": "Actor's input schema declares scores items as an enum of strings '1'..'5', not integers; each value must be str()'d before sending."
+    },
+    "keywords": {
+      "key": "keywords",
+      "transform": "identity"
+    },
+    "recent_days": {
+      "key": "recent_days",
+      "transform": "int"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "app_ids": [
+      "com.spotify.music"
+    ],
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "MMMcyJ2lzPej8Fd73",
+    "items": 3,
+    "token": "spotify",
+    "relevant": true,
+    "notes": "POSTed {\"app_ids\": [\"com.spotify.music\"], \"max_items\": 3} to captainhandsome~google-play-reviews-scraper/runs (build=latest, timeout=120), polled to SUCCEEDED, fetched 3 dataset items; app_id field 'com.spotify.music' contains the relevance token 'spotify' in every row."
+  }
+}

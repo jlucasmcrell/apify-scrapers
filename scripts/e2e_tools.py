@@ -55,7 +55,7 @@ def _load_spec_cases() -> None:
     Hand-typed argument names for those tools are a second source of truth and
     were wrong at least once; the spec is the one that was actually exercised.
     """
-    spec_dir = Path(r"C:\Users\jluca\AppData\Local\Temp\claude\F--\abc0c583-ff2f-4a47-a723-ad42dd515271\scratchpad\mcp_specs")
+    spec_dir = ROOT / "specs"
     if not spec_dir.is_dir():
         return
     for p in spec_dir.glob("*.json"):

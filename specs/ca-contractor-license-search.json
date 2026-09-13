@@ -1,0 +1,137 @@
+{
+  "actor": "ca-contractor-license-search",
+  "tool": {
+    "name": "california_contractor_license_search",
+    "title": "California CSLB Contractor License Search",
+    "description": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ca-contractor-license-search'.\n- Side Effects: Strictly read-only; queries the public CSLB license lookup.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for subcontractor vetting, contractor license verification, or lead building against California licensed contractors and businesses.\n- When NOT to use: Do not use for Oregon-only licence lookups (use 'us_contractor_license_search' with states=['oregon']), business entity/registry searches, or non-contractor trades.\n- Named alternatives: Use 'us_contractor_license_search' to search California and Oregon in one call, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Full or partial contractor or business name to search in California CSLB records (e.g. 'SMITH' or 'Smith Construction')."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 10,
+          "description": "Maximum number of licence records to return and bill. Defaults to 10."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, opens each licence's CSLB detail page to add issue/expiration dates, business address and phone, classifications, bonding, and workers' comp status. Slower; leave off for a fast name-and-status lookup."
+        }
+      },
+      "required": [
+        "search_query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of California contractor-license records matching the search query.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contractor_name": {
+                "type": "string",
+                "description": "Contractor or business name shown in the CSLB result."
+              },
+              "license_number": {
+                "type": "string",
+                "description": "California CSLB contractor-license number."
+              },
+              "name_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "CSLB classification for the displayed name when present (e.g. print, previous)."
+              },
+              "city": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "California city displayed for the license record."
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Current license status displayed by CSLB (e.g. Active, Expired)."
+              },
+              "business_entity": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Legal form CSLB holds for the licensee, from the licence detail page (requires include_details)."
+              },
+              "issue_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Date CSLB issued the licence (requires include_details)."
+              },
+              "expire_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Date the licence expires (requires include_details)."
+              }
+            },
+            "required": [
+              "contractor_name",
+              "license_number"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "search_query": {
+      "key": "search_terms",
+      "transform": "list",
+      "note": "Wrap the single search_query string into a one-element array for the search_terms input."
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "search_query": "SMITH",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "pZQx3AfzMzuEmdgag",
+    "items": 3,
+    "token": "smith",
+    "relevant": true,
+    "note": "POST https://api.apify.com/v2/acts/captainhandsome~ca-contractor-license-search/runs?build=latest&timeout=120 with {\"search_terms\":[\"SMITH\"],\"max_items\":3}; polled to SUCCEEDED; fetched 3 dataset items, all with contractor_name containing 'smith' (e.g. 'smith jay r', 'smith & breckenridge inc dba custom builders & design')."
+  }
+}

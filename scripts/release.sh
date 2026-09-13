@@ -13,7 +13,7 @@
 set -u
 V="${1:?version required, e.g. 1.0.8}"
 REPO="G:/apify-scrapers"; ENV="G:/apify-fleet/.env"
-MP="C:/Users/jluca/AppData/Local/Temp/claude/F--/abc0c583-ff2f-4a47-a723-ad42dd515271/scratchpad/mcp-publisher/mcp-publisher.exe"
+MP="$REPO/bin/mcp-publisher.exe"   # from github.com/modelcontextprotocol/registry releases; bin/ is gitignored
 PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2-)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2-)"
 mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
 cd "$REPO" || exit 1

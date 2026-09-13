@@ -1,0 +1,243 @@
+{
+  "actor": "europe-pmc-paper-search",
+  "tool": {
+    "name": "europe_pmc_paper_search",
+    "title": "Europe PMC Research Paper Search",
+    "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Strictly read-only; queries the official Europe PMC REST API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Keywords, topic, condition, intervention or Europe PMC search expression. Example: 'gut microbiome obesity'."
+        },
+        "author": {
+          "type": "string",
+          "description": "Filter to papers by this author's name. Example: 'Villapol S'."
+        },
+        "journal": {
+          "type": "string",
+          "description": "Filter to papers published in this journal. Example: 'Nature Medicine'."
+        },
+        "year_from": {
+          "type": "integer",
+          "description": "Return only papers published in this year or later. Example: 2022."
+        },
+        "year_to": {
+          "type": "integer",
+          "description": "Return only papers published in this year or earlier. Example: 2026."
+        },
+        "open_access_only": {
+          "type": "boolean",
+          "description": "Return only records Europe PMC marks as open access. Example: true."
+        },
+        "has_abstract_only": {
+          "type": "boolean",
+          "description": "Return only papers for which Europe PMC provides an abstract. Example: true."
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": [
+            "relevance",
+            "cited",
+            "date"
+          ],
+          "default": "relevance",
+          "description": "Order results by relevance, citation count, or newest publication date. Defaults to 'relevance'. Example: 'cited'."
+        },
+        "include_entities": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add genes, diseases, organisms, chemicals, Gene Ontology terms, experimental methods and accession numbers mined from the full text. Adds roughly one extra request per 8 results. Defaults to false. Example: true."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum number of papers to retrieve. Defaults to 10. Example: 25."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of Europe PMC records matching the search.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Structured id value returned by the official Europe PMC REST API."
+              },
+              "source": {
+                "type": "string",
+                "description": "Source database the record came from, e.g. 'MED' for PubMed, 'PPR' for preprint, 'PAT' for patent."
+              },
+              "pmid": {
+                "type": "string",
+                "description": "PubMed identifier for the publication."
+              },
+              "pmcid": {
+                "type": "string",
+                "description": "PubMed Central identifier for full-text content."
+              },
+              "doi": {
+                "type": "string",
+                "description": "Digital Object Identifier for the publication."
+              },
+              "title": {
+                "type": "string",
+                "description": "Published title of the paper, study or source record."
+              },
+              "authors": {
+                "type": "string",
+                "description": "Full author byline as one comma-separated string."
+              },
+              "first_author": {
+                "type": "string",
+                "description": "First author in abbreviated form, e.g. 'Kara G'."
+              },
+              "journal": {
+                "type": "string",
+                "description": "Journal title the paper was published in."
+              },
+              "pub_year": {
+                "type": "string",
+                "description": "Year of publication."
+              },
+              "publication_date": {
+                "type": "string",
+                "description": "First publication date of the record."
+              },
+              "abstract": {
+                "type": "string",
+                "description": "Publication abstract supplied by Europe PMC."
+              },
+              "keywords": {
+                "type": "string",
+                "description": "Author-supplied keywords, comma separated."
+              },
+              "mesh_terms": {
+                "type": "string",
+                "description": "Medical Subject Headings assigned to the paper, comma separated."
+              },
+              "cited_by_count": {
+                "type": "integer",
+                "description": "Number of citing works recorded by Europe PMC."
+              },
+              "is_open_access": {
+                "type": "boolean",
+                "description": "True when Europe PMC marks the record as open access."
+              },
+              "full_text_availability": {
+                "type": "string",
+                "description": "Best access available across providers: 'Open access', 'Free', or 'Subscription required'."
+              },
+              "pdf_url": {
+                "type": "string",
+                "description": "Direct link to the PDF, preferring an open-access or free copy."
+              },
+              "url": {
+                "type": "string",
+                "description": "Canonical public URL for the source record on europepmc.org."
+              },
+              "funders": {
+                "type": "string",
+                "description": "Agencies that funded the work, comma separated."
+              }
+            },
+            "required": [
+              "id",
+              "title"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "query": {
+      "key": "query",
+      "transform": "identity",
+      "required": true
+    },
+    "author": {
+      "key": "author",
+      "transform": "identity"
+    },
+    "journal": {
+      "key": "journal",
+      "transform": "identity"
+    },
+    "year_from": {
+      "key": "year_from",
+      "transform": "int"
+    },
+    "year_to": {
+      "key": "year_to",
+      "transform": "int"
+    },
+    "open_access_only": {
+      "key": "open_access_only",
+      "transform": "identity"
+    },
+    "has_abstract_only": {
+      "key": "has_abstract_only",
+      "transform": "identity"
+    },
+    "sort_by": {
+      "key": "sort_by",
+      "transform": "identity",
+      "default": "relevance"
+    },
+    "include_entities": {
+      "key": "include_entities",
+      "transform": "identity",
+      "default": false
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "query": "gut microbiome obesity",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "ClM3TLGGQirO1WcNA",
+    "items": 3,
+    "token": "microbiome",
+    "relevant": true
+  },
+  "relevance": {
+    "input": {
+      "query": "gut microbiome obesity",
+      "max_items": 3
+    },
+    "tokens": [
+      "microbiome",
+      "obesity"
+    ]
+  },
+  "readme_row": "| **Europe PMC Paper Search** | [`captainhandsome/europe-pmc-paper-search`](https://apify.com/captainhandsome/europe-pmc-paper-search) | title, doi, pmid, abstract, cited_by_count | Best for biomedical literature reviews, citation tracking, and open-access discovery across PubMed and Europe PMC. |",
+  "filter_audit": "query is the only filter in input_schema.json carrying a prefill ('CRISPR gene editing') and a truthy default ('CRISPR'). main.py tolerates it being null/absent: build_query() only appends a query clause when query is present after stripping, and if query, author, journal, year_from, year_to, open_access_only and has_abstract_only are all absent/empty it logs Actor.log.error('supply a query, an author or a journal') and returns cleanly with zero pushed items rather than raising. open_access_only and has_abstract_only default to false (falsy, not a truthy default) and sort_by/include_entities/max_items are not filters that narrow results, so none of them are in scope."
+}

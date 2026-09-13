@@ -1,0 +1,153 @@
+{
+  "actor": "linkedin-public-jobs-search",
+  "tool": {
+    "name": "linkedin_jobs_search",
+    "title": "LinkedIn Public Job Listings Search",
+    "description": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/linkedin-public-jobs-search'.\n- Side Effects: Strictly read-only; does not log in, apply to jobs, or modify any LinkedIn account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for hiring-trend research, talent-market mapping, competitor headcount signals, or sourcing public job openings by role and location.\n- When NOT to use: Do not use for LinkedIn people/profile search, private candidate data, or submitting job applications.\n- Named alternatives: Use 'glassdoor_jobs_search' for Glassdoor's own listings and employer ratings, or 'google_play_reviews_search'/'youtube_video_search' for app-review or video data instead of hiring data.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Job title, skill, or keyword to search in public LinkedIn job listings (e.g. 'data engineer' or 'registered nurse')."
+        },
+        "location": {
+          "type": "string",
+          "default": "",
+          "description": "City, region, or country used to localize results (e.g. 'Seattle, WA'). Defaults to all locations if empty."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 10,
+          "description": "Maximum number of job listings to retrieve. Defaults to 10."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, opens each job posting to add seniority level, employment type, job function, industries, applicant count, and full job description. Costs one extra request per job, so runs take noticeably longer. Defaults to false."
+        }
+      },
+      "required": [
+        "search_query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of public LinkedIn job listing records.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Job posting title."
+              },
+              "company": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Hiring company name."
+              },
+              "location": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Workplace location as displayed on the posting."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Direct canonical URL to the job listing."
+              },
+              "posted_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Source-provided job posting date."
+              },
+              "posted_at_timestamp": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "posted_at parsed into a UTC ISO 8601 timestamp, when recognizable."
+              },
+              "job_id": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Numeric LinkedIn job posting ID, stable across runs."
+              },
+              "company_url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "URL of the hiring organization's LinkedIn page."
+              }
+            },
+            "required": [
+              "title",
+              "company",
+              "url"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "search_query": {
+      "key": "search_query",
+      "transform": "identity"
+    },
+    "location": {
+      "key": "location",
+      "transform": "identity"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "search_query": "data engineer",
+    "location": "Seattle, WA",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "taQmoNyoywM4tKi32",
+    "items": 3,
+    "token": "seattle",
+    "relevant": true,
+    "notes": "POSTed {\"search_query\": \"data engineer\", \"location\": \"Seattle, WA\", \"max_items\": 3} to captainhandsome~linkedin-public-jobs-search/runs (build=latest, timeout=120), polled to SUCCEEDED, fetched 3 dataset items; the location token 'seattle' is present in the output."
+  }
+}

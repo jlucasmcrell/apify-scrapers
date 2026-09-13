@@ -1,0 +1,199 @@
+{
+  "actor": "gleif-lei-search",
+  "tool": {
+    "name": "gleif_lei_search",
+    "title": "GLEIF Legal Entity Identifier Search",
+    "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Strictly read-only; queries the free, public GLEIF API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Company name, an LEI code, or free text to search for, depending on search_mode. Example: 'Siemens'."
+        },
+        "search_mode": {
+          "type": "string",
+          "enum": [
+            "name",
+            "fulltext",
+            "lei"
+          ],
+          "default": "name",
+          "description": "How to interpret query. 'name' matches the registered legal name only, 'fulltext' matches the whole record including addresses and former names, 'lei' is an exact 20-character LEI lookup. Defaults to 'name'."
+        },
+        "country": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "description": "Two-letter ISO country code of the entity's legal address to filter on, e.g. 'DE' for Germany. Omit to search every country."
+        },
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "description": "Two-letter code of the registering jurisdiction to filter on, e.g. 'FR'. Can differ from country. Omit to search every jurisdiction."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ],
+          "description": "Limit results to entities with this operating status, e.g. 'ACTIVE'. Omit to return both active and inactive entities."
+        },
+        "include_relationships": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also fetch direct and ultimate parent, subsidiary count and names, and ISINs. Costs up to six extra requests per record and slows the run. Defaults to false."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum number of LEI records to retrieve. Defaults to 10."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of GLEIF LEI records matching the search.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lei": {
+                "type": "string",
+                "description": "Twenty-character Legal Entity Identifier, the ISO 17442 global key for this entity."
+              },
+              "legal_name": {
+                "type": "string",
+                "description": "Registered legal name of the entity, in its own script."
+              },
+              "status": {
+                "type": "string",
+                "description": "Whether the entity itself is still operating: ACTIVE or INACTIVE."
+              },
+              "registration_status": {
+                "type": "string",
+                "description": "Lifecycle of the LEI registration itself: ISSUED, LAPSED, RETIRED, ANNULLED and so on."
+              },
+              "jurisdiction": {
+                "type": "string",
+                "description": "Two-letter code of the legal jurisdiction the entity is formed in."
+              },
+              "legal_form_name": {
+                "type": "string",
+                "description": "Legal form resolved to words, e.g. 'Private Limited Company'. Null when GLEIF has no free-text label for the code."
+              },
+              "registered_as": {
+                "type": "string",
+                "description": "The company's number in its own national registry, the join key to Companies House, SIRENE, the Handelsregister and the rest."
+              },
+              "registered_at_name": {
+                "type": "string",
+                "description": "Name of the national registration authority the entity is filed with, e.g. 'Companies House'."
+              },
+              "legal_country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code of the registered legal address."
+              },
+              "legal_city": {
+                "type": "string",
+                "description": "City of the registered legal address."
+              },
+              "corroboration_level": {
+                "type": "string",
+                "description": "How hard the data was verified: FULLY_CORROBORATED, PARTIALLY_CORROBORATED or ENTITY_SUPPLIED_ONLY."
+              },
+              "next_renewal_date": {
+                "type": "string",
+                "description": "When the LEI must next be revalidated, ISO 8601. A date in the past means the record is lapsing."
+              },
+              "gleif_profile_url": {
+                "type": "string",
+                "description": "Public GLEIF record page for this LEI, for verifying a row by hand."
+              }
+            },
+            "required": [
+              "lei",
+              "legal_name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "query": {
+      "key": "query",
+      "transform": "identity"
+    },
+    "search_mode": {
+      "key": "search_mode",
+      "transform": "identity"
+    },
+    "country": {
+      "key": "country",
+      "transform": "identity"
+    },
+    "jurisdiction": {
+      "key": "jurisdiction",
+      "transform": "identity"
+    },
+    "status": {
+      "key": "status",
+      "transform": "identity"
+    },
+    "include_relationships": {
+      "key": "include_relationships",
+      "transform": "identity"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "query": "Siemens",
+    "search_mode": "name",
+    "country": "DE",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "7CCZ27WrMYNqt7QQb",
+    "items": 3,
+    "token": "Siemens",
+    "relevant": true
+  },
+  "relevance": {
+    "input": {
+      "query": "Siemens",
+      "search_mode": "name",
+      "country": "DE",
+      "include_relationships": false,
+      "max_items": 3
+    },
+    "tokens": [
+      "siemens"
+    ]
+  },
+  "readme_row": "| **GLEIF LEI Lookup** | [`captainhandsome/gleif-lei-search`](https://apify.com/captainhandsome/gleif-lei-search) | lei, legal_name, registered_as, legal_form_name, status | Best for KYC and counterparty due diligence: resolving a company's Legal Entity Identifier, registration status, and own national registry number before onboarding. |",
+  "filter_audit": "query (prefill/default 'Tesco') and search_mode (default 'name') are the only input_schema.json fields that carry a prefill or default; country, jurisdiction, and status have none -- their descriptions merely give an example ('e.g. GB' / 'e.g. ACTIVE') that the schema does not enforce. main.py tolerates all four being null or absent: build_params() uses `inp.get(x) or \"\"` truthy checks for query/country/jurisdiction/status and silently drops each empty one from the GLEIF filter params (search_mode falls back internally to 'name' via `inp.get('search_mode') or 'name'`), so no default is ever force-applied by the wrapper itself -- the only hard failure is if ALL of query/country/jurisdiction/status end up empty at once, which main.py catches explicitly ('supply at least one of query, country, jurisdiction or status') before making any request."
+}

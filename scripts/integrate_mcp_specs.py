@@ -30,7 +30,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SPEC_DIR = Path(r"C:\Users\jluca\AppData\Local\Temp\claude\F--\abc0c583-ff2f-4a47-a723-ad42dd515271\scratchpad\mcp_specs")
+DEFAULT_SPEC_DIR = ROOT / "specs"
 
 TRANSFORMS = {
     "identity": "{src}",

@@ -1,0 +1,137 @@
+{
+  "actor": "al-business-entity-search",
+  "tool": {
+    "name": "alabama_business_search",
+    "title": "Alabama Business Entity Registry Search",
+    "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Strictly read-only; queries the public Alabama Secretary of State registry.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_query": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Full or partial Alabama business name to search (e.g. 'SMITH' or 'Smith Services LLC')."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 10,
+          "description": "Maximum number of entity records to return and bill. Defaults to 10."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, opens each result's detail page to add formation date, registered agent, and registered/principal addresses. Slower; leave off for a fast name-and-status lookup."
+        }
+      },
+      "required": [
+        "search_query"
+      ]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Collection of Alabama business-entity records matching the search query.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "type": "string",
+                "description": "Alabama public entity identifier."
+              },
+              "entity_name": {
+                "type": "string",
+                "description": "Business name displayed by the Alabama public registry."
+              },
+              "entity_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Registry classification, such as LLC or corporation, when present."
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Current registry status when present (e.g. Exists, Dissolved, Revoked)."
+              },
+              "location": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Registry location text when present."
+              },
+              "formation_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Date the entity was formed, from the detail record (requires include_details)."
+              },
+              "registered_agent": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the entity's registered agent (requires include_details)."
+              },
+              "principal_address": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Principal place of business, where the state records one (requires include_details)."
+              }
+            },
+            "required": [
+              "entity_id",
+              "entity_name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "search_query": {
+      "key": "search_terms",
+      "transform": "list",
+      "note": "Wrap the single search_query string into a one-element array for the search_terms input."
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity"
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "search_query": "SMITH",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "jzaAqQCMpEJkDoPPN",
+    "items": 3,
+    "token": "smith",
+    "relevant": true,
+    "note": "POST https://api.apify.com/v2/acts/captainhandsome~al-business-entity-search/runs?build=latest&timeout=120 with {\"search_terms\":[\"SMITH\"],\"max_items\":3}; polled to SUCCEEDED; fetched 3 dataset items, all with entity_name containing 'smith' (e.g. 'smith and adams llc', 'smith & alspaugh, p.c.')."
+  }
+}
