@@ -743,29 +743,51 @@ def serve_stdio():
             tool_name = params.get("name")
             tool_args = params.get("arguments", {})
             try:
+                # Every key below must exist in the target Actor's input_schema.json.
+                # Apify IGNORES unknown input keys rather than rejecting them, so a
+                # wrong name does not fail - the Actor silently runs on its DEFAULT
+                # input and returns confident, irrelevant data. Five of these six
+                # tools were doing exactly that (2026-09-13): google_maps sent
+                # "search_terms", glassdoor sent "keyword"/"max_results", sec_edgar
+                # sent "company_or_ticker"/"form_type", usaspending sent
+                # "recipient_search_text", twitch sent "game"/"language" - none of
+                # which the Actors accept. Verify against the live schema before
+                # adding or renaming anything here.
                 if tool_name == "google_maps_search":
                     query = tool_args.get("search_query")
+                    loc = tool_args.get("location", "")
                     limit = int(tool_args.get("max_results", 10))
-                    data = run_actor_sync(ACTORS["google_maps"], {"search_terms": [query], "max_items": limit})
+                    # location MUST be sent even when empty: the Actor defaults it to
+                    # "New York, NY", which would otherwise be appended to the caller's
+                    # query and silently relocate every search.
+                    data = run_actor_sync(ACTORS["google_maps"],
+                                          {"search_query": query, "location": loc, "max_items": limit})
                 elif tool_name == "glassdoor_jobs_search":
                     title = tool_args.get("job_title")
                     loc = tool_args.get("location", "")
                     limit = int(tool_args.get("max_results", 10))
-                    data = run_actor_sync(ACTORS["glassdoor_jobs"], {"keyword": title, "location": loc, "max_results": limit})
+                    data = run_actor_sync(ACTORS["glassdoor_jobs"],
+                                          {"search_query": title, "location": loc, "max_items": limit})
                 elif tool_name == "sec_edgar_filings":
                     ticker = tool_args.get("ticker")
                     form = tool_args.get("form_type", "10-K")
                     limit = int(tool_args.get("max_results", 5))
-                    data = run_actor_sync(ACTORS["sec_edgar"], {"company_or_ticker": ticker, "form_type": form, "max_items": limit})
+                    # forms is an ARRAY on the Actor, not a bare string.
+                    data = run_actor_sync(ACTORS["sec_edgar"],
+                                          {"company": ticker, "forms": [form] if form else None,
+                                           "max_items": limit})
                 elif tool_name == "usaspending_contracts":
                     rec = tool_args.get("recipient_name")
                     limit = int(tool_args.get("max_results", 10))
-                    data = run_actor_sync(ACTORS["usaspending"], {"award_type": "contracts", "recipient_search_text": rec, "max_items": limit})
+                    data = run_actor_sync(ACTORS["usaspending"],
+                                          {"award_type": "contracts", "keywords": rec, "max_items": limit})
                 elif tool_name == "twitch_live_streams":
                     game = tool_args.get("game_name", "")
-                    lang = tool_args.get("language", "en")
                     limit = int(tool_args.get("max_results", 10))
-                    data = run_actor_sync(ACTORS["twitch_streams"], {"game": game, "language": lang, "max_items": limit})
+                    # The Actor has no language input; "language" was silently dropped
+                    # and is intentionally not forwarded rather than faked.
+                    data = run_actor_sync(ACTORS["twitch_streams"],
+                                          {"search_query": game, "max_items": limit})
                 elif tool_name == "airbnb_listings_search":
                     loc = tool_args.get("location")
                     limit = int(tool_args.get("max_results", 10))

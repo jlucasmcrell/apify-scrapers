@@ -1,0 +1,76 @@
+{
+  "manifest_version": "0.3",
+  "name": "apify-scrapers",
+  "display_name": "Apify Public Data & Leads",
+  "version": "1.0.7",
+  "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
+  "long_description": "Six read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "author": {
+    "name": "Joseph McRell",
+    "url": "https://github.com/jlucasmcrell"
+  },
+  "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
+  "documentation": "https://github.com/jlucasmcrell/apify-scrapers#readme",
+  "license": "MIT",
+  "keywords": [
+    "apify",
+    "web-scraping",
+    "lead-generation",
+    "google-maps",
+    "sec-edgar",
+    "public-data"
+  ],
+  "server": {
+    "type": "python",
+    "entry_point": "mcp_server.py",
+    "mcp_config": {
+      "command": "python",
+      "args": [
+        "${__dirname}/mcp_server.py"
+      ],
+      "env": {
+        "APIFY_TOKEN": "${user_config.apify_token}"
+      }
+    }
+  },
+  "user_config": {
+    "apify_token": {
+      "type": "string",
+      "title": "Apify API token",
+      "description": "From https://console.apify.com/settings/integrations. Actor runs execute on your own Apify account and are billed to it.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "tools": [
+    {
+      "name": "google_maps_search",
+      "description": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps."
+    },
+    {
+      "name": "glassdoor_jobs_search",
+      "description": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor."
+    },
+    {
+      "name": "sec_edgar_filings",
+      "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events."
+    },
+    {
+      "name": "usaspending_contracts",
+      "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database."
+    },
+    {
+      "name": "twitch_live_streams",
+      "description": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch."
+    },
+    {
+      "name": "airbnb_listings_search",
+      "description": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb."
+    }
+  ],
+  "compatibility": {
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  }
+}

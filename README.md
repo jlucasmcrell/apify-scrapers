@@ -10,7 +10,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 
 A curated collection of reliable, production-ready scrapers and public-data extractors hosted on the **[Apify Store](https://apify.com/captainhandsome)**. 
 
-Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing starting at **$0.0002 / start**.
+Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
 ---
 
