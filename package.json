@@ -1,6 +1,6 @@
 {
   "name": "apify-data-scrapers",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Developer SDK and code examples for public data extractors on Apify Store: Google Maps, Glassdoor, Airbnb, SEC EDGAR, USAspending, LinkedIn, and Twitch.",
   "main": "examples/google_maps_leads.js",
   "type": "module",

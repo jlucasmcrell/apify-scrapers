@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
   "long_description": "Six read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
@@ -66,6 +66,62 @@
     {
       "name": "airbnb_listings_search",
       "description": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb."
+    },
+    {
+      "name": "alabama_business_search",
+      "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location."
+    },
+    {
+      "name": "california_contractor_license_search",
+      "description": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type."
+    },
+    {
+      "name": "clinical_trials_search",
+      "description": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study."
+    },
+    {
+      "name": "epa_facility_search",
+      "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true)."
+    },
+    {
+      "name": "fec_campaign_finance_search",
+      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields."
+    },
+    {
+      "name": "florida_new_filings_search",
+      "description": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type."
+    },
+    {
+      "name": "florida_officer_search",
+      "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number."
+    },
+    {
+      "name": "french_company_search",
+      "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers."
+    },
+    {
+      "name": "google_play_reviews_search",
+      "description": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer)."
+    },
+    {
+      "name": "linkedin_jobs_search",
+      "description": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL."
+    },
+    {
+      "name": "openfda_search",
+      "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface."
+    },
+    {
+      "name": "us_business_entity_search",
+      "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match."
+    },
+    {
+      "name": "us_contractor_license_search",
+      "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match."
+    },
+    {
+      "name": "youtube_video_search",
+      "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required."
     }
   ],
   "compatibility": {
