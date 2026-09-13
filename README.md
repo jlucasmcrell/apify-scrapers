@@ -7,7 +7,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![Apify Verified](https://img.shields.io/badge/apify-store-orange.svg)](https://apify.com/captainhandsome)
 [![Glama MCP Server](https://glama.ai/mcp/servers/jlucasmcrell/apify-scrapers/badge)](https://glama.ai/mcp/servers/jlucasmcrell/apify-scrapers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
 A curated collection of reliable, production-ready scrapers and public-data extractors hosted on the **[Apify Store](https://apify.com/captainhandsome)**. 
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
