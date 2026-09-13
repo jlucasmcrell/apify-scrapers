@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data Scrapers & Extractors
+# Apify Public Data MCP: 25 Production Scrapers & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
@@ -8,7 +8,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![Glama MCP Server](https://glama.ai/mcp/servers/jlucasmcrell/apify-scrapers/badge)](https://glama.ai/mcp/servers/jlucasmcrell/apify-scrapers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
-A curated collection of reliable, production-ready scrapers and public-data extractors hosted on the **[Apify Store](https://apify.com/captainhandsome)**. 
+One MCP server gives an AI agent **25 production public-data extractors** - Google Maps business leads, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
@@ -31,33 +31,52 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 
 ## Available Extractors & Store Listings
 
+Every extractor below is both an Apify Store listing and an MCP tool of the same server; the sections are the questions buyers arrive with.
+
+### Business intelligence & lead generation
+
 | Tool | Store Link | Key Output Fields | Best For |
 |---|---|---|---|
 | **Google Maps Business Leads** | [`captainhandsome/google-maps-business-search`](https://apify.com/captainhandsome/google-maps-business-search) | Name, phone, website, rating, reviews, address, coordinates, hours | B2B lead generation, local agency prospecting |
+| **Website Tech Stack & Ecommerce Scanner** | [`captainhandsome/tech-stack-detector`](https://apify.com/captainhandsome/tech-stack-detector) | technologies, cms, ecommerce_platform, payments, emails | Best for competitive tech research and B2B lead qualification across a batch of company websites. |
+| **US Business Entity Registries** | [`captainhandsome/us-business-entity-search`](https://apify.com/captainhandsome/us-business-entity-search) | Legal entity name, filing number, jurisdiction, status | Legal due diligence, corporate registration checks |
+| **Alabama Business Entity Search** | [`captainhandsome/al-business-entity-search`](https://apify.com/captainhandsome/al-business-entity-search) | entity id, entity name, location, entity type, status | Search Alabama business entities by company name and export entity IDs |
+| **Florida Sunbiz Business Entity Search** | [`captainhandsome/fl-sos-new-filings`](https://apify.com/captainhandsome/fl-sos-new-filings) | entity name, document number, status, entity type, date filed | Search Florida Sunbiz company-name results and export legal entity nam |
+| **Florida Sunbiz Officer & Registered Agent Search** | [`captainhandsome/fl-sunbiz-officer-search`](https://apify.com/captainhandsome/fl-sunbiz-officer-search) | officer name, entity name, document number, detail url, entity type | Search Florida Sunbiz by officer or registered-agent name and export o |
+| **French Company Search** | [`captainhandsome/french-company-search`](https://apify.com/captainhandsome/french-company-search) | siren, name, legal name, acronym, status | Search France's official company register by name, activity, postcode, |
+| **GLEIF LEI Lookup** | [`captainhandsome/gleif-lei-search`](https://apify.com/captainhandsome/gleif-lei-search) | lei, legal_name, registered_as, legal_form_name, status | Best for KYC and counterparty due diligence: resolving a company's Legal Entity Identifier, registration status, and own national registry number before onboarding. |
+| **US Contractor Licenses** | [`captainhandsome/us-contractor-license-search`](https://apify.com/captainhandsome/us-contractor-license-search) | Contractor name, license number, classification, status, state | Trades verification, subcontractor diligence |
+| **California Contractor License Search** | [`captainhandsome/ca-contractor-license-search`](https://apify.com/captainhandsome/ca-contractor-license-search) | contractor name, name type, license number, city, status | Search California CSLB contractor records by contractor name and expor |
+
+### Jobs, market & consumer intelligence
+
+| Tool | Store Link | Key Output Fields | Best For |
+|---|---|---|---|
 | **Glassdoor Jobs & Salaries** | [`captainhandsome/glassdoor-jobs-scraper`](https://apify.com/captainhandsome/glassdoor-jobs-scraper) | Title, company, salary estimate, rating, location, job URL, posting date | Hiring intelligence, compensation benchmarking |
-| **Airbnb Vacation Rentals** | [`captainhandsome/airbnb-listings-search`](https://apify.com/captainhandsome/airbnb-listings-search) | Title, room type, nightly price, rating, reviews count, listing URL | Real estate research, market rate tracking |
-| **SEC EDGAR Corporate Filings** | [`captainhandsome/sec-edgar-filings-search`](https://apify.com/captainhandsome/sec-edgar-filings-search) | Ticker, CIK, form (10-K, 10-Q, 8-K), filing date, primary document URL | Financial diligence, equity research, compliance |
-| **USAspending Federal Awards** | [`captainhandsome/usaspending-federal-awards`](https://apify.com/captainhandsome/usaspending-federal-awards) | Recipient vendor, award amount, awarding agency, description, dates | Government contracting, procurement intel |
 | **LinkedIn Public Jobs** | [`captainhandsome/linkedin-public-jobs-search`](https://apify.com/captainhandsome/linkedin-public-jobs-search) | Job title, employer, location, direct apply URL, posting age | Recruitment, tech talent monitoring |
+| **Airbnb Vacation Rentals** | [`captainhandsome/airbnb-listings-search`](https://apify.com/captainhandsome/airbnb-listings-search) | Title, room type, nightly price, rating, reviews count, listing URL | Real estate research, market rate tracking |
 | **Google Play App Reviews** | [`captainhandsome/google-play-reviews-scraper`](https://apify.com/captainhandsome/google-play-reviews-scraper) | Review text, star score, thumbs up, date, reviewer name | App store sentiment, competitor feedback |
 | **YouTube Video Search** | [`captainhandsome/youtube-search-scraper`](https://apify.com/captainhandsome/youtube-search-scraper) | Title, video URL, channel, views count, duration, publish date | Content tracking, creator outreach |
 | **Twitch Live Streams** | [`captainhandsome/twitch-live-streams-scraper`](https://apify.com/captainhandsome/twitch-live-streams-scraper) | Streamer username, title, viewer count, language, category | Esports analytics, live stream monitoring |
-| **US Contractor Licenses** | [`captainhandsome/us-contractor-license-search`](https://apify.com/captainhandsome/us-contractor-license-search) | Contractor name, license number, classification, status, state | Trades verification, subcontractor diligence |
-| **US Business Entity Registries** | [`captainhandsome/us-business-entity-search`](https://apify.com/captainhandsome/us-business-entity-search) | Legal entity name, filing number, jurisdiction, status | Legal due diligence, corporate registration checks |
-| **Alabama Business Entity Search & Company** | [`captainhandsome/al-business-entity-search`](https://apify.com/captainhandsome/al-business-entity-search) | entity id, entity name, location, entity type, status | Search Alabama business entities by company name and export entity IDs |
-| **California Contractor License Search** | [`captainhandsome/ca-contractor-license-search`](https://apify.com/captainhandsome/ca-contractor-license-search) | contractor name, name type, license number, city, status | Search California CSLB contractor records by contractor name and expor |
-| **ClinicalTrials.gov Search** | [`captainhandsome/clinical-trials-search`](https://apify.com/captainhandsome/clinical-trials-search) | nct id, title, official title, acronym, org study id | Search the official ClinicalTrials.gov API by condition, intervention, |
-| **EPA ECHO Facility Compliance and Violati** | [`captainhandsome/epa-echo-facility-search`](https://apify.com/captainhandsome/epa-echo-facility-search) | registry id, name, street, city, state | Search EPA-regulated US facilities by state, ZIP, NAICS, name, program |
+
+### Government & public records
+
+| Tool | Store Link | Key Output Fields | Best For |
+|---|---|---|---|
+| **SEC EDGAR Corporate Filings** | [`captainhandsome/sec-edgar-filings-search`](https://apify.com/captainhandsome/sec-edgar-filings-search) | Ticker, CIK, form (10-K, 10-Q, 8-K), filing date, primary document URL | Financial diligence, equity research, compliance |
+| **USAspending Federal Awards** | [`captainhandsome/usaspending-federal-awards`](https://apify.com/captainhandsome/usaspending-federal-awards) | Recipient vendor, award amount, awarding agency, description, dates | Government contracting, procurement intel |
 | **FEC Campaign Finance Search** | [`captainhandsome/fec-campaign-finance-search`](https://apify.com/captainhandsome/fec-campaign-finance-search) | record type, id, name, party, office | Search US federal candidates, PACs and campaign contributions by state |
-| **Florida Sunbiz Business Entity Search & ** | [`captainhandsome/fl-sos-new-filings`](https://apify.com/captainhandsome/fl-sos-new-filings) | entity name, document number, status, entity type, date filed | Search Florida Sunbiz company-name results and export legal entity nam |
-| **Florida Sunbiz Officer & Registered Agen** | [`captainhandsome/fl-sunbiz-officer-search`](https://apify.com/captainhandsome/fl-sunbiz-officer-search) | officer name, entity name, document number, detail url, entity type | Search Florida Sunbiz by officer or registered-agent name and export o |
-| **French Company Search** | [`captainhandsome/french-company-search`](https://apify.com/captainhandsome/french-company-search) | siren, name, legal name, acronym, status | Search France's official company register by name, activity, postcode, |
-| **openFDA Drug Labels, Recalls and Events ** | [`captainhandsome/openfda-search`](https://apify.com/captainhandsome/openfda-search) | dataset, id, brand name, generic name, manufacturer | Search official FDA drug labels, approvals, adverse events, and drug,  |
-| **Europe PMC Paper Search** | [`captainhandsome/europe-pmc-paper-search`](https://apify.com/captainhandsome/europe-pmc-paper-search) | title, doi, pmid, abstract, cited_by_count | Best for biomedical literature reviews, citation tracking, and open-access discovery across PubMed and Europe PMC. |
-| **Website Tech Stack & Ecommerce Scanner** | [`captainhandsome/tech-stack-detector`](https://apify.com/captainhandsome/tech-stack-detector) | technologies, cms, ecommerce_platform, payments, emails | Best for competitive tech research and B2B lead qualification across a batch of company websites. |
-| **GLEIF LEI Lookup** | [`captainhandsome/gleif-lei-search`](https://apify.com/captainhandsome/gleif-lei-search) | lei, legal_name, registered_as, legal_form_name, status | Best for KYC and counterparty due diligence: resolving a company's Legal Entity Identifier, registration status, and own national registry number before onboarding. |
-| **CMS Healthcare Provider Search** | [`captainhandsome/cms-healthcare-provider-search`](https://apify.com/captainhandsome/cms-healthcare-provider-search) | name, provider_type, city, state, star_rating | Compare CMS-certified hospitals, nursing homes, and other Medicare providers by location, ownership, and star rating. |
+| **EPA ECHO Facility Compliance & Violations** | [`captainhandsome/epa-echo-facility-search`](https://apify.com/captainhandsome/epa-echo-facility-search) | registry id, name, street, city, state | Search EPA-regulated US facilities by state, ZIP, NAICS, name, program |
 | **US Census Address Geocoder** | [`captainhandsome/us-census-geocoder`](https://apify.com/captainhandsome/us-census-geocoder) | matched_address, county_name, tract_geoid, block_geoid, congressional_district_geoid | Best for appending census tract, county FIPS and district GEOIDs to US addresses for demographic joins and compliance reporting. |
+
+### Research & health data
+
+| Tool | Store Link | Key Output Fields | Best For |
+|---|---|---|---|
+| **ClinicalTrials.gov Search** | [`captainhandsome/clinical-trials-search`](https://apify.com/captainhandsome/clinical-trials-search) | nct id, title, official title, acronym, org study id | Search the official ClinicalTrials.gov API by condition, intervention, |
+| **Europe PMC Paper Search** | [`captainhandsome/europe-pmc-paper-search`](https://apify.com/captainhandsome/europe-pmc-paper-search) | title, doi, pmid, abstract, cited_by_count | Best for biomedical literature reviews, citation tracking, and open-access discovery across PubMed and Europe PMC. |
+| **openFDA Drug Labels, Recalls & Adverse Events** | [`captainhandsome/openfda-search`](https://apify.com/captainhandsome/openfda-search) | dataset, id, brand name, generic name, manufacturer | Search official FDA drug labels, approvals, adverse events, and drug,  |
+| **CMS Healthcare Provider Search** | [`captainhandsome/cms-healthcare-provider-search`](https://apify.com/captainhandsome/cms-healthcare-provider-search) | name, provider_type, city, state, star_rating | Compare CMS-certified hospitals, nursing homes, and other Medicare providers by location, ownership, and star rating. |
 
 ---
 

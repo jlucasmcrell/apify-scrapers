@@ -1,0 +1,17 @@
+# GitHub Pages (Jekyll) metadata for https://apify.revenuesystemslabs.com/ - the README is the site.
+title: Apify Public Data MCP
+description: 25 production public-data scrapers - Google Maps leads, jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS, Census, state business registries, contractor licences - as one MCP server; each runs as an Apify Actor on your own account.
+exclude:
+  - build
+  - dist
+  - "*.egg-info"
+  - __pycache__
+  - scripts
+  - Dockerfile
+  - setup.py
+  - package.json
+  - server.json
+  - manifest.json
+  - smithery.yaml
+  - glama.json
+  - requirements.txt
