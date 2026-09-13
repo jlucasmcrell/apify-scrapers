@@ -551,6 +551,20 @@ TOOLS_DEFINITION = [
     {'name': 'us_census_geocoder', 'title': 'US Census Address Geocoder', 'description': "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Strictly read-only; queries the public Census Bureau geocoder API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.", 'inputSchema': {'type': 'object', 'properties': {'addresses': {'type': 'array', 'items': {'type': 'string'}, 'minItems': 1, 'description': "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not."}, 'benchmark': {'type': 'string', 'enum': ['Public_AR_Current', 'Public_AR_Census2020'], 'default': 'Public_AR_Current', 'description': "Which Census address file to match against. Defaults to 'Public_AR_Current', the live, continuously updated file. Use 'Public_AR_Census2020' to reconcile against the address file as it stood at the 2020 Census."}, 'vintage': {'type': 'string', 'enum': ['Current_Current', 'Census2020_Current'], 'default': 'Current_Current', 'description': "Which geography vintage to report tract, block and district boundaries from. Defaults to 'Current_Current'. Use 'Census2020_Current' when you need boundaries as drawn at the 2020 Census, e.g. before a later congressional redistricting."}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': "Ceiling on the number of address rows you are willing to pay for. Defaults to 10. This Actor emits exactly one row per address (matched or not) and does not truncate your address list to this number, so keep 'addresses' at or below max_results to control both output volume and cost."}}, 'required': ['addresses']}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'description': 'One geocoded row per input address, in input order, including addresses that failed to match.', 'items': {'type': 'object', 'properties': {'input_address': {'type': 'string', 'description': 'The address string exactly as supplied, so results can be joined back to the source list.'}, 'matched': {'type': 'boolean', 'description': 'True when the Census geocoder returned at least one candidate for the address. False rows carry every other field as null rather than being dropped.'}, 'match_count': {'type': 'integer', 'description': 'How many candidate addresses Census returned. 1 is a clean hit; more than 1 means the address was ambiguous and the row describes only the first candidate. 0 on unmatched rows.'}, 'matched_address': {'type': 'string', 'description': 'The address as Census standardised it: upper case, standardised street type, and the ZIP it actually resolved to. Null when matched is false.'}, 'latitude': {'type': 'number', 'description': 'Latitude in decimal degrees, interpolated along the matched TIGER street segment (street frontage, not rooftop). Null when matched is false.'}, 'longitude': {'type': 'number', 'description': 'Longitude in decimal degrees, same street-segment interpolation as latitude. Null when matched is false.'}, 'city': {'type': 'string', 'description': 'Postal city of the matched address, upper case. Can differ from place_name, the legally incorporated place. Null when matched is false.'}, 'state': {'type': 'string', 'description': 'Two-letter USPS state or territory code of the matched address. Null when matched is false.'}, 'zip': {'type': 'string', 'description': 'Five-digit ZIP code Census resolved the address to, kept as a string so leading zeros survive export. Null when matched is false.'}, 'state_fips': {'type': 'string', 'description': 'Two-digit state FIPS code, the first component of every Census GEOID. Null when matched is false.'}, 'county_fips': {'type': 'string', 'description': 'Five-digit county GEOID (state FIPS plus county code), the county key used by ACS, BLS and most federal datasets. Null when matched is false.'}, 'county_name': {'type': 'string', 'description': 'County or county-equivalent name (parish, borough, independent city). Null when matched is false.'}, 'place_name': {'type': 'string', 'description': 'Name of the incorporated place (city, town, village) containing the address. Null in unincorporated territory and when matched is false.'}, 'place_geoid': {'type': 'string', 'description': 'Seven-digit place GEOID, the join key to Census place-level tables since place names repeat across states. Null when matched is false.'}, 'tract_geoid': {'type': 'string', 'description': 'Eleven-digit census tract GEOID, the join key for American Community Survey tract tables. Null when matched is false.'}, 'block_group_geoid': {'type': 'string', 'description': 'Twelve-digit block group GEOID, the finest geography the American Community Survey publishes estimates for. Null when matched is false.'}, 'block_geoid': {'type': 'string', 'description': 'Fifteen-digit census block GEOID, the finest geography the Bureau publishes and the join key to decennial block data. Null when matched is false.'}, 'zcta': {'type': 'string', 'description': 'Five-digit ZIP Code Tabulation Area containing the point, the only ZIP-shaped geography the Bureau actually publishes data for. Can differ from zip. Null when matched is false.'}, 'urban_rural': {'type': 'string', 'description': 'Census urban/rural classification of the containing block: U for urban, R for rural. Null when matched is false.'}, 'congressional_district_geoid': {'type': 'string', 'description': 'Four-digit congressional district GEOID (state FIPS plus district), unique nationally and the join key to district-level Census tables. Null when matched is false.'}, 'cbsa_name': {'type': 'string', 'description': 'Combined Statistical Area name, broader than the single metro area inside it (e.g. Washington joined with Baltimore). Null outside any CSA and when matched is false.'}, 'metro_area_name': {'type': 'string', 'description': 'Name of the Core Based Statistical Area (the actual metro or micro area) containing the address. Null outside any CBSA and when matched is false.'}, 'school_district_name': {'type': 'string', 'description': 'Name of the school district containing the address; a unified district where one exists, otherwise the elementary or secondary district per school_district_type. Null when matched is false.'}, 'benchmark_name': {'type': 'string', 'description': 'The Census address benchmark that actually answered, echoed back by the API on every row.'}, 'vintage_name': {'type': 'string', 'description': 'The geography vintage that actually answered, echoed back by the API on every row.'}}, 'required': ['input_address', 'matched', 'match_count']}}}, 'required': ['results']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': True, 'openWorldHint': True}},
 ]
 
+def server_version() -> str:
+    """Version of the running server: the installed distribution, else the
+    manifest next to this file when run from a source checkout."""
+    try:
+        from importlib.metadata import version
+        return version("apify-data-scrapers")
+    except Exception:
+        try:
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "manifest.json"), encoding="utf-8") as fh:
+                return json.load(fh).get("version", "0.0.0")
+        except Exception:
+            return "0.0.0"
+
+
 def get_token() -> str:
     token = os.environ.get("APIFY_TOKEN")
     if not token:
@@ -674,14 +688,17 @@ def serve_stdio():
                     },
                     "serverInfo": {
                         "name": "apify-scrapers-mcp",
-                        "version": "1.0.6"
+                        "version": server_version()
                     },
                     "instructions": (
-                        "Apify Scrapers MCP provides enterprise-grade data extraction tools for "
-                        "B2B leads (Google Maps), employment vacancies (Glassdoor), corporate regulatory "
-                        "filings (SEC EDGAR), federal procurement obligations (USAspending), live streaming "
-                        "analytics (Twitch), and vacation rental pricing (Airbnb). All tools run synchronously "
-                        "in the cloud via dedicated Apify actors and require an APIFY_TOKEN environment variable."
+                        f"Apify Public Data MCP exposes {len(TOOLS_DEFINITION)} public-data extraction tools: "
+                        "business leads (Google Maps, website tech stack), jobs (LinkedIn, Glassdoor), "
+                        "corporate and public records (SEC EDGAR, GLEIF, US state business registries, "
+                        "contractor licences, French companies), US government data (USAspending, FEC, EPA, "
+                        "Census geocoding, CMS providers), research and health (ClinicalTrials.gov, openFDA, "
+                        "Europe PMC), and media (Airbnb, YouTube, Twitch, Google Play reviews). Each call runs "
+                        "an Apify Actor on the caller's own account and returns JSON records; runs need the "
+                        "APIFY_TOKEN environment variable and typically take 5-60 seconds."
                     )
                 }
             }
@@ -1039,6 +1056,21 @@ def serve_stdio():
                 }
             sys.stdout.write(json.dumps(res) + "\n")
             sys.stdout.flush()
+
+        elif method == "resources/templates/list":
+            res = {"jsonrpc": "2.0", "id": req_id, "result": {"resourceTemplates": []}}
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+
+        elif req_id is not None:
+            # A request the server does not implement must still get an answer:
+            # JSON-RPC -32601. Silence here made LobeHub's inspector (and any
+            # client that probes resources/templates/list) wait until timeout.
+            res = {"jsonrpc": "2.0", "id": req_id,
+                   "error": {"code": -32601, "message": f"Method not found: {method}"}}
+            sys.stdout.write(json.dumps(res) + "\n")
+            sys.stdout.flush()
+        # notifications without an id are ignored by design
 
 def main():
     serve_stdio()

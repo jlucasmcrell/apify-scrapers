@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
   "long_description": "Six read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
