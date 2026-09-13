@@ -2,7 +2,7 @@
   "name": "apify-scrapers-mcp",
   "version": "1.0.11",
   "description": "25 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
-  "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
+  "homepage": "https://apify.revenuesystemslabs.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/jlucasmcrell/apify-scrapers.git"
@@ -12,7 +12,7 @@
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
   },
-  "instructions": "Apify Scrapers MCP provides enterprise-grade data extraction tools for B2B leads (Google Maps), employment vacancies (Glassdoor), corporate regulatory filings (SEC EDGAR), federal procurement obligations (USAspending), live streaming analytics (Twitch), and vacation rental pricing (Airbnb). All tools run synchronously in the cloud via dedicated Apify actors and require an APIFY_TOKEN environment variable.",
+  "instructions": "Apify Public Data MCP exposes 25 public-data extraction tools: business leads (Google Maps, website tech stack), jobs (LinkedIn, Glassdoor), corporate and public records (SEC EDGAR, GLEIF, US state business registries, contractor licences, French companies), US government data (USAspending, FEC, EPA, Census geocoding, CMS providers), research and health (ClinicalTrials.gov, openFDA, Europe PMC), and media (Airbnb, YouTube, Twitch, Google Play reviews). Each call runs an Apify Actor on the caller's own account and returns JSON records; runs need the APIFY_TOKEN environment variable and typically take 5-60 seconds.",
   "capabilities": {
     "tools": {
       "listChanged": false
