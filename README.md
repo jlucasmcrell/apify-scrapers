@@ -16,6 +16,7 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 
 ## Quick Navigation
 
+- [Use-case guides](#use-case-guides)
 - [Available Extractors & Store Listings](#available-extractors--store-listings)
 - [Python Quickstart](#python-quickstart)
 - [Node.js Quickstart](#nodejs-quickstart)
@@ -26,6 +27,18 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 - [In-Depth Engineering Guides](#in-depth-engineering-guides)
 - [Repository Structure](#repository-structure)
 - [Contributing & Author](#author--support)
+
+---
+
+## Use-case guides
+
+One page per question an agent gets asked, each listing the tools, arguments, returned fields and prices for that job:
+
+- [MCP server for SEC EDGAR filings](/mcp/sec-edgar/)
+- [MCP server for Google Maps data and business leads](/mcp/google-maps/)
+- [MCP server for public records: business registries, licences and providers](/mcp/public-records/)
+- [MCP server for job search: LinkedIn and Glassdoor listings](/mcp/job-search/)
+- [MCP server for US government data](/mcp/government-data/)
 
 ---
 
