@@ -2,9 +2,9 @@ import setuptools
 
 setuptools.setup(
     name="apify-data-scrapers",
-    version="1.0.9",
+    version="1.0.10",
     author="Joseph McRell",
-    description="MCP server exposing 20 Apify public-data scrapers as tools (Google Maps, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, state business registries, Airbnb, YouTube, and more)",
+    description="MCP server exposing 25 Apify public-data scrapers as tools (Google Maps, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, state business registries, Airbnb, YouTube, and more)",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/jlucasmcrell/apify-scrapers",

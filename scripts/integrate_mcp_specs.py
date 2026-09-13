@@ -118,7 +118,10 @@ def main() -> int:
 
     src_path = ROOT / "mcp_server.py"
     src = src_path.read_text(encoding="utf-8")
-    existing = set(re.findall(r'"name":\s*"(\w+)"', src.split("TOOLS_DEFINITION = ", 1)[1].split("\n]\n", 1)[0]))
+    # Parse, don't regex: the generated entries are single-quoted repr() dicts,
+    # which a "name": "..." pattern misses - the 1.0.10 dry run offered to re-add
+    # every one of them.
+    existing = {t["name"] for t in ast.literal_eval(src.split("TOOLS_DEFINITION = ", 1)[1].split("\n]\n", 1)[0] + "\n]")}
     added = []
     actors_block, tools_block, handler_block = [], [], []
     for s in specs:

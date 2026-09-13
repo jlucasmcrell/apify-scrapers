@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jlucasmcrell/apify-scrapers",
-  "description": "20 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
+  "description": "25 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
   "repository": {
     "url": "https://github.com/jlucasmcrell/apify-scrapers",
     "source": "github"
   },
-  "version": "1.0.9",
+  "version": "1.0.10",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "apify-data-scrapers",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "transport": {
         "type": "stdio"
       },

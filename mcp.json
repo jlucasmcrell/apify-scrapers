@@ -1,7 +1,7 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.0.9",
-  "description": "MCP server exposing 20 Apify public-data scrapers as tools: Google Maps leads, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials, openFDA, state business registries, contractor licenses, Airbnb, YouTube, Twitch, Google Play reviews.",
+  "version": "1.0.10",
+  "description": "25 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
   "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
   "repository": {
     "type": "git",
@@ -2051,6 +2051,860 @@
               "required": [
                 "title",
                 "video_url"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "cms_healthcare_provider_search",
+      "title": "CMS Healthcare Provider Search",
+      "description": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/cms-healthcare-provider-search'.\n- Side Effects: Strictly read-only; queries the public CMS Provider Data Catalog API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for healthcare facility due diligence, star-rating and quality comparisons, nursing-home staffing/inspection/fines research, or building a location-bounded list of Medicare-certified providers.\n- When NOT to use: Do not use for clinical trial recruitment data, environmental compliance, campaign finance, corporate registry lookups, or contractor licensing.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'us_business_entity_search' or 'us_contractor_license_search' for corporate/contractor registries, or 'europe_pmc_paper_search' for biomedical literature.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "hospital",
+                "nursing_home",
+                "home_health",
+                "hospice",
+                "dialysis",
+                "long_term_care_hospital",
+                "inpatient_rehab"
+              ]
+            },
+            "description": "One or more CMS provider-directory types to search, e.g. ['hospital'] or ['nursing_home', 'hospice']. Omit to search hospitals only, the Actor's own fallback."
+          },
+          "state": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Two-letter US state or territory abbreviation to search within, e.g. 'TX'."
+          },
+          "city": {
+            "type": "string",
+            "description": "City name to filter by, matched exactly (case-insensitive, not a substring), e.g. 'Houston'."
+          },
+          "zip": {
+            "type": "string",
+            "description": "Five-digit US ZIP code to filter by, e.g. '77030'."
+          },
+          "county": {
+            "type": "string",
+            "description": "County name to filter by, matched exactly (case-insensitive), e.g. 'Harris'."
+          },
+          "name_contains": {
+            "type": "string",
+            "description": "Case-insensitive substring to match against the provider or facility name, e.g. 'Memorial'."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of provider records to retrieve and bill. Defaults to 10."
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of normalized Medicare-certified provider records matching the search.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Which CMS directory this row came from (hospital, nursing_home, home_health, hospice, dialysis, long_term_care_hospital, or inpatient_rehab)."
+                },
+                "ccn": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "CMS Certification Number, the stable identifier for the provider (hospitals use their facility ID here)."
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Facility or provider name as published by CMS."
+                },
+                "address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public street address reported by CMS."
+                },
+                "city": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "City reported for the record."
+                },
+                "state": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Two-letter US state or territory abbreviation."
+                },
+                "zip": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Postal or ZIP code reported for the record."
+                },
+                "county": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "County reported for the record."
+                },
+                "phone": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public provider telephone number in CMS display format."
+                },
+                "ownership": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Ownership or profit status as classified by CMS for this directory."
+                },
+                "subtype": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Directory-specific subtype, e.g. hospital type for hospitals or provider type for nursing homes."
+                },
+                "star_rating": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "CMS overall one-to-five star rating for the provider, when the directory publishes one."
+                },
+                "certification_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Date CMS certified the provider, in YYYY-MM-DD form where available."
+                },
+                "beds": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "description": "Number of certified beds. Nursing homes and long-term care hospitals only."
+                },
+                "chain": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Chain or corporate ownership group name, when CMS reports one. Nursing homes and dialysis facilities only."
+                },
+                "emergency_services": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Whether the hospital reports emergency services ('Yes'/'No'). Hospitals only."
+                }
+              },
+              "required": [
+                "ccn",
+                "name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "europe_pmc_paper_search",
+      "title": "Europe PMC Research Paper Search",
+      "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Strictly read-only; queries the official Europe PMC REST API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Keywords, topic, condition, intervention or Europe PMC search expression. Example: 'gut microbiome obesity'."
+          },
+          "author": {
+            "type": "string",
+            "description": "Filter to papers by this author's name. Example: 'Villapol S'."
+          },
+          "journal": {
+            "type": "string",
+            "description": "Filter to papers published in this journal. Example: 'Nature Medicine'."
+          },
+          "year_from": {
+            "type": "integer",
+            "description": "Return only papers published in this year or later. Example: 2022."
+          },
+          "year_to": {
+            "type": "integer",
+            "description": "Return only papers published in this year or earlier. Example: 2026."
+          },
+          "open_access_only": {
+            "type": "boolean",
+            "description": "Return only records Europe PMC marks as open access. Example: true."
+          },
+          "has_abstract_only": {
+            "type": "boolean",
+            "description": "Return only papers for which Europe PMC provides an abstract. Example: true."
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "relevance",
+              "cited",
+              "date"
+            ],
+            "default": "relevance",
+            "description": "Order results by relevance, citation count, or newest publication date. Defaults to 'relevance'. Example: 'cited'."
+          },
+          "include_entities": {
+            "type": "boolean",
+            "default": false,
+            "description": "Add genes, diseases, organisms, chemicals, Gene Ontology terms, experimental methods and accession numbers mined from the full text. Adds roughly one extra request per 8 results. Defaults to false. Example: true."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of papers to retrieve. Defaults to 10. Example: 25."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of Europe PMC records matching the search.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Structured id value returned by the official Europe PMC REST API."
+                },
+                "source": {
+                  "type": "string",
+                  "description": "Source database the record came from, e.g. 'MED' for PubMed, 'PPR' for preprint, 'PAT' for patent."
+                },
+                "pmid": {
+                  "type": "string",
+                  "description": "PubMed identifier for the publication."
+                },
+                "pmcid": {
+                  "type": "string",
+                  "description": "PubMed Central identifier for full-text content."
+                },
+                "doi": {
+                  "type": "string",
+                  "description": "Digital Object Identifier for the publication."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Published title of the paper, study or source record."
+                },
+                "authors": {
+                  "type": "string",
+                  "description": "Full author byline as one comma-separated string."
+                },
+                "first_author": {
+                  "type": "string",
+                  "description": "First author in abbreviated form, e.g. 'Kara G'."
+                },
+                "journal": {
+                  "type": "string",
+                  "description": "Journal title the paper was published in."
+                },
+                "pub_year": {
+                  "type": "string",
+                  "description": "Year of publication."
+                },
+                "publication_date": {
+                  "type": "string",
+                  "description": "First publication date of the record."
+                },
+                "abstract": {
+                  "type": "string",
+                  "description": "Publication abstract supplied by Europe PMC."
+                },
+                "keywords": {
+                  "type": "string",
+                  "description": "Author-supplied keywords, comma separated."
+                },
+                "mesh_terms": {
+                  "type": "string",
+                  "description": "Medical Subject Headings assigned to the paper, comma separated."
+                },
+                "cited_by_count": {
+                  "type": "integer",
+                  "description": "Number of citing works recorded by Europe PMC."
+                },
+                "is_open_access": {
+                  "type": "boolean",
+                  "description": "True when Europe PMC marks the record as open access."
+                },
+                "full_text_availability": {
+                  "type": "string",
+                  "description": "Best access available across providers: 'Open access', 'Free', or 'Subscription required'."
+                },
+                "pdf_url": {
+                  "type": "string",
+                  "description": "Direct link to the PDF, preferring an open-access or free copy."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Canonical public URL for the source record on europepmc.org."
+                },
+                "funders": {
+                  "type": "string",
+                  "description": "Agencies that funded the work, comma separated."
+                }
+              },
+              "required": [
+                "id",
+                "title"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gleif_lei_search",
+      "title": "GLEIF Legal Entity Identifier Search",
+      "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Strictly read-only; queries the free, public GLEIF API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Company name, an LEI code, or free text to search for, depending on search_mode. Example: 'Siemens'."
+          },
+          "search_mode": {
+            "type": "string",
+            "enum": [
+              "name",
+              "fulltext",
+              "lei"
+            ],
+            "default": "name",
+            "description": "How to interpret query. 'name' matches the registered legal name only, 'fulltext' matches the whole record including addresses and former names, 'lei' is an exact 20-character LEI lookup. Defaults to 'name'."
+          },
+          "country": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Two-letter ISO country code of the entity's legal address to filter on, e.g. 'DE' for Germany. Omit to search every country."
+          },
+          "jurisdiction": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Two-letter code of the registering jurisdiction to filter on, e.g. 'FR'. Can differ from country. Omit to search every jurisdiction."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "description": "Limit results to entities with this operating status, e.g. 'ACTIVE'. Omit to return both active and inactive entities."
+          },
+          "include_relationships": {
+            "type": "boolean",
+            "default": false,
+            "description": "Also fetch direct and ultimate parent, subsidiary count and names, and ISINs. Costs up to six extra requests per record and slows the run. Defaults to false."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of LEI records to retrieve. Defaults to 10."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "Collection of GLEIF LEI records matching the search.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lei": {
+                  "type": "string",
+                  "description": "Twenty-character Legal Entity Identifier, the ISO 17442 global key for this entity."
+                },
+                "legal_name": {
+                  "type": "string",
+                  "description": "Registered legal name of the entity, in its own script."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Whether the entity itself is still operating: ACTIVE or INACTIVE."
+                },
+                "registration_status": {
+                  "type": "string",
+                  "description": "Lifecycle of the LEI registration itself: ISSUED, LAPSED, RETIRED, ANNULLED and so on."
+                },
+                "jurisdiction": {
+                  "type": "string",
+                  "description": "Two-letter code of the legal jurisdiction the entity is formed in."
+                },
+                "legal_form_name": {
+                  "type": "string",
+                  "description": "Legal form resolved to words, e.g. 'Private Limited Company'. Null when GLEIF has no free-text label for the code."
+                },
+                "registered_as": {
+                  "type": "string",
+                  "description": "The company's number in its own national registry, the join key to Companies House, SIRENE, the Handelsregister and the rest."
+                },
+                "registered_at_name": {
+                  "type": "string",
+                  "description": "Name of the national registration authority the entity is filed with, e.g. 'Companies House'."
+                },
+                "legal_country": {
+                  "type": "string",
+                  "description": "ISO 3166-1 alpha-2 country code of the registered legal address."
+                },
+                "legal_city": {
+                  "type": "string",
+                  "description": "City of the registered legal address."
+                },
+                "corroboration_level": {
+                  "type": "string",
+                  "description": "How hard the data was verified: FULLY_CORROBORATED, PARTIALLY_CORROBORATED or ENTITY_SUPPLIED_ONLY."
+                },
+                "next_renewal_date": {
+                  "type": "string",
+                  "description": "When the LEI must next be revalidated, ISO 8601. A date in the past means the record is lapsing."
+                },
+                "gleif_profile_url": {
+                  "type": "string",
+                  "description": "Public GLEIF record page for this LEI, for verifying a row by hand."
+                }
+              },
+              "required": [
+                "lei",
+                "legal_name"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "tech_stack_detector",
+      "title": "Website Tech Stack & Ecommerce Scanner",
+      "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Strictly read-only; fetches each site's homepage (and, with include_details, its robots.txt and one contact/about page) as a normal browser would, no login or API key required on the target site.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"]."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "Also fetch /robots.txt and a discovered contact or about page per site, adding the sitemap URL, crawl-rule count, and any extra emails/phones the homepage omits. Costs up to two extra requests per site. Defaults to false."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum number of site records to return. Defaults to 10."
+          }
+        },
+        "required": [
+          "urls"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "One record per analyzed website.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "Requested website URL, as normalized before the request."
+                },
+                "final_url": {
+                  "type": "string",
+                  "description": "Final URL after HTTP redirects."
+                },
+                "status": {
+                  "type": "integer",
+                  "description": "HTTP response status code."
+                },
+                "domain": {
+                  "type": "string",
+                  "description": "Registered host of the final URL with any leading www. removed."
+                },
+                "is_https": {
+                  "type": "boolean",
+                  "description": "True when the final URL was served over HTTPS."
+                },
+                "technologies": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Detected technology names, e.g. Fastly, Next.js."
+                },
+                "count": {
+                  "type": "integer",
+                  "description": "Number of detected technologies."
+                },
+                "categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Distinct categories of detected technologies, e.g. cdn, framework."
+                },
+                "cms": {
+                  "type": "string",
+                  "description": "Detected content management systems, comma separated."
+                },
+                "ecommerce_platform": {
+                  "type": "string",
+                  "description": "Detected ecommerce platforms, comma separated."
+                },
+                "framework": {
+                  "type": "string",
+                  "description": "Detected web application frameworks, comma separated."
+                },
+                "analytics": {
+                  "type": "string",
+                  "description": "Detected analytics and tag-management tools, comma separated."
+                },
+                "payments": {
+                  "type": "string",
+                  "description": "Detected payment providers, comma separated."
+                },
+                "cdn": {
+                  "type": "string",
+                  "description": "Detected content delivery networks, comma separated."
+                },
+                "hosting": {
+                  "type": "string",
+                  "description": "Detected hosting and deployment platforms, comma separated."
+                },
+                "security_tech": {
+                  "type": "string",
+                  "description": "Detected bot-protection and CAPTCHA services, comma separated."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Contents of the HTML title tag."
+                },
+                "meta_description": {
+                  "type": "string",
+                  "description": "Meta description of the page."
+                },
+                "emails": {
+                  "type": "string",
+                  "description": "Email addresses published on the page (mailto: links plus same-domain plain-text addresses), comma separated."
+                },
+                "phones": {
+                  "type": "string",
+                  "description": "Phone numbers taken from tel: links, comma separated."
+                },
+                "linkedin_url": {
+                  "type": "string",
+                  "description": "First LinkedIn company, school, or member URL linked from the page."
+                },
+                "twitter_url": {
+                  "type": "string",
+                  "description": "First Twitter/X profile URL linked from the page."
+                },
+                "github_url": {
+                  "type": "string",
+                  "description": "First GitHub organization or repository URL linked from the page."
+                },
+                "contact_page_url": {
+                  "type": "string",
+                  "description": "Contact or about page found on the same host. Null unless include_details is on."
+                },
+                "robots_txt_found": {
+                  "type": "boolean",
+                  "description": "True when /robots.txt returned a real robots file. Null unless include_details is on."
+                },
+                "sitemap_url": {
+                  "type": "string",
+                  "description": "First sitemap URL declared in /robots.txt. Null unless include_details is on."
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Fetch or processing error for this site, or null on success."
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "us_census_geocoder",
+      "title": "US Census Address Geocoder",
+      "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Strictly read-only; queries the public Census Bureau geocoder API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not."
+          },
+          "benchmark": {
+            "type": "string",
+            "enum": [
+              "Public_AR_Current",
+              "Public_AR_Census2020"
+            ],
+            "default": "Public_AR_Current",
+            "description": "Which Census address file to match against. Defaults to 'Public_AR_Current', the live, continuously updated file. Use 'Public_AR_Census2020' to reconcile against the address file as it stood at the 2020 Census."
+          },
+          "vintage": {
+            "type": "string",
+            "enum": [
+              "Current_Current",
+              "Census2020_Current"
+            ],
+            "default": "Current_Current",
+            "description": "Which geography vintage to report tract, block and district boundaries from. Defaults to 'Current_Current'. Use 'Census2020_Current' when you need boundaries as drawn at the 2020 Census, e.g. before a later congressional redistricting."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Ceiling on the number of address rows you are willing to pay for. Defaults to 10. This Actor emits exactly one row per address (matched or not) and does not truncate your address list to this number, so keep 'addresses' at or below max_results to control both output volume and cost."
+          }
+        },
+        "required": [
+          "addresses"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "One geocoded row per input address, in input order, including addresses that failed to match.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "input_address": {
+                  "type": "string",
+                  "description": "The address string exactly as supplied, so results can be joined back to the source list."
+                },
+                "matched": {
+                  "type": "boolean",
+                  "description": "True when the Census geocoder returned at least one candidate for the address. False rows carry every other field as null rather than being dropped."
+                },
+                "match_count": {
+                  "type": "integer",
+                  "description": "How many candidate addresses Census returned. 1 is a clean hit; more than 1 means the address was ambiguous and the row describes only the first candidate. 0 on unmatched rows."
+                },
+                "matched_address": {
+                  "type": "string",
+                  "description": "The address as Census standardised it: upper case, standardised street type, and the ZIP it actually resolved to. Null when matched is false."
+                },
+                "latitude": {
+                  "type": "number",
+                  "description": "Latitude in decimal degrees, interpolated along the matched TIGER street segment (street frontage, not rooftop). Null when matched is false."
+                },
+                "longitude": {
+                  "type": "number",
+                  "description": "Longitude in decimal degrees, same street-segment interpolation as latitude. Null when matched is false."
+                },
+                "city": {
+                  "type": "string",
+                  "description": "Postal city of the matched address, upper case. Can differ from place_name, the legally incorporated place. Null when matched is false."
+                },
+                "state": {
+                  "type": "string",
+                  "description": "Two-letter USPS state or territory code of the matched address. Null when matched is false."
+                },
+                "zip": {
+                  "type": "string",
+                  "description": "Five-digit ZIP code Census resolved the address to, kept as a string so leading zeros survive export. Null when matched is false."
+                },
+                "state_fips": {
+                  "type": "string",
+                  "description": "Two-digit state FIPS code, the first component of every Census GEOID. Null when matched is false."
+                },
+                "county_fips": {
+                  "type": "string",
+                  "description": "Five-digit county GEOID (state FIPS plus county code), the county key used by ACS, BLS and most federal datasets. Null when matched is false."
+                },
+                "county_name": {
+                  "type": "string",
+                  "description": "County or county-equivalent name (parish, borough, independent city). Null when matched is false."
+                },
+                "place_name": {
+                  "type": "string",
+                  "description": "Name of the incorporated place (city, town, village) containing the address. Null in unincorporated territory and when matched is false."
+                },
+                "place_geoid": {
+                  "type": "string",
+                  "description": "Seven-digit place GEOID, the join key to Census place-level tables since place names repeat across states. Null when matched is false."
+                },
+                "tract_geoid": {
+                  "type": "string",
+                  "description": "Eleven-digit census tract GEOID, the join key for American Community Survey tract tables. Null when matched is false."
+                },
+                "block_group_geoid": {
+                  "type": "string",
+                  "description": "Twelve-digit block group GEOID, the finest geography the American Community Survey publishes estimates for. Null when matched is false."
+                },
+                "block_geoid": {
+                  "type": "string",
+                  "description": "Fifteen-digit census block GEOID, the finest geography the Bureau publishes and the join key to decennial block data. Null when matched is false."
+                },
+                "zcta": {
+                  "type": "string",
+                  "description": "Five-digit ZIP Code Tabulation Area containing the point, the only ZIP-shaped geography the Bureau actually publishes data for. Can differ from zip. Null when matched is false."
+                },
+                "urban_rural": {
+                  "type": "string",
+                  "description": "Census urban/rural classification of the containing block: U for urban, R for rural. Null when matched is false."
+                },
+                "congressional_district_geoid": {
+                  "type": "string",
+                  "description": "Four-digit congressional district GEOID (state FIPS plus district), unique nationally and the join key to district-level Census tables. Null when matched is false."
+                },
+                "cbsa_name": {
+                  "type": "string",
+                  "description": "Combined Statistical Area name, broader than the single metro area inside it (e.g. Washington joined with Baltimore). Null outside any CSA and when matched is false."
+                },
+                "metro_area_name": {
+                  "type": "string",
+                  "description": "Name of the Core Based Statistical Area (the actual metro or micro area) containing the address. Null outside any CBSA and when matched is false."
+                },
+                "school_district_name": {
+                  "type": "string",
+                  "description": "Name of the school district containing the address; a unified district where one exists, otherwise the elementary or secondary district per school_district_type. Null when matched is false."
+                },
+                "benchmark_name": {
+                  "type": "string",
+                  "description": "The Census address benchmark that actually answered, echoed back by the API on every row."
+                },
+                "vintage_name": {
+                  "type": "string",
+                  "description": "The geography vintage that actually answered, echoed back by the API on every row."
+                }
+              },
+              "required": [
+                "input_address",
+                "matched",
+                "match_count"
               ]
             }
           }

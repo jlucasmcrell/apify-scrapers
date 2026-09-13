@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
   "long_description": "Six read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
@@ -123,6 +123,26 @@
     {
       "name": "youtube_video_search",
       "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required."
+    },
+    {
+      "name": "cms_healthcare_provider_search",
+      "description": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) "
+    },
+    {
+      "name": "europe_pmc_paper_search",
+      "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links."
+    },
+    {
+      "name": "gleif_lei_search",
+      "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number."
+    },
+    {
+      "name": "tech_stack_detector",
+      "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries."
+    },
+    {
+      "name": "us_census_geocoder",
+      "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder."
     }
   ],
   "compatibility": {
