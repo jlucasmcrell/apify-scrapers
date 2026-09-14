@@ -33,7 +33,7 @@
    "per_result_usd": 0.0025,
    "per_start_usd": 0.001,
    "memory_mb": 2048,
-   "store_title": "Google Maps Business Scraper - Local Lead Generation API",
+   "store_title": "Google Maps Business Leads Scraper - Local Lead Generation",
    "store_url": "https://apify.com/captainhandsome/google-maps-business-search"
   }
  },
@@ -117,7 +117,7 @@
    "per_result_usd": 0.002,
    "per_start_usd": 0.0005,
    "memory_mb": 1024,
-   "store_title": "SEC EDGAR Filings Search API & Scraper - 10-K, 10-Q, 8-K",
+   "store_title": "SEC EDGAR Filings Scraper & Search API - 10-K, 10-Q, 8-K",
    "store_url": "https://apify.com/captainhandsome/sec-edgar-filings-search"
   }
  },

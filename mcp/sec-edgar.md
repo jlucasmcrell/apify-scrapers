@@ -8,6 +8,8 @@ permalink: /mcp/sec-edgar/
 
 This is an MCP server for SEC EDGAR filings: it exposes the `sec_edgar_filings` and `sec_form_4_insider_transactions` tools so an AI agent can retrieve periodic filings and structured insider transactions directly from the SEC's own EDGAR system. Every tool, including these, runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 33 tools in total.
 
+Want alerts instead of one-off lookups? Follow the [SEC filing-monitor tutorial](/tutorials/monitor-sec-filings/) to create a scheduled, deduplicated workflow.
+
 ## What an agent can ask
 
 - Pull Tesla's latest annual report -> sec_edgar_filings(ticker="TSLA", form_type="10-K", max_results=1)
@@ -33,7 +35,7 @@ Returns: formType, filingDate, accessionNumber, companyName, cik, documentUrl
 
 Price: $0.002 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
-Store listing: [SEC EDGAR Filings Search API & Scraper - 10-K, 10-Q, 8-K](https://apify.com/captainhandsome/sec-edgar-filings-search)
+Store listing: [SEC EDGAR Filings Scraper & Search API - 10-K, 10-Q, 8-K](https://apify.com/captainhandsome/sec-edgar-filings-search)
 
 Not for: private non-public company intelligence, real-time stock prices, or local trade vendor lists.
 

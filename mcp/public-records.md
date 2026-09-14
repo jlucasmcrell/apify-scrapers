@@ -8,6 +8,8 @@ permalink: /mcp/public-records/
 
 This MCP server for public records gives an AI agent these tools: `us_business_entity_search`, `alabama_business_search`, `florida_new_filings_search`, `florida_officer_search`, `california_contractor_license_search`, `us_contractor_license_search`, `gleif_lei_search`, `french_company_search`, and `cms_healthcare_provider_search`. Each runs as an Apify Actor on the reader's own account, so a free plan works. These are part of [Apify Public Data MCP](/), which exposes 33 tools in total.
 
+For a repeatable watchlist rather than a one-off lookup, follow the [CMS healthcare-provider change-monitoring tutorial](/tutorials/monitor-healthcare-provider-changes/).
+
 ## What an agent can ask
 
 - "Is Acme LLC registered in Florida?" -> florida_new_filings_search(search_query="Acme LLC")

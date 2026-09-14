@@ -41,6 +41,12 @@ One page per question an agent gets asked, each listing the tools, arguments, re
 - [MCP server for job search: LinkedIn and Glassdoor listings](/mcp/job-search/)
 - [MCP server for US government data](/mcp/government-data/)
 
+Focused, end-to-end tutorials:
+
+- [Monitor SEC EDGAR filings automatically](/tutorials/monitor-sec-filings/)
+- [Build a contractor lead list from Google Maps](/tutorials/contractor-lead-generation/)
+- [Monitor CMS healthcare-provider changes](/tutorials/monitor-healthcare-provider-changes/)
+
 ---
 
 ## Available Extractors & Store Listings
@@ -181,24 +187,24 @@ If you automate via n8n, Make, Zapier, or Google Sheets, ready-to-import bluepri
 If you prefer runnable web UI tasks without writing any code, each actor includes pre-configured tasks published on Apify Store:
 
 ### Google Maps Leads
-- [Phoenix HVAC Company Leads](https://apify.com/captainhandsome/google-maps-business-search/tasks/phoenix-hvac-company-leads)
-- [Dallas Commercial Electrician Leads](https://apify.com/captainhandsome/google-maps-business-search/tasks/dallas-commercial-electrician-leads)
-- [Chicago Italian Restaurants & Reviews](https://apify.com/captainhandsome/google-maps-business-search/tasks/chicago-italian-restaurants)
+- [Phoenix HVAC Company Leads](https://apify.com/captainhandsome/google-maps-business-search/examples/phoenix-hvac-company-leads)
+- [Dallas Commercial Electrician Leads](https://apify.com/captainhandsome/google-maps-business-search/examples/dallas-commercial-electrician-leads)
+- [Chicago Dentist Directory](https://apify.com/captainhandsome/google-maps-business-search/examples/chicago-dentist-directory)
 
 ### Glassdoor Jobs
-- [Austin Software Engineer Jobs](https://apify.com/captainhandsome/glassdoor-jobs-scraper/tasks/austin-software-engineer-jobs)
-- [Remote Product Manager Jobs](https://apify.com/captainhandsome/glassdoor-jobs-scraper/tasks/remote-product-manager-jobs)
-- [New York Data Scientist Postings](https://apify.com/captainhandsome/glassdoor-jobs-scraper/tasks/new-york-data-scientist-jobs)
+- [Austin Software Developer Jobs](https://apify.com/captainhandsome/glassdoor-jobs-scraper/examples/austin-software-developer-jobs)
+- [Seattle Product Manager Jobs](https://apify.com/captainhandsome/glassdoor-jobs-scraper/examples/seattle-product-manager-jobs)
+- [New York Data Analyst Jobs](https://apify.com/captainhandsome/glassdoor-jobs-scraper/examples/new-york-data-analyst-jobs)
 
 ### Airbnb Rentals
-- [Nashville Vacation Rental Listings](https://apify.com/captainhandsome/airbnb-listings-search/tasks/nashville-vacation-rentals)
-- [Miami Beach Condos & Apartments](https://apify.com/captainhandsome/airbnb-listings-search/tasks/miami-beach-condos)
-- [Austin Downtown Rental Market](https://apify.com/captainhandsome/airbnb-listings-search/tasks/austin-airbnb-listings)
+- [Nashville Airbnb Listings](https://apify.com/captainhandsome/airbnb-listings-search/examples/nashville-airbnb-listings)
+- [Miami Airbnb Listings](https://apify.com/captainhandsome/airbnb-listings-search/examples/miami-airbnb-listings)
+- [Austin Airbnb Listings](https://apify.com/captainhandsome/airbnb-listings-search/examples/austin-airbnb-listings)
 
 ### YouTube & Google Play
-- [Small Business Marketing Videos](https://apify.com/captainhandsome/youtube-search-scraper/tasks/small-business-marketing-videos)
-- [Python Web Scraping Tutorials](https://apify.com/captainhandsome/youtube-search-scraper/tasks/python-web-scraping-tutorials)
-- [Instagram 1-Star Play Store Reviews](https://apify.com/captainhandsome/google-play-reviews-scraper/tasks/instagram-one-star-reviews)
+- [Small Business Marketing Videos](https://apify.com/captainhandsome/youtube-search-scraper/examples/small-business-marketing-videos)
+- [Python Tutorial Video Research](https://apify.com/captainhandsome/youtube-search-scraper/examples/python-tutorial-video-research)
+- [Instagram One-Star Play Store Reviews](https://apify.com/captainhandsome/google-play-reviews-scraper/examples/one-star-instagram-reviews)
 
 ---
 

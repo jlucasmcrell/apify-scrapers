@@ -8,6 +8,8 @@ permalink: /mcp/google-maps/
 
 This MCP server for Google Maps data and business leads gives an AI agent one tool, `google_maps_search`, for pulling local commercial listings straight out of Google Maps. An agent can hand it a trade category and a city and get back a structured list of businesses with phone numbers, websites, addresses, and review data, ready to drop into a spreadsheet or a CRM import. Every tool in the toolset runs as an Apify Actor on your own Apify account, so nothing routes through a shared quota, and the free plan works fine for testing and light use. This page is one of 33 tools exposed by [Apify Public Data MCP](/), a single MCP server that also covers business registries, contractor licenses, job boards, SEC filings, and more.
 
+Want the complete workflow? Follow the [contractor lead-generation tutorial](/tutorials/contractor-lead-generation/) from search through licence verification and CSV export.
+
 ## What an agent can ask
 
 - "Find HVAC contractors in Phoenix, AZ" -> google_maps_search(search_query="HVAC contractors in Phoenix, AZ")
@@ -33,7 +35,7 @@ Returns: title, phone, website, address, totalScore, reviewsCount, categoryName,
 
 Price: $0.0025 per result plus $0.001 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
-Store listing: [Google Maps Business Scraper - Local Lead Generation API](https://apify.com/captainhandsome/google-maps-business-search)
+Store listing: [Google Maps Business Leads Scraper - Local Lead Generation](https://apify.com/captainhandsome/google-maps-business-search)
 
 Not for: employment job listings, corporate regulatory filings, federal procurement awards, or short-term vacation rentals.
 
