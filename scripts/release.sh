@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Release apify-data-scrapers to every venue, with a read-back after each step.
 #
+#   0. verify every MCP tool targets a public, agentic-eligible Actor
 #   1. build sdist + wheel                    (python -m build)
 #   2. PyPI upload + JSON-API verify          (twine; PYPI_TOKEN from G:/apify-fleet/.env)
 #   3. official MCP registry publish + verify (mcp-publisher; gh token, non-interactive)
@@ -18,6 +19,9 @@ PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2-)"; SM="$(grep -oE '^SMIT
 mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
 cd "$REPO" || exit 1
 grep -q "version=\"$V\"" setup.py || { echo "ABORT: setup.py is not at $V"; exit 2; }
+
+echo "=== 0. public availability gate ==="
+python scripts/audit_public_coverage.py --require-release-ready || exit 2
 
 echo "=== 1. build $V ==="
 rm -rf dist && python -m build --sdist --wheel -q 2>&1 | tail -1
