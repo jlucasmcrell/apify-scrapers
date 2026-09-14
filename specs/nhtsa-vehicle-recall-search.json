@@ -1,0 +1,55 @@
+{
+  "actor": "nhtsa-vehicle-recall-search",
+  "tool": {
+    "name": "nhtsa_vehicle_recall_search",
+    "title": "NHTSA Vehicle Recall Search",
+    "description": "Search official US vehicle-safety recalls by year, make and model or by NHTSA campaign number. Returns defect summaries, safety consequences, remedies, affected-unit counts and urgent park warnings.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/nhtsa-vehicle-recall-search'.\n- Side Effects: Strictly read-only; queries the public NHTSA recalls API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for recall research, vehicle-safety checks, campaign monitoring and fleet-risk analysis.\n- When NOT to use: Do not use for drug, device or food recalls (use 'openfda_search'), or for general company filings.\n- Named alternatives: Use 'openfda_search' for FDA-regulated product recalls or 'sec_edgar_filings' for public-company filings.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "make": {"type": "string", "description": "Vehicle make, for example Honda. Supply make, model and model_year together unless using campaign_number."},
+        "model": {"type": "string", "description": "Vehicle model, for example Civic."},
+        "model_year": {"type": "integer", "minimum": 1949, "maximum": 2100, "description": "Four-digit vehicle model year."},
+        "campaign_number": {"type": "string", "description": "Exact NHTSA campaign number. Overrides vehicle fields when supplied."},
+        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum recall rows to return."}
+      }
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "campaign_number": {"type": "string", "description": "Official NHTSA recall campaign number."},
+              "manufacturer": {"type": "string", "description": "Manufacturer named in the recall."},
+              "make": {"type": "string", "description": "Vehicle make."},
+              "model": {"type": "string", "description": "Vehicle model."},
+              "model_year": {"type": "integer", "description": "Vehicle model year."},
+              "component": {"type": "string", "description": "Affected vehicle system or component."},
+              "summary": {"type": "string", "description": "Official defect summary."},
+              "consequence": {"type": "string", "description": "Official safety consequence."},
+              "remedy": {"type": "string", "description": "Manufacturer remedy and owner instructions."},
+              "potential_units_affected": {"type": "integer", "description": "Potential number of affected units."},
+              "park_it": {"type": "boolean", "description": "Whether NHTSA issues a park-it warning."},
+              "park_outside": {"type": "boolean", "description": "Whether NHTSA issues a park-outside warning."}
+            }
+          }
+        }
+      },
+      "required": ["results"]
+    },
+    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+  },
+  "payload_mapping": {
+    "make": {"key": "make", "transform": "identity"},
+    "model": {"key": "model", "transform": "identity"},
+    "model_year": {"key": "model_year", "transform": "int"},
+    "campaign_number": {"key": "campaign_number", "transform": "identity"},
+    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+  },
+  "fixed_payload": {},
+  "example_call": {"campaign_number": "21V215000", "max_results": 3},
+  "verification": {"run_id": "UpsDRGIEuWqRiQdym", "items": 3, "token": "21v215000", "relevant": true}
+}

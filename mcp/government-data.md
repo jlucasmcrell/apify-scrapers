@@ -6,7 +6,7 @@ permalink: /mcp/government-data/
 ---
 # MCP server for US government data: USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov
 
-This is an MCP server for US government data: it exposes tools so an AI agent can query USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov, and SEC EDGAR records. Every tool runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 25 tools total.
+This is an MCP server for US government data: it exposes tools so an AI agent can query USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov, SEC EDGAR, Grants.gov, OFAC, and NHTSA records. Every tool runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 30 tools total.
 
 ## What an agent can ask
 

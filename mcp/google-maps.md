@@ -6,7 +6,7 @@ permalink: /mcp/google-maps/
 ---
 # MCP server for Google Maps data and business leads
 
-This MCP server for Google Maps data and business leads gives an AI agent one tool, `google_maps_search`, for pulling local commercial listings straight out of Google Maps. An agent can hand it a trade category and a city and get back a structured list of businesses with phone numbers, websites, addresses, and review data, ready to drop into a spreadsheet or a CRM import. Every tool in the toolset runs as an Apify Actor on your own Apify account, so nothing routes through a shared quota, and the free plan works fine for testing and light use. This page is one of 25 tools exposed by [Apify Public Data MCP](/), a single MCP server that also covers business registries, contractor licenses, job boards, SEC filings, and more.
+This MCP server for Google Maps data and business leads gives an AI agent one tool, `google_maps_search`, for pulling local commercial listings straight out of Google Maps. An agent can hand it a trade category and a city and get back a structured list of businesses with phone numbers, websites, addresses, and review data, ready to drop into a spreadsheet or a CRM import. Every tool in the toolset runs as an Apify Actor on your own Apify account, so nothing routes through a shared quota, and the free plan works fine for testing and light use. This page is one of 30 tools exposed by [Apify Public Data MCP](/), a single MCP server that also covers business registries, contractor licenses, job boards, SEC filings, and more.
 
 ## What an agent can ask
 

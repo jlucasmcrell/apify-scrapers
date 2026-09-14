@@ -1,0 +1,64 @@
+{
+  "actor": "sec-form-4-insider-transactions",
+  "tool": {
+    "name": "sec_form_4_insider_transactions",
+    "title": "SEC Form 4 Insider Transactions",
+    "description": "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-form-4-insider-transactions'.\n- Side Effects: Strictly read-only; requests public SEC EDGAR submissions and ownership XML under an SEC-compliant contact identity.\n- Authentication: Requires APIFY_TOKEN environment variable; the Actor publisher supplies the SEC contact identity.\n- Latency & Limits: Typical run duration is 10-90 seconds depending on max_filings; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for insider-trading research, ownership-change monitoring and transaction-level Form 4 analysis.\n- When NOT to use: Do not use for 10-K, 10-Q or 8-K filings (use 'sec_edgar_filings') or campaign-finance data (use 'fec_campaign_finance_search').\n- Named alternatives: Use 'sec_edgar_filings' for company filings and exhibits, or 'fec_campaign_finance_search' for US political contributions and committees.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "company": {"type": "string", "minLength": 1, "description": "Public-company ticker or 1-10 digit SEC CIK."},
+        "date_from": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "Inclusive filing start date, YYYY-MM-DD."},
+        "date_to": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "Inclusive filing end date, YYYY-MM-DD."},
+        "transaction_codes": {"type": "array", "items": {"type": "string"}, "description": "Exact SEC transaction codes such as P, S, A, M or G."},
+        "include_derivative": {"type": "boolean", "default": true, "description": "Include derivative securities such as options."},
+        "include_amendments": {"type": "boolean", "default": true, "description": "Include amended Form 4/A filings."},
+        "max_filings": {"type": "integer", "minimum": 1, "maximum": 1000, "default": 100, "description": "Maximum ownership XML filings to inspect."},
+        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum transaction rows to return."}
+      },
+      "required": ["company"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "issuer_name": {"type": "string", "description": "Issuer name."},
+              "ticker": {"type": "string", "description": "Issuer trading symbol."},
+              "reporting_owner_names": {"type": "string", "description": "Reporting-owner names."},
+              "officer_titles": {"type": "string", "description": "Reporting-owner officer titles."},
+              "transaction_id": {"type": "string", "description": "Stable transaction-row identifier."},
+              "transaction_type": {"type": "string", "description": "Non-derivative or derivative table."},
+              "transaction_date": {"type": "string", "description": "Transaction date."},
+              "transaction_code": {"type": "string", "description": "SEC ownership transaction code."},
+              "acquired_disposed_code": {"type": "string", "description": "A for acquired or D for disposed."},
+              "shares": {"type": "number", "description": "Securities acquired or disposed."},
+              "price_per_share": {"type": "number", "description": "Transaction price per share."},
+              "shares_owned_after": {"type": "number", "description": "Securities beneficially owned after the transaction."},
+              "filing_date": {"type": "string", "description": "SEC filing date."},
+              "filing_url": {"type": "string", "description": "Official SEC filing index URL."}
+            }
+          }
+        }
+      },
+      "required": ["results"]
+    },
+    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+  },
+  "payload_mapping": {
+    "company": {"key": "company", "transform": "identity", "required": true},
+    "date_from": {"key": "date_from", "transform": "identity"},
+    "date_to": {"key": "date_to", "transform": "identity"},
+    "transaction_codes": {"key": "transaction_codes", "transform": "strlist"},
+    "include_derivative": {"key": "include_derivative", "transform": "identity", "default": true},
+    "include_amendments": {"key": "include_amendments", "transform": "identity", "default": true},
+    "max_filings": {"key": "max_filings", "transform": "int", "default": 100},
+    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+  },
+  "fixed_payload": {},
+  "example_call": {"company": "NVDA", "max_results": 3},
+  "verification": {"run_id": "O8hbV0Bp1r7UTT3SN", "items": 3, "token": "nvidia", "relevant": true}
+}

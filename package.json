@@ -1,7 +1,7 @@
 {
   "name": "apify-data-scrapers",
-  "version": "1.0.11",
-  "description": "MCP server exposing 25 Apify public-data scrapers as tools: Google Maps leads, LinkedIn/Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials, openFDA, state business registries, contractor licenses, Airbnb, YouTube, Twitch, Google Play reviews.",
+  "version": "1.0.12",
+  "description": "MCP server exposing 30 Apify public-data scrapers as tools: business leads, jobs, SEC filings, procurement, sanctions, recalls, health, registries, media, and more.",
   "main": "examples/google_maps_leads.js",
   "type": "module",
   "scripts": {

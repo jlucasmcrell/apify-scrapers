@@ -1,7 +1,7 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.0.11",
-  "description": "25 Apify public-data scrapers as MCP tools: Google Maps leads, jobs, SEC EDGAR, business registries.",
+  "version": "1.0.12",
+  "description": "30 Apify public-data scrapers as MCP tools: leads, jobs, SEC data, procurement, sanctions, recalls, and registries.",
   "homepage": "https://apify.revenuesystemslabs.com/",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
   },
-  "instructions": "Apify Public Data MCP exposes 25 public-data extraction tools: business leads (Google Maps, website tech stack), jobs (LinkedIn, Glassdoor), corporate and public records (SEC EDGAR, GLEIF, US state business registries, contractor licences, French companies), US government data (USAspending, FEC, EPA, Census geocoding, CMS providers), research and health (ClinicalTrials.gov, openFDA, Europe PMC), and media (Airbnb, YouTube, Twitch, Google Play reviews). Each call runs an Apify Actor on the caller's own account and returns JSON records; runs need the APIFY_TOKEN environment variable and typically take 5-60 seconds.",
+  "instructions": "Apify Public Data MCP exposes 30 public-data extraction tools: business leads, jobs, corporate filings and insider transactions, US and EU procurement, grants, sanctions, vehicle recalls, registries, government, research, health and media data. Each call runs an Apify Actor on the caller's own account and returns JSON records; runs need the APIFY_TOKEN environment variable and typically take 5-90 seconds.",
   "capabilities": {
     "tools": {
       "listChanged": false
@@ -2906,6 +2906,636 @@
                 "matched",
                 "match_count"
               ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "grants_gov_opportunity_search",
+      "title": "Grants.gov Funding Opportunity Search",
+      "description": "Search official US federal funding opportunities from Grants.gov by keyword, agency, status, opportunity number or Assistance Listing. Returns deadlines, award ranges, eligibility, contacts and canonical source links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/grants-gov-opportunity-search'.\n- Side Effects: Strictly read-only; queries the official Grants.gov API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-60 seconds; include_details adds one detail request per result.\n\nUsage Guidelines:\n- When to use: Use for grant prospecting, research-funding discovery and federal opportunity monitoring.\n- When NOT to use: Do not use for awarded federal contracts (use 'usaspending_contracts') or European procurement (use 'ted_eu_tender_search').\n- Named alternatives: Use 'usaspending_contracts' for historical US awards or 'ted_eu_tender_search' for European tender notices.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Keywords to search in opportunity titles and descriptions."
+          },
+          "opportunity_number": {
+            "type": "string",
+            "description": "Exact or partial funding opportunity number."
+          },
+          "agency_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Federal agency codes such as NSF or HHS."
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "forecasted",
+                "posted",
+                "closed",
+                "archived"
+              ]
+            },
+            "description": "Opportunity statuses to include."
+          },
+          "assistance_listing": {
+            "type": "string",
+            "description": "Assistance Listing number, formerly CFDA, such as 47.070."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": true,
+            "description": "Fetch award, eligibility, synopsis and contact details."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum opportunities to return."
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "opportunity_number": {
+                  "type": "string",
+                  "description": "Official funding opportunity number."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Official opportunity title."
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current Grants.gov status."
+                },
+                "agency_name": {
+                  "type": "string",
+                  "description": "Owning federal agency."
+                },
+                "open_date": {
+                  "type": "string",
+                  "description": "Opportunity opening date."
+                },
+                "close_date": {
+                  "type": "string",
+                  "description": "Application deadline."
+                },
+                "estimated_funding": {
+                  "type": "number",
+                  "description": "Estimated total program funding."
+                },
+                "award_ceiling": {
+                  "type": "number",
+                  "description": "Maximum award amount."
+                },
+                "award_floor": {
+                  "type": "number",
+                  "description": "Minimum award amount."
+                },
+                "eligibility": {
+                  "type": "string",
+                  "description": "Applicant eligibility description."
+                },
+                "contact_email": {
+                  "type": "string",
+                  "description": "Agency contact email."
+                },
+                "grants_gov_url": {
+                  "type": "string",
+                  "description": "Canonical Grants.gov opportunity page."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "nhtsa_vehicle_recall_search",
+      "title": "NHTSA Vehicle Recall Search",
+      "description": "Search official US vehicle-safety recalls by year, make and model or by NHTSA campaign number. Returns defect summaries, safety consequences, remedies, affected-unit counts and urgent park warnings.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/nhtsa-vehicle-recall-search'.\n- Side Effects: Strictly read-only; queries the public NHTSA recalls API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for recall research, vehicle-safety checks, campaign monitoring and fleet-risk analysis.\n- When NOT to use: Do not use for drug, device or food recalls (use 'openfda_search'), or for general company filings.\n- Named alternatives: Use 'openfda_search' for FDA-regulated product recalls or 'sec_edgar_filings' for public-company filings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Vehicle make, for example Honda. Supply make, model and model_year together unless using campaign_number."
+          },
+          "model": {
+            "type": "string",
+            "description": "Vehicle model, for example Civic."
+          },
+          "model_year": {
+            "type": "integer",
+            "minimum": 1949,
+            "maximum": 2100,
+            "description": "Four-digit vehicle model year."
+          },
+          "campaign_number": {
+            "type": "string",
+            "description": "Exact NHTSA campaign number. Overrides vehicle fields when supplied."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum recall rows to return."
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "campaign_number": {
+                  "type": "string",
+                  "description": "Official NHTSA recall campaign number."
+                },
+                "manufacturer": {
+                  "type": "string",
+                  "description": "Manufacturer named in the recall."
+                },
+                "make": {
+                  "type": "string",
+                  "description": "Vehicle make."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Vehicle model."
+                },
+                "model_year": {
+                  "type": "integer",
+                  "description": "Vehicle model year."
+                },
+                "component": {
+                  "type": "string",
+                  "description": "Affected vehicle system or component."
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "Official defect summary."
+                },
+                "consequence": {
+                  "type": "string",
+                  "description": "Official safety consequence."
+                },
+                "remedy": {
+                  "type": "string",
+                  "description": "Manufacturer remedy and owner instructions."
+                },
+                "potential_units_affected": {
+                  "type": "integer",
+                  "description": "Potential number of affected units."
+                },
+                "park_it": {
+                  "type": "boolean",
+                  "description": "Whether NHTSA issues a park-it warning."
+                },
+                "park_outside": {
+                  "type": "boolean",
+                  "description": "Whether NHTSA issues a park-outside warning."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ofac_sanctions_search",
+      "title": "OFAC Sanctions Search",
+      "description": "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ofac-sanctions-search'.\n- Side Effects: Strictly read-only; downloads and filters official OFAC Sanctions List Service data.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-40 seconds; results are exact source matches, not fuzzy compliance screening scores.\n\nUsage Guidelines:\n- When to use: Use for research, list reconciliation, sanctions-data enrichment and exact/substring name discovery.\n- When NOT to use: Do not treat a name match as a legal compliance determination; do not use for corporate filings (use 'sec_edgar_filings') or entity-registration verification (use 'us_business_entity_search').\n- Named alternatives: Use 'sec_edgar_filings' for US public-company filings, 'gleif_lei_search' for legal-entity identifiers, or 'us_business_entity_search' for state registrations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Case-insensitive primary name or alias to search."
+          },
+          "match_mode": {
+            "type": "string",
+            "enum": [
+              "contains",
+              "exact"
+            ],
+            "default": "contains",
+            "description": "Substring discovery or exact normalized matching."
+          },
+          "program": {
+            "type": "string",
+            "description": "Optional OFAC sanctions program code."
+          },
+          "country": {
+            "type": "string",
+            "description": "Optional country filter across addresses and vessel flag."
+          },
+          "entity_type": {
+            "type": "string",
+            "description": "Optional party type such as individual, entity, vessel or aircraft."
+          },
+          "list_scope": {
+            "type": "string",
+            "enum": [
+              "all",
+              "sdn",
+              "non_sdn"
+            ],
+            "default": "all",
+            "description": "Search SDN, consolidated non-SDN, or both."
+          },
+          "include_aliases": {
+            "type": "boolean",
+            "default": true,
+            "description": "Match the query against alternate names as well as primary names."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum sanctions records to return."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "list_type": {
+                  "type": "string",
+                  "description": "Source OFAC list."
+                },
+                "uid": {
+                  "type": "string",
+                  "description": "OFAC unique record identifier."
+                },
+                "primary_name": {
+                  "type": "string",
+                  "description": "Primary sanctioned-party name."
+                },
+                "entity_type": {
+                  "type": "string",
+                  "description": "OFAC party type."
+                },
+                "programs": {
+                  "type": "string",
+                  "description": "Sanctions program codes."
+                },
+                "aliases": {
+                  "type": "string",
+                  "description": "Alternate names."
+                },
+                "addresses": {
+                  "type": "string",
+                  "description": "Street addresses."
+                },
+                "countries": {
+                  "type": "string",
+                  "description": "Address countries."
+                },
+                "matched_name": {
+                  "type": "string",
+                  "description": "Primary or alias name that matched."
+                },
+                "match_basis": {
+                  "type": "string",
+                  "description": "Whether the match was on a primary name or alias."
+                },
+                "source_url": {
+                  "type": "string",
+                  "description": "Official OFAC source page."
+                },
+                "downloaded_at": {
+                  "type": "string",
+                  "description": "UTC source retrieval time."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "sec_form_4_insider_transactions",
+      "title": "SEC Form 4 Insider Transactions",
+      "description": "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-form-4-insider-transactions'.\n- Side Effects: Strictly read-only; requests public SEC EDGAR submissions and ownership XML under an SEC-compliant contact identity.\n- Authentication: Requires APIFY_TOKEN environment variable; the Actor publisher supplies the SEC contact identity.\n- Latency & Limits: Typical run duration is 10-90 seconds depending on max_filings; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for insider-trading research, ownership-change monitoring and transaction-level Form 4 analysis.\n- When NOT to use: Do not use for 10-K, 10-Q or 8-K filings (use 'sec_edgar_filings') or campaign-finance data (use 'fec_campaign_finance_search').\n- Named alternatives: Use 'sec_edgar_filings' for company filings and exhibits, or 'fec_campaign_finance_search' for US political contributions and committees.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Public-company ticker or 1-10 digit SEC CIK."
+          },
+          "date_from": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Inclusive filing start date, YYYY-MM-DD."
+          },
+          "date_to": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Inclusive filing end date, YYYY-MM-DD."
+          },
+          "transaction_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact SEC transaction codes such as P, S, A, M or G."
+          },
+          "include_derivative": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include derivative securities such as options."
+          },
+          "include_amendments": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include amended Form 4/A filings."
+          },
+          "max_filings": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum ownership XML filings to inspect."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum transaction rows to return."
+          }
+        },
+        "required": [
+          "company"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "issuer_name": {
+                  "type": "string",
+                  "description": "Issuer name."
+                },
+                "ticker": {
+                  "type": "string",
+                  "description": "Issuer trading symbol."
+                },
+                "reporting_owner_names": {
+                  "type": "string",
+                  "description": "Reporting-owner names."
+                },
+                "officer_titles": {
+                  "type": "string",
+                  "description": "Reporting-owner officer titles."
+                },
+                "transaction_id": {
+                  "type": "string",
+                  "description": "Stable transaction-row identifier."
+                },
+                "transaction_type": {
+                  "type": "string",
+                  "description": "Non-derivative or derivative table."
+                },
+                "transaction_date": {
+                  "type": "string",
+                  "description": "Transaction date."
+                },
+                "transaction_code": {
+                  "type": "string",
+                  "description": "SEC ownership transaction code."
+                },
+                "acquired_disposed_code": {
+                  "type": "string",
+                  "description": "A for acquired or D for disposed."
+                },
+                "shares": {
+                  "type": "number",
+                  "description": "Securities acquired or disposed."
+                },
+                "price_per_share": {
+                  "type": "number",
+                  "description": "Transaction price per share."
+                },
+                "shares_owned_after": {
+                  "type": "number",
+                  "description": "Securities beneficially owned after the transaction."
+                },
+                "filing_date": {
+                  "type": "string",
+                  "description": "SEC filing date."
+                },
+                "filing_url": {
+                  "type": "string",
+                  "description": "Official SEC filing index URL."
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ted_eu_tender_search",
+      "title": "TED European Tender Search",
+      "description": "Search official Tenders Electronic Daily notices by keywords, contracting authority, country, CPV code and publication date. Returns buyers, deadlines, estimated values, classifications and direct TED documents.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ted-eu-tender-search'.\n- Side Effects: Strictly read-only; queries the official EU TED Search API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-45 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for European public-procurement discovery, bid monitoring, buyer research and CPV market analysis.\n- When NOT to use: Do not use for US grants (use 'grants_gov_opportunity_search') or completed US federal awards (use 'usaspending_contracts').\n- Named alternatives: Use 'grants_gov_opportunity_search' for US funding opportunities or 'usaspending_contracts' for awarded US contracts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Words or phrase to match in TED notice titles."
+          },
+          "buyer_name": {
+            "type": "string",
+            "description": "Text to match in contracting authority names."
+          },
+          "buyer_country": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{3}$",
+            "description": "ISO alpha-3 buyer country code, for example DEU or FRA."
+          },
+          "cpv_code": {
+            "type": "string",
+            "pattern": "^\\d{8}$",
+            "description": "Eight-digit Common Procurement Vocabulary code."
+          },
+          "publication_date_from": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Earliest publication date, YYYY-MM-DD."
+          },
+          "publication_date_to": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Latest publication date, YYYY-MM-DD."
+          },
+          "language": {
+            "type": "string",
+            "default": "eng",
+            "minLength": 3,
+            "maxLength": 3,
+            "description": "Three-letter TED language code."
+          },
+          "sort_direction": {
+            "type": "string",
+            "enum": [
+              "desc",
+              "asc"
+            ],
+            "default": "desc",
+            "description": "Newest or oldest publication date first."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum tender notices to return."
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "publication_number": {
+                  "type": "string",
+                  "description": "Official TED notice publication number."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Notice title."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Lot descriptions."
+                },
+                "buyer_names": {
+                  "type": "string",
+                  "description": "Contracting authority names."
+                },
+                "buyer_countries": {
+                  "type": "string",
+                  "description": "Buyer country codes."
+                },
+                "publication_date": {
+                  "type": "string",
+                  "description": "TED publication date."
+                },
+                "deadlines": {
+                  "type": "string",
+                  "description": "Tender receipt deadlines."
+                },
+                "cpv_codes": {
+                  "type": "string",
+                  "description": "Main CPV codes."
+                },
+                "estimated_value": {
+                  "type": "number",
+                  "description": "Estimated procedure value."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Estimated-value currency."
+                },
+                "notice_url": {
+                  "type": "string",
+                  "description": "Canonical TED notice page."
+                },
+                "pdf_url": {
+                  "type": "string",
+                  "description": "Direct preferred-language PDF."
+                }
+              }
             }
           }
         },

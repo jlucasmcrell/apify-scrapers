@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data MCP: 25 Production Scrapers & Public Records
+# Apify Public Data MCP: 30 Production Scrapers & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
@@ -9,7 +9,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/jlucasmcrell/apify-scrapers)
-One MCP server gives an AI agent **25 production public-data extractors** - Google Maps business leads, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
+One MCP server gives an AI agent **30 production public-data extractors** - Google Maps business leads, LinkedIn and Glassdoor jobs, SEC EDGAR and Form 4, USAspending, Grants.gov, TED tenders, OFAC sanctions, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
@@ -78,7 +78,12 @@ Every extractor below is both an Apify Store listing and an MCP tool of the same
 | Tool | Store Link | Key Output Fields | Best For |
 |---|---|---|---|
 | **SEC EDGAR Corporate Filings** | [`captainhandsome/sec-edgar-filings-search`](https://apify.com/captainhandsome/sec-edgar-filings-search) | Ticker, CIK, form (10-K, 10-Q, 8-K), filing date, primary document URL | Financial diligence, equity research, compliance |
+| **SEC Form 4 Insider Transactions** | [`captainhandsome/sec-form-4-insider-transactions`](https://apify.com/captainhandsome/sec-form-4-insider-transactions) | Reporting owner, role, transaction code, shares, price, ownership after transaction | Insider-trading research, ownership-change monitoring |
 | **USAspending Federal Awards** | [`captainhandsome/usaspending-federal-awards`](https://apify.com/captainhandsome/usaspending-federal-awards) | Recipient vendor, award amount, awarding agency, description, dates | Government contracting, procurement intel |
+| **Grants.gov Funding Opportunities** | [`captainhandsome/grants-gov-opportunity-search`](https://apify.com/captainhandsome/grants-gov-opportunity-search) | Opportunity number, agency, deadline, award range, eligibility, contacts | Federal grant prospecting and funding monitoring |
+| **TED European Tenders** | [`captainhandsome/ted-eu-tender-search`](https://apify.com/captainhandsome/ted-eu-tender-search) | Buyer, country, CPV code, deadline, estimated value, source documents | European procurement and bid discovery |
+| **OFAC Sanctions Search** | [`captainhandsome/ofac-sanctions-search`](https://apify.com/captainhandsome/ofac-sanctions-search) | Primary name, aliases, programs, entity type, addresses, source IDs | Sanctions-data research and list reconciliation |
+| **NHTSA Vehicle Recalls** | [`captainhandsome/nhtsa-vehicle-recall-search`](https://apify.com/captainhandsome/nhtsa-vehicle-recall-search) | Campaign number, component, defect, consequence, remedy, affected units | Vehicle-safety checks and recall monitoring |
 | **FEC Campaign Finance Search** | [`captainhandsome/fec-campaign-finance-search`](https://apify.com/captainhandsome/fec-campaign-finance-search) | record type, id, name, party, office | Search US federal candidates, PACs and campaign contributions by state |
 | **EPA ECHO Facility Compliance & Violations** | [`captainhandsome/epa-echo-facility-search`](https://apify.com/captainhandsome/epa-echo-facility-search) | registry id, name, street, city, state | Search EPA-regulated US facilities by state, ZIP, NAICS, name, program |
 | **US Census Address Geocoder** | [`captainhandsome/us-census-geocoder`](https://apify.com/captainhandsome/us-census-geocoder) | matched_address, county_name, tract_geoid, block_geoid, congressional_district_geoid | Best for appending census tract, county FIPS and district GEOIDs to US addresses for demographic joins and compliance reporting. |
