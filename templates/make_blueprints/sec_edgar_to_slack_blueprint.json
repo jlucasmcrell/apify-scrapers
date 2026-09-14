@@ -238,19 +238,38 @@
     },
     {
       "id": 3,
-      "module": "builtin:BasicWebhook",
-      "version": 1,
-      "parameters": {},
+      "module": "http:ActionSendData",
+      "version": 3,
+      "parameters": {
+        "handleErrors": false,
+        "useNewZLibDeCompress": true
+      },
       "mapper": {
+        "ca": "",
+        "qs": [],
         "url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
-        "method": "POST",
+        "data": "{\"text\": \"\\ud83d\\udd14 *New SEC {{2.form}} Filing*\\n*Company:* {{2.company_name}} ({{2.ticker}})\\n*Filed Date:* {{2.filing_date}}\\n*Document:* {{2.filing_url}}\"}",
+        "gzip": true,
+        "method": "post",
         "headers": [
           {
             "name": "Content-Type",
             "value": "application/json"
           }
         ],
-        "body": "{\"text\": \"\\ud83d\\udd14 *New SEC {{2.form}} Filing*\\n*Company:* {{2.company_name}} ({{2.ticker}})\\n*Filed Date:* {{2.filing_date}}\\n*Document:* {{2.filing_url}}\"}"
+        "timeout": "",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "raw",
+        "contentType": "application/json",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": false,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
       },
       "metadata": {
         "designer": {
