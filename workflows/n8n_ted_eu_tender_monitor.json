@@ -1,0 +1,118 @@
+{
+  "name": "Daily TED European Tender Monitor to Slack or Discord",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "55555555-0000-0000-0000-000000000001",
+      "name": "Every 24 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/captainhandsome~ted-eu-tender-search/run-sync-get-dataset-items?clean=true&format=json&timeout=300&maxItems=10",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"keywords\": \"renewable energy\",\n  \"language\": \"eng\",\n  \"sort_direction\": \"desc\",\n  \"max_items\": 10\n}",
+        "options": {}
+      },
+      "id": "55555555-0000-0000-0000-000000000002",
+      "name": "Search TED Tenders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.publication_number || row.notice_url || row.title;\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 1000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
+      },
+      "id": "55555555-0000-0000-0000-000000000005",
+      "name": "Only New Tenders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: '*New TED tender*\\n*Title:* ' + $json.title + '\\n*Buyer:* ' + $json.buyer_names + '\\n*Published:* ' + $json.publication_date + '\\n*Deadline:* ' + $json.deadlines + '\\n*Link:* ' + $json.notice_url }) }}",
+        "options": {}
+      },
+      "id": "55555555-0000-0000-0000-000000000006",
+      "name": "Send Tender Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        920,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Search TED Tenders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search TED Tenders": {
+      "main": [
+        [
+          {
+            "node": "Only New Tenders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only New Tenders": {
+      "main": [
+        [
+          {
+            "node": "Send Tender Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateId": "apify-ted-eu-tender-monitor",
+    "instanceId": "community-template",
+    "description": "Monitor official TED procurement notices with captainhandsome/ted-eu-tender-search, suppress previously seen tenders, and send new opportunities to Slack or Discord."
+  }
+}

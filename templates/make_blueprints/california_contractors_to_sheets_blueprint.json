@@ -10,8 +10,8 @@
       "mapper": {
         "actor_search_type": "user",
         "runSync": true,
-        "actorId": "TC0kItzB0YS9OXnFs",
-        "inputBodyTC0kItzB0YS9OXnFs": "{\n  \"license_number\": \"1045231\",\n  \"business_name\": \"Solar Electric\",\n  \"max_items\": 25\n}"
+        "actorId": "auBYHt5uceIcYQUR8",
+        "inputBodyauBYHt5uceIcYQUR8": "{\n  \"search_terms\": [\n    \"Solar Electric\"\n  ],\n  \"max_items\": 25,\n  \"include_details\": true\n}"
       },
       "metadata": {
         "designer": {
@@ -21,7 +21,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -41,7 +41,7 @@
             },
             "actorId": {
               "mode": "chose",
-              "label": "Google Maps Business Search Scraper (captainhandsome/google-maps-business-search)"
+              "label": "California Contractor License Search (captainhandsome/ca-contractor-license-search)"
             }
           }
         },
@@ -107,7 +107,7 @@
             "required": true
           },
           {
-            "name": "inputBodyTC0kItzB0YS9OXnFs",
+            "name": "inputBodyauBYHt5uceIcYQUR8",
             "type": "text",
             "label": "Input JSON",
             "required": true
@@ -144,7 +144,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection (jlucasmcrell@gmail.com)",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -247,14 +247,14 @@
         "valueInputOption": "USER_ENTERED",
         "insertDataOption": "INSERT_ROWS",
         "from": "drive",
-        "spreadsheetId": "/1F2NdlYK78QvXLt9Uemjpo9i16nzgDaSvr-vmxepz8v8",
+        "spreadsheetId": "YOUR_GOOGLE_SHEET_ID",
         "sheetId": "Leads",
         "includesHeaders": true,
         "useColumnHeaders": false,
         "values": {
           "0": "{{2.license_number}}",
-          "1": "{{2.business_name}}",
-          "2": "{{2.entity_type}}",
+          "1": "{{2.contractor_name}}",
+          "2": "{{2.business_entity}}",
           "3": "{{2.issue_date}}",
           "4": "{{2.expire_date}}",
           "5": "{{2.status}}",
@@ -269,7 +269,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Google connection (jlucasmcrell@gmail.com)",
+              "label": "Google Sheets connection",
               "data": {
                 "scoped": "true",
                 "connection": "google"

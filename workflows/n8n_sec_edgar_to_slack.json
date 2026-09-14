@@ -24,13 +24,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/captainhandsome~sec-edgar-filings-search/runs",
+        "url": "https://api.apify.com/v2/acts/captainhandsome~sec-edgar-filings-search/run-sync-get-dataset-items?clean=true&format=json&timeout=300&maxItems=10",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"tickers\": [\"AAPL\", \"MSFT\", \"NVDA\", \"TSLA\"],\n  \"form_types\": [\"10-K\", \"8-K\"],\n  \"max_items\": 10\n}",
+        "body": "={\n  \"companies\": [\"AAPL\", \"MSFT\", \"NVDA\", \"TSLA\"],\n  \"forms\": [\"10-K\", \"8-K\"],\n  \"max_items\": 10\n}",
         "options": {}
       },
       "id": "22222222-0000-0000-0000-000000000002",
@@ -44,32 +44,14 @@
     },
     {
       "parameters": {
-        "amount": 20,
-        "unit": "seconds"
+        "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.accession_number || row.filing_url || (row.company_name + '|' + row.form + '|' + row.filing_date);\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 2000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
       },
       "id": "22222222-0000-0000-0000-000000000003",
-      "name": "Wait for SEC Run",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
+      "name": "Only New Filings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         700,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "=https://api.apify.com/v2/datasets/{{ $json.data.defaultDatasetId }}/items?clean=true&format=json",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "options": {}
-      },
-      "id": "22222222-0000-0000-0000-000000000004",
-      "name": "Get Recent Filings",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        920,
         300
       ]
     },
@@ -80,7 +62,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"text\": \"*New SEC Filing Detected*\\n*Company:* {{ $json.company_name }} ({{ $json.ticker }})\\n*Form:* {{ $json.form_type }}\\n*Filed:* {{ $json.filing_date }}\\n*Link:* {{ $json.filing_url }}\"\n}",
+        "body": "={\n  \"text\": \"*New SEC Filing Detected*\\n*Company:* {{ $json.company_name }} ({{ $json.ticker }})\\n*Form:* {{ $json.form }}\\n*Filed:* {{ $json.filing_date }}\\n*Link:* {{ $json.filing_url }}\"\n}",
         "options": {}
       },
       "id": "22222222-0000-0000-0000-000000000005",
@@ -88,7 +70,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        1140,
+        920,
         300
       ]
     }
@@ -109,25 +91,14 @@
       "main": [
         [
           {
-            "node": "Wait for SEC Run",
+            "node": "Only New Filings",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait for SEC Run": {
-      "main": [
-        [
-          {
-            "node": "Get Recent Filings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Recent Filings": {
+    "Only New Filings": {
       "main": [
         [
           {

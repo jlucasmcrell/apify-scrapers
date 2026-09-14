@@ -24,13 +24,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/captainhandsome~google-maps-business-search/runs",
+        "url": "https://api.apify.com/v2/acts/captainhandsome~google-maps-business-search/run-sync-get-dataset-items?clean=true&format=json&timeout=300&maxItems=50",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"search_terms\": [\"commercial contractors in Dallas TX\", \"HVAC repair in Phoenix AZ\"],\n  \"max_items\": 50\n}",
+        "body": "={\n  \"search_query\": \"commercial electricians\",\n  \"location\": \"Dallas, Texas\",\n  \"max_items\": 50,\n  \"include_details\": true\n}",
         "options": {}
       },
       "id": "11111111-0000-0000-0000-000000000002",
@@ -44,32 +44,14 @@
     },
     {
       "parameters": {
-        "amount": 45,
-        "unit": "seconds"
+        "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.place_id || row.place_url || (row.name + '|' + row.address);\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 5000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
       },
       "id": "11111111-0000-0000-0000-000000000003",
-      "name": "Wait for Scraping",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
+      "name": "Only New Leads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         700,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "=https://api.apify.com/v2/datasets/{{ $json.data.defaultDatasetId }}/items?clean=true&format=json",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "options": {}
-      },
-      "id": "11111111-0000-0000-0000-000000000004",
-      "name": "Fetch Clean Leads Dataset",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        920,
         300
       ]
     },
@@ -97,7 +79,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
       "position": [
-        1140,
+        920,
         300
       ]
     }
@@ -118,25 +100,14 @@
       "main": [
         [
           {
-            "node": "Wait for Scraping",
+            "node": "Only New Leads",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait for Scraping": {
-      "main": [
-        [
-          {
-            "node": "Fetch Clean Leads Dataset",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch Clean Leads Dataset": {
+    "Only New Leads": {
       "main": [
         [
           {

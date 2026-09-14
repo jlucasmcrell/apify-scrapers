@@ -177,8 +177,12 @@ See [examples/sec_filings.js](examples/sec_filings.js) for the full script.
 
 If you automate via n8n, Make, Zapier, or Google Sheets, ready-to-import blueprints are included in [`workflows/`](workflows/):
 
-- **[Google Maps Leads to Google Sheets (n8n)](workflows/n8n_google_maps_to_sheets.json):** Daily automated cron scrape piping HVAC/trade leads directly into Google Sheets with deduplication.
-- **[SEC EDGAR 10-K & 8-K Alerts to Slack (n8n)](workflows/n8n_sec_edgar_to_slack.json):** Hourly monitor alerting Slack or Discord when watchlisted public companies drop new filings.
+- **[Google Maps Leads to Google Sheets (n8n)](workflows/n8n_google_maps_to_sheets.json):** Weekly scheduled local-lead extraction into Google Sheets with persistent duplicate suppression.
+- **[SEC EDGAR 10-K & 8-K Alerts (n8n)](workflows/n8n_sec_edgar_to_slack.json):** Four-hour filing monitor with persistent duplicate suppression.
+- **[Competitor News Alerts (n8n)](workflows/n8n_google_news_competitor_monitor.json):** Daily Google News monitoring with persistent duplicate suppression.
+- **[Grants.gov Opportunity Alerts (n8n)](workflows/n8n_grants_gov_opportunity_monitor.json):** Daily funding-opportunity monitoring with persistent duplicate suppression.
+- **[TED European Tender Alerts (n8n)](workflows/n8n_ted_eu_tender_monitor.json):** Daily procurement monitoring with persistent duplicate suppression.
+- **[Make.com blueprints](templates/make_blueprints/):** Google Maps, SEC EDGAR, Glassdoor, and California contractor scenarios.
 
 ---
 
@@ -310,6 +314,9 @@ apify-scrapers/
  workflows/                               # No-code automation templates
     n8n_google_maps_to_sheets.json
     n8n_sec_edgar_to_slack.json
+    n8n_google_news_competitor_monitor.json
+    n8n_grants_gov_opportunity_monitor.json
+    n8n_ted_eu_tender_monitor.json
     README.md
  examples/                                # Standalone developer scripts
      google_maps_leads_to_csv.py

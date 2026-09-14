@@ -10,8 +10,8 @@
       "mapper": {
         "actor_search_type": "user",
         "runSync": true,
-        "actorId": "TC0kItzB0YS9OXnFs",
-        "inputBodyTC0kItzB0YS9OXnFs": "{\n  \"tickers\": [\n    \"AAPL\",\n    \"MSFT\",\n    \"NVDA\",\n    \"TSLA\"\n  ],\n  \"form_types\": [\n    \"10-K\",\n    \"8-K\"\n  ],\n  \"max_items\": 10\n}"
+        "actorId": "hT1OkNxS3rRJ2Q4le",
+        "inputBodyhT1OkNxS3rRJ2Q4le": "{\n  \"companies\": [\n    \"AAPL\",\n    \"MSFT\",\n    \"NVDA\",\n    \"TSLA\"\n  ],\n  \"forms\": [\n    \"10-K\",\n    \"8-K\"\n  ],\n  \"max_items\": 10\n}"
       },
       "metadata": {
         "designer": {
@@ -21,7 +21,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -41,7 +41,7 @@
             },
             "actorId": {
               "mode": "chose",
-              "label": "Google Maps Business Search Scraper (captainhandsome/google-maps-business-search)"
+              "label": "SEC EDGAR Filings Search (captainhandsome/sec-edgar-filings-search)"
             }
           }
         },
@@ -107,7 +107,7 @@
             "required": true
           },
           {
-            "name": "inputBodyTC0kItzB0YS9OXnFs",
+            "name": "inputBodyhT1OkNxS3rRJ2Q4le",
             "type": "text",
             "label": "Input JSON",
             "required": true
@@ -144,7 +144,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection (jlucasmcrell@gmail.com)",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -250,7 +250,7 @@
             "value": "application/json"
           }
         ],
-        "body": "{\"text\": \"\\ud83d\\udd14 *New SEC {{2.form_type}} Filing*\\n*Company:* {{2.company_name}} ({{2.ticker}})\\n*Filed Date:* {{2.filing_date}}\\n*Document:* {{2.filing_url}}\"}"
+        "body": "{\"text\": \"\\ud83d\\udd14 *New SEC {{2.form}} Filing*\\n*Company:* {{2.company_name}} ({{2.ticker}})\\n*Filed Date:* {{2.filing_date}}\\n*Document:* {{2.filing_url}}\"}"
       },
       "metadata": {
         "designer": {

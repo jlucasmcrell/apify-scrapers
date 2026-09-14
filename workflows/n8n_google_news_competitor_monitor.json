@@ -1,0 +1,118 @@
+{
+  "name": "Daily Competitor News Monitor to Slack or Discord",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "33333333-0000-0000-0000-000000000001",
+      "name": "Every 24 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/captainhandsome~google-news-search/run-sync-get-dataset-items?clean=true&format=json&timeout=300&maxItems=10",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"query\": \"OpenAI OR Anthropic\",\n  \"language\": \"en\",\n  \"country\": \"US\",\n  \"max_items\": 10\n}",
+        "options": {}
+      },
+      "id": "33333333-0000-0000-0000-000000000002",
+      "name": "Search Google News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.article_url || row.title;\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 1000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
+      },
+      "id": "33333333-0000-0000-0000-000000000005",
+      "name": "Only New Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: '*New competitor news*\\n*Title:* ' + $json.title + '\\n*Source:* ' + $json.source_name + '\\n*Published:* ' + $json.published_at + '\\n*Link:* ' + $json.article_url }) }}",
+        "options": {}
+      },
+      "id": "33333333-0000-0000-0000-000000000006",
+      "name": "Send News Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        920,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Search Google News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Google News": {
+      "main": [
+        [
+          {
+            "node": "Only New Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only New Articles": {
+      "main": [
+        [
+          {
+            "node": "Send News Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateId": "apify-google-news-competitor-monitor",
+    "instanceId": "community-template",
+    "description": "Monitor competitor coverage in Google News with captainhandsome/google-news-search, suppress previously seen articles, and send new links to Slack or Discord."
+  }
+}

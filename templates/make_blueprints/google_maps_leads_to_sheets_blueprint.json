@@ -21,7 +21,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -144,7 +144,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection (jlucasmcrell@gmail.com)",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -247,7 +247,7 @@
         "valueInputOption": "USER_ENTERED",
         "insertDataOption": "INSERT_ROWS",
         "from": "drive",
-        "spreadsheetId": "/1F2NdlYK78QvXLt9Uemjpo9i16nzgDaSvr-vmxepz8v8",
+        "spreadsheetId": "YOUR_GOOGLE_SHEET_ID",
         "sheetId": "Leads",
         "includesHeaders": true,
         "useColumnHeaders": false,
@@ -257,7 +257,7 @@
           "2": "{{2.address}}",
           "3": "{{2.website}}",
           "5": "{{2.rating}}",
-          "6": "{{2.reviewsCount}}"
+          "6": "{{2.reviews_count}}"
         }
       },
       "metadata": {
@@ -268,7 +268,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Google connection (jlucasmcrell@gmail.com)",
+              "label": "Google Sheets connection",
               "data": {
                 "scoped": "true",
                 "connection": "google"

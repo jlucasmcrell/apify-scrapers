@@ -10,8 +10,8 @@
       "mapper": {
         "actor_search_type": "user",
         "runSync": true,
-        "actorId": "TC0kItzB0YS9OXnFs",
-        "inputBodyTC0kItzB0YS9OXnFs": "{\n  \"keyword\": \"Machine Learning Engineer\",\n  \"location\": \"Austin, TX\",\n  \"max_items\": 30\n}"
+        "actorId": "O3bGntkL3IGd7pVrZ",
+        "inputBodyO3bGntkL3IGd7pVrZ": "{\n  \"start_urls\": [\n    {\n      \"url\": \"https://www.glassdoor.com/Job/austin-tx-machine-learning-engineer-jobs-SRCH_IL.0,9_IC1139761_KO10,35.htm\"\n    }\n  ],\n  \"max_items\": 30\n}"
       },
       "metadata": {
         "designer": {
@@ -21,7 +21,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -41,7 +41,7 @@
             },
             "actorId": {
               "mode": "chose",
-              "label": "Google Maps Business Search Scraper (captainhandsome/google-maps-business-search)"
+              "label": "Glassdoor Job Listings Scraper (captainhandsome/glassdoor-jobs-scraper)"
             }
           }
         },
@@ -107,7 +107,7 @@
             "required": true
           },
           {
-            "name": "inputBodyTC0kItzB0YS9OXnFs",
+            "name": "inputBodyO3bGntkL3IGd7pVrZ",
             "type": "text",
             "label": "Input JSON",
             "required": true
@@ -144,7 +144,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Apify API Token connection (jlucasmcrell@gmail.com)",
+              "label": "Apify connection",
               "data": {
                 "scoped": "true",
                 "connection": "apify"
@@ -247,18 +247,18 @@
         "valueInputOption": "USER_ENTERED",
         "insertDataOption": "INSERT_ROWS",
         "from": "drive",
-        "spreadsheetId": "/1F2NdlYK78QvXLt9Uemjpo9i16nzgDaSvr-vmxepz8v8",
+        "spreadsheetId": "YOUR_GOOGLE_SHEET_ID",
         "sheetId": "Leads",
         "includesHeaders": true,
         "useColumnHeaders": false,
         "values": {
           "0": "{{2.job_title}}",
-          "1": "{{2.company_name}}",
+          "1": "{{2.employer}}",
           "2": "{{2.location}}",
-          "3": "{{2.salary_estimate}}",
+          "3": "{{2.salary}}",
           "4": "{{2.job_url}}",
           "5": "{{2.rating}}",
-          "6": "{{2.posted_date}}"
+          "6": "{{2.posting_date_estimated}}"
         }
       },
       "metadata": {
@@ -269,7 +269,7 @@
         "restore": {
           "parameters": {
             "__IMTCONN__": {
-              "label": "Joseph's Google connection (jlucasmcrell@gmail.com)",
+              "label": "Google Sheets connection",
               "data": {
                 "scoped": "true",
                 "connection": "google"
