@@ -51,6 +51,19 @@ PY
 echo; echo "=== 4. Smithery bundle + publish + verify ==="
 python scripts/build_smithery_bundle.py dist/apify-scrapers.mcpb | sed 's/^/   /'
 SMITHERY_API_KEY="$SM" npx -y @smithery/cli mcp publish dist/apify-scrapers.mcpb -n jlucasmcrell/apify-scrapers --json 2>&1 | grep -vE '^npm (warn|notice)|Assertion failed' | mask | tail -2
+TOOL_COUNT="$(python -c 'import json; print(len(json.load(open("manifest.json", encoding="utf-8"))["tools"]))')"
+SMITHERY_API_KEY="$SM" python - "$TOOL_COUNT" <<'PY'
+import os, sys, httpx
+count = int(sys.argv[1])
+description = (f"MCP server exposing {count} read-only Apify public-data tools: leads, news, SEO, "
+               "CVEs, jobs, SEC filings, procurement, health, registries, and more.")
+r = httpx.patch(
+    "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers",
+    headers={"Authorization": f"Bearer {os.environ['SMITHERY_API_KEY']}"},
+    json={"description": description}, timeout=30)
+r.raise_for_status()
+print(f"   Smithery description: {count} tools")
+PY
 curl -s "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers" -H "Authorization: Bearer $SM" | mask | python -c "import sys,json
 j=json.loads(sys.stdin.read()); t=j.get('tools') or []; c=(j.get('connections') or [{}])[0]
 print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))"

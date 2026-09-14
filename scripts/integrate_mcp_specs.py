@@ -65,6 +65,45 @@ def py_literal(value) -> str:
     return repr(value)
 
 
+def sync_tool_count_claims(count: int) -> None:
+    """Keep public metadata in lockstep with the generated MCP manifest."""
+    claims = {
+        "README.md": [
+            (r"(# Apify Public Data MCP: )\d+", rf"\g<1>{count}"),
+            (r"(One MCP server gives an AI agent \*\*)\d+", rf"\g<1>{count}"),
+        ],
+        "_config.yml": [
+            (r"(tagline: )\d+", rf"\g<1>{count}"),
+            (r"(description: Run )\d+", rf"\g<1>{count}"),
+        ],
+        "mcp/job-search.md": [
+            (r"(is a )\d+(-tool MCP server)", rf"\g<1>{count}\g<2>"),
+        ],
+        "setup.py": [
+            (r"(MCP server exposing )\d+( Apify)", rf"\g<1>{count}\g<2>"),
+        ],
+        "package.json": [
+            (r"(MCP server exposing )\d+( Apify)", rf"\g<1>{count}\g<2>"),
+        ],
+        "server.json": [
+            (r'(\"description\": \"?)\d+( Apify)', rf"\g<1>{count}\g<2>"),
+        ],
+        "mcp.json": [
+            (r'(\"description\": \"?)\d+( Apify)', rf"\g<1>{count}\g<2>"),
+            (r"(Apify Public Data MCP exposes )\d+( extraction tools)", rf"\g<1>{count}\g<2>"),
+        ],
+        "lhm.plugin.json": [
+            (r"(MCP server exposing )\d+( Apify)", rf"\g<1>{count}\g<2>"),
+        ],
+    }
+    for rel, replacements in claims.items():
+        path = ROOT / rel
+        text = path.read_text(encoding="utf-8")
+        for pattern, replacement in replacements:
+            text = re.sub(pattern, replacement, text, count=1)
+        path.write_text(text, encoding="utf-8")
+
+
 def handler_branch(spec: dict, actor_key: str) -> str:
     """One `elif tool_name == ...:` block with a literal-dict payload."""
     name = spec["tool"]["name"]
@@ -163,12 +202,18 @@ def main() -> int:
 
     src_path.write_text(src, encoding="utf-8")
     manifest["version"] = version
+    manifest["long_description"] = (
+        f"{len(manifest.get('tools', []))} read-only tools over public data sources, each backed by an Apify Actor. "
+        "Runs execute on the caller's own Apify account and are billed to it. The server itself is "
+        "standard-library Python with no third-party dependencies."
+    )
     (ROOT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     for f, rx in (("setup.py", r'version="' + re.escape(old_ver) + '"'),
                   ("package.json", r'"version": "' + re.escape(old_ver) + '"'),
                   ("server.json", r'"version": "' + re.escape(old_ver) + '"')):
         p = ROOT / f; t = p.read_text(encoding="utf-8")
         p.write_text(re.sub(rx, lambda m: m.group(0).replace(old_ver, version), t), encoding="utf-8")
+    sync_tool_count_claims(len(manifest.get("tools", [])))
     ast.parse(src_path.read_text(encoding="utf-8"))
     for f in ("package.json", "server.json", "manifest.json"):
         json.loads((ROOT / f).read_text(encoding="utf-8"))

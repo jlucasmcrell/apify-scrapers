@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data MCP: 30 Production Scrapers & Public Records
+# Apify Public Data MCP: 33 Production Data Tools & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
