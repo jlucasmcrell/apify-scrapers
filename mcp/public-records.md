@@ -6,7 +6,7 @@ permalink: /mcp/public-records/
 ---
 # MCP server for public records: business registries, licences and providers
 
-This MCP server for public records gives an AI agent these tools: `us_business_entity_search`, `alabama_business_search`, `florida_new_filings_search`, `florida_officer_search`, `california_contractor_license_search`, `us_contractor_license_search`, `gleif_lei_search`, `french_company_search`, and `cms_healthcare_provider_search`. Each runs as an Apify Actor on the reader's own account, so a free plan works. These are part of [Apify Public Data MCP](/), which exposes 30 tools in total.
+This MCP server for public records gives an AI agent these tools: `us_business_entity_search`, `alabama_business_search`, `florida_new_filings_search`, `florida_officer_search`, `california_contractor_license_search`, `us_contractor_license_search`, `gleif_lei_search`, `french_company_search`, and `cms_healthcare_provider_search`. Each runs as an Apify Actor on the reader's own account, so a free plan works. These are part of [Apify Public Data MCP](/), which exposes 33 tools in total.
 
 ## What an agent can ask
 
@@ -227,7 +227,7 @@ The server is a Python stdio MCP server published on PyPI as `apify-data-scraper
 - [/mcp/google-maps/](/mcp/google-maps/)
 - [/mcp/job-search/](/mcp/job-search/)
 - [/mcp/government-data/](/mcp/government-data/)
-- [/](/) - home page, all 30 tools
+- [/](/) - home page, all 33 tools
 
 ## FAQ
 

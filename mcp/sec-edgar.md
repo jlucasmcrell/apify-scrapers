@@ -6,7 +6,7 @@ permalink: /mcp/sec-edgar/
 ---
 # MCP server for SEC EDGAR filings
 
-This is an MCP server for SEC EDGAR filings: it exposes the `sec_edgar_filings` and `sec_form_4_insider_transactions` tools so an AI agent can retrieve periodic filings and structured insider transactions directly from the SEC's own EDGAR system. Every tool, including these, runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 30 tools in total.
+This is an MCP server for SEC EDGAR filings: it exposes the `sec_edgar_filings` and `sec_form_4_insider_transactions` tools so an AI agent can retrieve periodic filings and structured insider transactions directly from the SEC's own EDGAR system. Every tool, including these, runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 33 tools in total.
 
 ## What an agent can ask
 

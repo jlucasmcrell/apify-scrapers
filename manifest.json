@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
-  "long_description": "Thirty read-only tools over public data sources, each backed by a published Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "long_description": "Thirty-three read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -163,6 +163,18 @@
     {
       "name": "ted_eu_tender_search",
       "description": "Search official Tenders Electronic Daily notices by keywords, contracting authority, country, CPV code and publication date. Returns buyers, deadlines, estimated values, classifications and direct TED documents."
+    },
+    {
+      "name": "google_autocomplete_keywords",
+      "description": "Generate localized Google Autocomplete keyword suggestions from one or many seed phrases. Supports alphabet and question-prefix expansion and returns ranked, globally deduplicated keyword ideas."
+    },
+    {
+      "name": "google_news_search",
+      "description": "Search Google News for companies, people, products, brands, industries, and topics. Returns current headlines, publishers, timestamps, article links, source sites, and snippets."
+    },
+    {
+      "name": "cve_vulnerability_intelligence",
+      "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references."
     }
   ],
   "compatibility": {

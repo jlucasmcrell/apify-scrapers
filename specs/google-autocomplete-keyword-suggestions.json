@@ -1,0 +1,51 @@
+{
+  "actor": "google-autocomplete-keyword-suggestions",
+  "tool": {
+    "name": "google_autocomplete_keywords",
+    "title": "Google Autocomplete Keyword Suggestions",
+    "description": "Generate localized Google Autocomplete keyword suggestions from one or many seed phrases. Supports alphabet and question-prefix expansion and returns ranked, globally deduplicated keyword ideas.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-autocomplete-keyword-suggestions'.\n- Side Effects: Strictly read-only; queries the public Google suggestion endpoint.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Base queries normally finish in 5-20 seconds; expansion modes make additional requests; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for long-tail SEO research, customer-question discovery, content planning, and localized keyword ideation.\n- When NOT to use: Do not treat suggestions as verified search-volume, CPC, or competition data.\n- Named alternatives: Use 'google_search' for live search results or 'google_news_search' for current news coverage.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "queries": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 100, "description": "Seed phrases to expand."},
+        "language": {"type": "string", "default": "en", "description": "Two-letter suggestion language code."},
+        "country": {"type": "string", "default": "US", "description": "Two-letter country code used to localize suggestions."},
+        "expansion_mode": {"type": "string", "enum": ["none", "alphabet", "questions", "all"], "default": "none", "description": "Optional query expansion strategy."},
+        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 25, "description": "Maximum unique suggestions to return."}
+      },
+      "required": ["queries"]
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "seed": {"type": "string", "description": "Original seed phrase."},
+              "request_query": {"type": "string", "description": "Exact expanded request phrase."},
+              "suggestion": {"type": "string", "description": "Autocomplete keyword suggestion."},
+              "rank": {"type": "integer", "description": "Position in the source response."},
+              "expansion": {"type": "string", "description": "Expansion prefix, suffix, or base."},
+              "language": {"type": "string", "description": "Language code used."},
+              "country": {"type": "string", "description": "Country code used."}
+            }
+          }
+        }
+      },
+      "required": ["results"]
+    },
+    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+  },
+  "payload_mapping": {
+    "queries": {"key": "queries", "transform": "strlist", "required": true},
+    "language": {"key": "language", "transform": "str", "default": "en"},
+    "country": {"key": "country", "transform": "str", "default": "US"},
+    "expansion_mode": {"key": "expansion_mode", "transform": "str", "default": "none"},
+    "max_results": {"key": "max_items", "transform": "int", "default": 25}
+  },
+  "fixed_payload": {},
+  "example_call": {"queries": ["solar panel cleaning"], "max_results": 10},
+  "verification": {"run_id": "VC4V9m6Vl38YtOygZ", "items": 10, "token": "solar panel", "relevant": true}
+}
