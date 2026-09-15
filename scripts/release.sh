@@ -52,9 +52,10 @@ echo; echo "=== 3. MCP registry publish + verify ==="
 python - "$V" <<'PY'
 import sys, httpx
 v=sys.argv[1]
-j=httpx.get("https://registry.modelcontextprotocol.io/v0/servers",params={"search":"io.github.jlucasmcrell/apify-scrapers"},timeout=30).json()
-rows=[(s.get("server",s).get("version"), (s.get("_meta") or {}).get("io.modelcontextprotocol.registry/official",{}).get("isLatest")) for s in j.get("servers",[])]
-print("   registry versions:", rows); ok=any(r[0]==v and r[1] for r in rows); print("   latest is", v, ":", ok); sys.exit(0 if ok else 4)
+r=httpx.get("https://registry.modelcontextprotocol.io/v0.1/servers/io.github.jlucasmcrell%2Fapify-scrapers/versions/latest",timeout=60)
+r.raise_for_status()
+j=r.json(); ok=j.get("server",{}).get("version")==v
+print("   registry latest is", v, ":", ok); sys.exit(0 if ok else 4)
 PY
 [ $? -eq 0 ] || exit 4
 

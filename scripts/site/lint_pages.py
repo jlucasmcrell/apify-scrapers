@@ -19,6 +19,9 @@ catalog = {t['name']: t for t in json.loads((S.parents[1] / 'mcp.json').read_tex
 install = re.sub(r"\s+", " ", (S / "install_snippet.md").read_text(encoding="utf-8")).strip()
 
 problems: list[str] = []
+readme = (S.parents[1] / "README.md").read_text(encoding="utf-8")
+if re.search(r"\]\(/(?:mcp|tutorials)/", readme):
+    problems.append('README guides must use canonical HTTPS links to work outside GitHub Pages')
 if not set(digest) <= set(catalog):
     problems.append('Guide digest advertises a tool absent from the public MCP catalog')
 for name in set(digest) & set(catalog):

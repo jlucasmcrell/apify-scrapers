@@ -17,7 +17,7 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 
 ## Runtime contract and spending control
 
-Version 1.1.0 returns `{results, status, run?}` in both MCP structured content and text. Status is `success`, `partial`, `empty_unverified`, or `error`; errors include a stable code and retry guidance. Zero rows are not proof that no matching records exist. Existing integrations that parsed a bare result array must now read `results`. Native dataset field names are preserved.
+Since version 1.1.0, calls return `{results, status, run?}` in both MCP structured content and text. Status is `success`, `partial`, `empty_unverified`, or `error`; errors include a stable code and retry guidance. Zero rows are not proof that no matching records exist. Existing integrations that parsed a bare result array must now read `results`. Native dataset field names are preserved.
 
 Each call requests a 120-second Actor timeout and a pay-per-event charge cap of $1 by default. Set `APIFY_MAX_CHARGE_USD` to adjust the cap. This is per run, not a total account spending limit; platform fees outside Actor event charges may still apply. Up to four calls may run concurrently. Cancelling a request attempts to abort its cloud run; check the returned run ID if confirmation fails. An ambiguous start is never retried automatically.
 
@@ -39,22 +39,35 @@ The MCP executable is Python; Node.js files are direct Actor API examples, not a
 
 ---
 
+## Choose your first workflow
+
+| Your goal | Start here | What to expect |
+|---|---|---|
+| Build a local contractor lead list | [Dallas electrician example task](https://apify.com/captainhandsome/google-maps-business-search/examples/dallas-commercial-electrician-leads) | Review the prefilled input, set a small result limit, then run and export the dataset. |
+| Track company filings | [SEC filing-monitor tutorial](https://apify.revenuesystemslabs.com/tutorials/monitor-sec-filings/) | Choose companies and form types; retain filing identifiers to avoid duplicate alerts. |
+| Compare healthcare providers over time | [CMS provider-monitor tutorial](https://apify.revenuesystemslabs.com/tutorials/monitor-healthcare-provider-changes/) | Save snapshots and compare changes in the source dataset, not real-time clinical outcomes. |
+| Use an AI chat interface | [ChatGPT and Apify MCP setup](https://apify.revenuesystemslabs.com/tutorials/use-apify-actors-in-chatgpt/) | Connect your own Apify account and choose the Actor explicitly. |
+
+No separate subscription to this MCP package is required. Actor runs are billed through your Apify account at the displayed Store price. Start with a small run and inspect its output before scheduling recurring work; public-source data can be delayed, incomplete, or temporarily unavailable.
+
+---
+
 ## Use-case guides
 
 One page per question an agent gets asked, each listing the tools, arguments, returned fields and prices for that job:
 
-- [MCP server for SEC EDGAR filings](/mcp/sec-edgar/)
-- [MCP server for Google Maps data and business leads](/mcp/google-maps/)
-- [MCP server for public records: business registries, licences and providers](/mcp/public-records/)
-- [MCP server for job search: LinkedIn and Glassdoor listings](/mcp/job-search/)
-- [MCP server for US government data](/mcp/government-data/)
+- [MCP server for SEC EDGAR filings](https://apify.revenuesystemslabs.com/mcp/sec-edgar/)
+- [MCP server for Google Maps data and business leads](https://apify.revenuesystemslabs.com/mcp/google-maps/)
+- [MCP server for public records: business registries, licences and providers](https://apify.revenuesystemslabs.com/mcp/public-records/)
+- [MCP server for job search: LinkedIn and Glassdoor listings](https://apify.revenuesystemslabs.com/mcp/job-search/)
+- [MCP server for US government data](https://apify.revenuesystemslabs.com/mcp/government-data/)
 
 Focused, end-to-end tutorials:
 
-- [Use public-data Actors directly in ChatGPT with Apify MCP](/tutorials/use-apify-actors-in-chatgpt/)
-- [Monitor SEC EDGAR filings automatically](/tutorials/monitor-sec-filings/)
-- [Build a contractor lead list from Google Maps](/tutorials/contractor-lead-generation/)
-- [Monitor CMS healthcare-provider changes](/tutorials/monitor-healthcare-provider-changes/)
+- [Use public-data Actors directly in ChatGPT with Apify MCP](https://apify.revenuesystemslabs.com/tutorials/use-apify-actors-in-chatgpt/)
+- [Monitor SEC EDGAR filings automatically](https://apify.revenuesystemslabs.com/tutorials/monitor-sec-filings/)
+- [Build a contractor lead list from Google Maps](https://apify.revenuesystemslabs.com/tutorials/contractor-lead-generation/)
+- [Monitor CMS healthcare-provider changes](https://apify.revenuesystemslabs.com/tutorials/monitor-healthcare-provider-changes/)
 
 ---
 
