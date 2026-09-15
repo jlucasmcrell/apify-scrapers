@@ -1,55 +1,44 @@
-# Reddit & Developer Community Engagement Scripts
+# Buyer-community outreach drafts
 
-Objective, value-first copy-paste responses for relevant technical subreddits (`r/webscraping`, `r/leadgeneration`, `r/dataengineering`, `r/SideProject`).
+Prepared September 15, 2026. Drafts only: nothing below has been posted. Check current community rules before posting, disclose ownership, and answer the actual question before linking. Do not divert readers from a competitor's announcement.
 
----
+## Contractor lead-list tutorial
 
-## 1. `r/webscraping`: Responding to "How to paginate dynamic sites / Airbnb without getting blocked or missing pages?"
+Suggested title: Export a small contractor lead list from Google Maps to a spreadsheet
 
-**Thread context:** User asking why their Playwright / Puppeteer script skips pages, errors out on `click()`, or gets trapped in modals.
+I maintain this Apify Actor and wrote a walkthrough for researching local contractors. It searches a trade and city, collects available business listing fields, and exports them for review.
 
-**Response Template:**
-> Most pagination failures on single-page apps like Airbnb aren't anti-bot blocksthey are actionability viewport collisions in headless Linux.
-> 
-> Three things usually happen:
-> 1. **Modal backdrops:** Airbnb injects translation prompts or currency dialogs that eat the synthetic click event. Inject an explicit dismissal loop (hitting `Escape` and querying `button[aria-label="Close"]`) before touching pagination.
-> 2. **Outside Viewport:** Headless viewports often leave the sticky footer / pagination bar below the screen fold. Standard `.click()` times out.
-> 3. **The Clean Fix:** Don't rely exclusively on `.click()`. Instead, inspect the `<a aria-label="Next">` element, extract the raw `href`, and use `page.goto(urljoin(page.url, next_href))` as a hard fallback. Direct URL navigation completely bypasses sticky headers and modal obstacles.
-> 
-> We open-sourced the complete Playwright fallback pattern and an architectural walkthrough here if you want to inspect the implementation: https://github.com/jlucasmcrell/apify-scrapers/blob/master/articles/airbnb_playwright_pagination_guide.md
+Start with ten results. Check category and location, remove duplicates, and inspect missing phone or website fields before increasing the limit. A public listing is not proof of a qualified prospect, a verified email address, or permission to contact someone.
 
----
+Tutorial:
+https://apify.revenuesystemslabs.com/tutorials/contractor-lead-generation/
 
-## 2. `r/leadgeneration` / `r/coldemail`: Responding to "Cheapest way to get verified local business leads with phones and websites?"
+Runs are billed through your own Apify account at the displayed Store price. If you try it, which step is least clear: choosing the search, checking results, or exporting?
 
-**Thread context:** Users asking how to avoid paying $50+/mo for Apollo or Outscraper to get Google Maps business leads.
+## SEC filing-monitor tutorial
 
-**Response Template:**
-> If you just need clean local business lists (contractors, dentists, HVAC, restaurants) without paying recurring SaaS subscription fees, the most cost-effective path is running pay-per-result extraction directly via Apify's API.
-> 
-> For example, extraction runs cost fractions of a cent per lead without requiring your own proxy setup. You can even pipe them directly into Google Sheets using n8n or Make:
-> - Scraper: https://apify.com/captainhandsome/google-maps-business-search
-> - Pre-made n8n template to Google Sheets: https://github.com/jlucasmcrell/apify-scrapers/tree/master/workflows
-> 
-> The dataset exports clean business name, direct phone number, full street address, star rating, review count, website domain, and verified place URL.
+Suggested title: A small SEC filing monitor that avoids duplicate alerts
 
----
+I maintain an Apify SEC filing-search Actor. A useful monitor needs to remember which filings it has already seen, not simply collect the same results every morning.
 
-## 3. `r/SideProject` / `r/IndieHackers`: "Built a self-healing fleet of 25+ public data scrapers with zero GPU contention"
+This walkthrough covers choosing companies and form types, retrieving metadata, and retaining identifiers between runs. Test a small set before scheduling recurring work. Filing metadata and links are not full-text financial analysis or investment advice.
 
-**Thread title:** Built a 25-actor public data scraper fleet that runs for pennies and heals its own selectors
+https://apify.revenuesystemslabs.com/tutorials/monitor-sec-filings/
 
-**Body Template:**
-> Hey everyone, wanted to share an architecture write-up on a daemon setup I built.
-> 
-> **The Problem:** Scrapers are notoriously brittle. You write a Playwright parser for job boards or public registries, and within 3 weeks DOM changes break your CSS selectors, or modals break your pagination.
-> 
-> **The Architecture:**
-> 1. **Serverless Engine:** Packaged the scrapers as Pay-Per-Event (PPE) actors on Apify ($0.0002 base event price) covering public corporate filings (SEC EDGAR), state contractor licenses, job boards (Glassdoor, LinkedIn), and local business data.
-> 2. **Self-Healing Selectors:** When a selector returns empty nodes, an automated probe inspects candidate DOM attributes (data-testid, aria-labels, semantic parent anchors) and recalibrates the manifest without manual code intervention.
-> 3. **AI Agent Tooling:** Wrapped all scrapers in Model Context Protocol (MCP) so Claude Desktop and Cursor can query live web datasets as local tools in JSON-RPC format.
-> 
-> We open-sourced the client SDK examples, MCP server, and automation templates here:
-> https://github.com/jlucasmcrell/apify-scrapers
-> 
-> Happy to answer questions about Playwright pagination fallbacks, SEC EDGAR normalization, or Apify's Pay-Per-Event economics!
+The Actor is billed through your Apify account. Feedback on setup and deduplication would help me improve the walkthrough.
+
+## Distribution and evidence
+
+- DEV Community has active Apify tutorials. Publish the educational article under the owner's account, disclose affiliation, and set its original site URL as canonical where supported. No DEV publishing credential is configured; no article has been submitted.
+- r/apify has used show-and-tell threads. Find the current thread and check current rules before posting. The older example below establishes the format; it is not a current posting target.
+- Prefer genuine workflow questions and permitted showcases. Many search hits are competing advertisements, not evidence of unmet buyer demand. No unsolicited comments or messages were sent.
+
+Research links checked September 15:
+
+- DEV Apify topic: https://dev.to/t/apify
+- Earlier show-and-tell format (May 29): https://www.reddit.com/r/apify/comments/1trh34c/weekly_show_and_tell/
+- Historical question about website/email extraction (February 14): https://www.reddit.com/r/apify/comments/1r4i1py/local_business_lead_finder/
+
+Record the destination URL, date, promoted tutorial, and replies about setup friction. Compare with authenticated external Actor runs and available referral analytics. Our tests, impressions, upvotes, and directory inclusion are not paying customers.
+
+Retired unsupported claims: cheapest, verified leads, guaranteed anti-blocking, runs for pennies, and universal self-healing.

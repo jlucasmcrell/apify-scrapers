@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "30 public-data MCP tools for leads, news, jobs, SEC filings, procurement, recalls, registries, health, and research.",
   "long_description": "30 tools backed by public Apify Actors. Runs execute on the caller account and are billed to it. Standard-library Python with validated inputs, structured results, cancellation, and bounded runs.",
   "author": {
