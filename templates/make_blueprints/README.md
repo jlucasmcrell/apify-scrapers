@@ -17,7 +17,7 @@ Pre-built, 1-click **Make.com scenario blueprints** that connect production Apif
 | **California Contractor Licenses** | [Use template](https://www.make.com/en/templates/19729-california-contractor-licenses-to-google-sheets-with-apify) | [`california_contractors_to_sheets_blueprint.json`](./california_contractors_to_sheets_blueprint.json) | Extracts verified state contractor licenses, bond statuses, and corporate entities into Sheets. |
 | **Glassdoor Active Job Postings** | [Use template](https://www.make.com/en/templates/19728-glassdoor-jobs-to-google-sheets-with-apify) | [`glassdoor_jobs_to_sheets_blueprint.json`](./glassdoor_jobs_to_sheets_blueprint.json) | Tracks tech hiring, salary estimates, and company ratings into a live spreadsheet. |
 
-The public templates are usable by direct link. Make gallery approval is pending.
+The public templates are usable by direct link and include guided setup instructions for connections, Actor inputs, destination fields, and module dropdowns. Make gallery approval is pending.
 
 ---
 
