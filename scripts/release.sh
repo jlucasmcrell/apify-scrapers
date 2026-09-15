@@ -6,6 +6,7 @@
 #   2. PyPI upload + JSON-API verify          (twine; PYPI_TOKEN from G:/apify-fleet/.env)
 #   3. official MCP registry publish + verify (mcp-publisher; gh token, non-interactive)
 #   4. Smithery bundle build + publish + verify (scripts/build_smithery_bundle.py; SMITHERY_API_KEY)
+#   5. GitHub release + artifact checksum verification
 #
 # Preconditions: version already bumped in setup.py/package.json/server.json/manifest.json
 # (scripts/integrate_mcp_specs.py does this), tests green, changes committed.
@@ -77,4 +78,28 @@ curl --fail --silent --show-error "https://api.smithery.ai/servers/jlucasmcrell%
 j=json.loads(sys.stdin.read()); t=j.get('tools') or []; c=(j.get('connections') or [{}])[0]
 print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))
 sys.exit(0 if len(t)==int(sys.argv[1]) else 5)" "$TOOL_COUNT"
-echo; echo "=== done: $V on PyPI, MCP registry, Smithery ==="
+echo; echo "=== 5. GitHub release + verify ==="
+GH_REPO="jlucasmcrell/apify-scrapers"
+if ! gh release view "v$V" --repo "$GH_REPO" >/dev/null 2>&1; then
+    gh release create "v$V" "dist/$V/"* dist/apify-scrapers.mcpb \
+        --repo "$GH_REPO" --target "$(git rev-parse HEAD)" --latest \
+        --title "v$V" --generate-notes
+fi
+python - "$V" "$GH_REPO" <<'PY'
+import hashlib, json, subprocess, sys
+from pathlib import Path
+version, repo = sys.argv[1:]
+release = json.loads(subprocess.check_output(
+    ["gh", "api", f"repos/{repo}/releases/latest"], text=True))
+if release["tag_name"] != f"v{version}":
+    raise SystemExit("GitHub latest release does not match the package version")
+assets = {a["name"]: a for a in release["assets"]}
+paths = list(Path(f"dist/{version}").glob("*")) + [Path("dist/apify-scrapers.mcpb")]
+for path in paths:
+    expected = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+    if assets.get(path.name, {}).get("digest") != expected:
+        raise SystemExit(f"GitHub artifact missing or checksum mismatch: {path.name}")
+print(f"GitHub: v{version} latest; {len(paths)} artifact checksums verified")
+PY
+
+echo; echo "=== done: $V on PyPI, MCP registry, Smithery, GitHub ==="
