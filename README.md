@@ -203,7 +203,9 @@ If you automate via n8n, Make, Zapier, or Google Sheets, ready-to-import bluepri
 - **[Grants.gov Opportunity Alerts (n8n)](workflows/n8n_grants_gov_opportunity_monitor.json):** Daily funding-opportunity monitoring with persistent duplicate suppression.
 - **[TED European Tender Alerts (n8n)](workflows/n8n_ted_eu_tender_monitor.json):** Daily procurement monitoring with persistent duplicate suppression.
 - **[NHTSA Vehicle Recall Alerts (n8n)](workflows/n8n_nhtsa_vehicle_recall_monitor.json):** Daily safety-recall monitoring with persistent duplicate suppression.
-- **[Eight public Make.com templates](templates/make_blueprints/):** One-click Google Sheets and webhook scenarios for Google Maps, Google News, Grants.gov, TED, NHTSA, SEC EDGAR, Glassdoor, and California contractor data.
+- **[Eight Make-approved templates](https://github.com/jlucasmcrell/apify-scrapers/tree/master/templates/make_blueprints):** Guided setup for Google Sheets and Slack workflows. Connect your own accounts and review inputs before running; Apify and Make usage charges may apply.
+
+Open a template in Make: [Google Maps](https://www.make.com/en/hq/template/19727-google-maps-leads-to-google-sheets-with-apify), [Glassdoor](https://www.make.com/en/hq/template/19728-glassdoor-jobs-to-google-sheets-with-apify), [California contractors](https://www.make.com/en/hq/template/19729-california-contractor-licenses-to-google-sheets-with-apify), [SEC filings to Slack](https://www.make.com/en/hq/template/19730-sec-edgar-filing-alerts-to-slack-with-apify), [Google News](https://www.make.com/en/hq/template/19731-export-google-news-results-to-google-sheets-with-apify), [Grants.gov](https://www.make.com/en/hq/template/19732-export-grants-gov-opportunities-to-google-sheets-with-apify), [TED tenders](https://www.make.com/en/hq/template/19733-export-ted-eu-tenders-to-google-sheets-with-apify), or [NHTSA recalls](https://www.make.com/en/hq/template/19734-export-nhtsa-vehicle-recalls-to-google-sheets-with-apify).
 
 ---
 
