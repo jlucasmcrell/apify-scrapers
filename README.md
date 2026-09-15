@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data MCP: 30 Production Data Tools & Public Records
+# Apify Public Data MCP: 35 Production Data Tools & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
@@ -9,7 +9,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/jlucasmcrell/apify-scrapers)
-One MCP server gives an AI agent **30 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
+One MCP server gives an AI agent **35 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
@@ -38,6 +38,12 @@ The MCP executable is Python; Node.js files are direct Actor API examples, not a
 - [Contributing & Author](#author--support)
 
 ---
+
+## Choose your tools
+
+[Choose a focused tool profile and generate your installation configuration](https://apify.revenuesystemslabs.com/choose-tools/).
+
+Version 1.2.0 adds the optional `APIFY_TOOL_PROFILE` environment variable: `all` (default), `leads`, `market`, `government`, or `research`. These correspond to the four catalog categories below. Profiles restrict tool discovery and calls, prompts, and the Actor catalog. Restart the MCP server and refresh/reconnect your client after changing the profile. Keep only the focused server entry if you do not also want the full catalog loaded. Direct Actor API examples are unchanged; this setting is not an Apify account permission boundary.
 
 ## Choose your first workflow
 
@@ -77,6 +83,8 @@ Every extractor below is both an Apify Store listing and an MCP tool of the same
 
 ### Business intelligence & lead generation
 
+Also available: [Cross-border company registry search](https://apify.com/captainhandsome/company-registry-search), combining UK, French and GLEIF records where available.
+
 | Tool | Store Link | Key Output Fields | Best For |
 |---|---|---|---|
 | **Google Maps Business Leads** | [`captainhandsome/google-maps-business-search`](https://apify.com/captainhandsome/google-maps-business-search) | Name, phone, website, rating, reviews, address, coordinates, hours | B2B lead generation, local agency prospecting |
@@ -102,6 +110,8 @@ Every extractor below is both an Apify Store listing and an MCP tool of the same
 | **Twitch Live Streams** | [`captainhandsome/twitch-live-streams-scraper`](https://apify.com/captainhandsome/twitch-live-streams-scraper) | Streamer username, title, viewer count, language, category | Esports analytics, live stream monitoring |
 
 ### Government & public records
+
+Also available: [SEC Form 4 insider transactions](https://apify.com/captainhandsome/sec-form-4-insider-transactions), [OFAC sanctions](https://apify.com/captainhandsome/ofac-sanctions-search), [CourtListener cases](https://apify.com/captainhandsome/courtlistener-case-search), and [NVD/CISA vulnerability intelligence](https://apify.com/captainhandsome/nvd-cisa-vulnerability-intelligence).
 
 | Tool | Store Link | Key Output Fields | Best For |
 |---|---|---|---|

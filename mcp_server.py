@@ -56,6 +56,11 @@ ACTORS = {
     "ted_eu_tender": "captainhandsome/ted-eu-tender-search",
     "google_autocomplete_keywords": "captainhandsome/google-autocomplete-keyword-suggestions",
     "google_news": "captainhandsome/google-news-search",
+    "company_registry": "captainhandsome/company-registry-search",
+    "courtlistener_case": "captainhandsome/courtlistener-case-search",
+    "cve_vulnerability_intelligence": "captainhandsome/nvd-cisa-vulnerability-intelligence",
+    "ofac_sanctions": "captainhandsome/ofac-sanctions-search",
+    "sec_form_4_insider_transactions": "captainhandsome/sec-form-4-insider-transactions",
 }
 
 TOOLS_DEFINITION = [
@@ -9087,7 +9092,50 @@ TOOLS_DEFINITION = [
                      'destructiveHint': False,
                      'idempotentHint': False,
                      'openWorldHint': True}},
+    {'name': 'company_registry_search', 'title': 'UK, France and Global Company Registry Search', 'description': "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/company-registry-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries official public company registers.\n- Authentication: Requires APIFY_TOKEN; no registry credential is required for normal bounded searches.\n- Latency & Limits: Typical runs take 10-60 seconds; detail enrichment is slower; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for cross-border company lookup, entity resolution, status verification, LEI matching, and company enrichment across the UK, France, and GLEIF.\n- When NOT to use: Do not use for US Secretary of State records, contractor licences, sanctions screening, or investment advice.\n- Named alternatives: Use 'us_business_entity_search' for Florida, Alabama, Iowa, and Wisconsin; 'gleif_lei_search' for a focused LEI lookup; or 'french_company_search' for France-only searches.", 'inputSchema': {'type': 'object', 'properties': {'search_queries': {'type': 'array', 'items': {'type': 'string', 'minLength': 2}, 'minItems': 1, 'maxItems': 25, 'description': 'One or more full or partial company names.'}, 'sources': {'type': 'array', 'items': {'type': 'string', 'enum': ['uk', 'france', 'global']}, 'minItems': 1, 'uniqueItems': True, 'default': ['uk', 'france', 'global'], 'description': 'Official registries to search.'}, 'include_details': {'type': 'boolean', 'default': False, 'description': 'Add source-specific detail such as UK officers and filings or GLEIF parent relationships.'}, 'active_only': {'type': 'boolean', 'default': True, 'description': 'Exclude dissolved, ceased, and lapsed entities.'}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': 'Maximum records returned and billed across all queries and registries.'}}, 'required': ['search_queries'], 'additionalProperties': False}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'items': {'type': 'object', 'properties': {'source_registry': {'type': ['string', 'null'], 'description': 'companies_house, sirene, or gleif.'}, 'jurisdiction': {'type': ['string', 'null'], 'description': 'Registration jurisdiction code.'}, 'company_name': {'type': ['string', 'null'], 'description': 'Registered legal name.'}, 'registration_number': {'type': ['string', 'null'], 'description': 'National company number.'}, 'status': {'type': ['string', 'null'], 'description': 'Normalized registry status.'}, 'company_type': {'type': ['string', 'null'], 'description': 'Legal form.'}, 'incorporation_date': {'type': ['string', 'null'], 'description': 'Entity creation date.'}, 'address': {'type': ['string', 'null'], 'description': 'Registered office address.'}, 'lei': {'type': ['string', 'null'], 'description': 'Legal Entity Identifier when present.'}, 'sic_codes': {'type': ['string', 'null'], 'description': 'Published activity codes.'}, 'revenue': {'type': ['integer', 'null'], 'description': 'Most recent public turnover where available.'}, 'officers': {'type': ['string', 'null'], 'description': 'Named officers where published and requested.'}, 'ultimate_parent_name': {'type': ['string', 'null'], 'description': 'Ultimate parent from GLEIF detail data.'}, 'url': {'type': ['string', 'null'], 'description': 'Official public record URL.'}}}}, 'status': {'type': 'string', 'enum': ['success', 'empty_unverified', 'partial', 'error']}, 'error': {'type': 'object'}, 'run': {'type': 'object'}}, 'required': ['results', 'status']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': False, 'openWorldHint': True}},
+    {'name': 'courtlistener_case_search', 'title': 'CourtListener Opinions and Federal Docket Search', 'description': "Search published judicial opinions or federal RECAP dockets through CourtListener. Returns case names, courts, dates, citations, judges, parties, filings, snippets, and canonical record links where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/courtlistener-case-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries public CourtListener and RECAP search data.\n- Authentication: Requires APIFY_TOKEN; the Actor supplies its CourtListener integration credential.\n- Latency & Limits: Typical runs take 10-45 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for legal research, litigation monitoring, company case discovery, opinion search, and federal docket screening.\n- When NOT to use: Do not treat results as a complete docket, legal advice, or proof of current case status.\n- Named alternatives: Use 'sec_edgar_filings' for SEC disclosures, or 'us_business_entity_search' for company registrations.", 'inputSchema': {'type': 'object', 'properties': {'query': {'type': 'string', 'minLength': 2, 'description': 'Free text across case names and indexed text.'}, 'search_type': {'type': 'string', 'enum': ['opinions', 'dockets'], 'default': 'opinions', 'description': 'Search judicial opinions or federal RECAP dockets.'}, 'court': {'type': 'string', 'description': 'Optional CourtListener court ID such as cafc, txed, or ca9.'}, 'nature_of_suit': {'type': 'string', 'description': 'Optional federal nature-of-suit code; dockets only.'}, 'filed_after': {'type': 'string', 'pattern': '^\\d{4}-\\d{2}-\\d{2}$', 'description': 'Inclusive earliest filing date.'}, 'filed_before': {'type': 'string', 'pattern': '^\\d{4}-\\d{2}-\\d{2}$', 'description': 'Inclusive latest filing date.'}, 'include_court_details': {'type': 'boolean', 'default': True, 'description': 'Add court jurisdiction, website, and PACER court ID.'}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': 'Maximum results returned and billed.'}}, 'required': ['query'], 'additionalProperties': False}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'items': {'type': 'object', 'properties': {'result_type': {'type': ['string', 'null'], 'description': 'opinions or dockets.'}, 'case_name': {'type': ['string', 'null'], 'description': 'Short case name.'}, 'court': {'type': ['string', 'null'], 'description': 'Court name.'}, 'court_id': {'type': ['string', 'null'], 'description': 'CourtListener court identifier.'}, 'court_jurisdiction': {'type': ['string', 'null'], 'description': 'Resolved court level and system.'}, 'docket_number': {'type': ['string', 'null'], 'description': 'Court docket number.'}, 'date_filed': {'type': ['string', 'null'], 'description': 'Docket filing or opinion date.'}, 'judge': {'type': ['string', 'null'], 'description': 'Assigned or authoring judge.'}, 'citation': {'type': ['string', 'null'], 'description': 'Published opinion citation.'}, 'precedential_status': {'type': ['string', 'null'], 'description': 'Opinion precedential status.'}, 'parties': {'type': ['string', 'null'], 'description': 'Indexed case parties.'}, 'latest_filing_date': {'type': ['string', 'null'], 'description': 'Newest matched filing date.'}, 'text_snippet': {'type': ['string', 'null'], 'description': 'Matched indexed text.'}, 'url': {'type': ['string', 'null'], 'description': 'Canonical CourtListener record URL.'}}}}, 'status': {'type': 'string', 'enum': ['success', 'empty_unverified', 'partial', 'error']}, 'error': {'type': 'object'}, 'run': {'type': 'object'}}, 'required': ['results', 'status']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': False, 'openWorldHint': True}},
+    {'name': 'cve_vulnerability_intelligence', 'title': 'NVD CVE and CISA KEV Vulnerability Intelligence', 'description': "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/nvd-cisa-vulnerability-intelligence'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable; no NVD or CISA credential is required.\n- Latency & Limits: Typical exact and keyword runs take 5-30 seconds; NVD rate limits can slow large filtered jobs; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for CVE research, vulnerability triage, patch prioritization, and identifying active exploitation.\n- When NOT to use: Do not use as a network scanner or as proof that a particular deployed asset is vulnerable.\n- Named alternatives: Use 'tech_stack_detector' to identify public website technologies before researching relevant CVEs.", 'inputSchema': {'type': 'object', 'properties': {'query': {'type': 'string', 'description': 'Keyword, vendor, product, or phrase to search in NVD.'}, 'cve_id': {'type': 'string', 'description': 'Exact CVE ID; overrides query when supplied.'}, 'severity': {'type': 'string', 'enum': ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], 'description': 'Optional CVSS v3 severity filter.'}, 'published_start': {'type': 'string', 'description': 'Optional NVD start timestamp; supply with published_end.'}, 'published_end': {'type': 'string', 'description': 'Optional NVD end timestamp; supply with published_start.'}, 'known_exploited_only': {'type': 'boolean', 'default': False, 'description': 'Return only CVEs currently in CISA KEV.'}, 'max_references': {'type': 'integer', 'minimum': 0, 'maximum': 500, 'default': 50, 'description': 'Maximum reference URLs retained per CVE.'}, 'max_cpes': {'type': 'integer', 'minimum': 0, 'maximum': 2000, 'default': 100, 'description': 'Maximum affected CPE criteria retained per CVE.'}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': 'Maximum vulnerability records to return.'}}, 'additionalProperties': False}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'items': {'type': 'object', 'properties': {'cve_id': {'title': 'CVE ID', 'description': 'Canonical CVE identifier.', 'type': ['string', 'null']}, 'description': {'title': 'Description', 'description': 'English vulnerability description supplied by NVD.', 'type': ['string', 'null']}, 'published_at': {'title': 'Published At', 'description': 'NVD publication timestamp.', 'type': ['string', 'null']}, 'cvss_score': {'title': 'CVSS Score', 'description': 'Base CVSS score from the highest available metric version.', 'type': ['number', 'null']}, 'cvss_severity': {'title': 'CVSS Severity', 'description': 'Base severity associated with the selected CVSS metric.', 'type': ['string', 'null']}, 'cwe_ids': {'title': 'CWE IDs', 'description': 'Unique English CWE weakness identifiers supplied by NVD.', 'type': 'array', 'items': {'type': 'string'}}, 'affected_cpes': {'title': 'Affected CPEs', 'description': 'Bounded list of unique CPE criteria found in NVD configurations.', 'type': 'array', 'items': {'type': 'string'}}, 'is_known_exploited': {'title': 'Known Exploited', 'description': "Whether the CVE appears in CISA's current KEV catalog.", 'type': 'boolean'}, 'kev_required_action': {'title': 'KEV Required Action', 'description': 'Remediation action required by CISA for federal agencies.', 'type': ['string', 'null']}, 'kev_due_date': {'title': 'KEV Due Date', 'description': 'CISA remediation due date for federal civilian agencies.', 'type': ['string', 'null']}, 'kev_known_ransomware_campaign_use': {'title': 'Ransomware Use', 'description': 'CISA indicator for known ransomware-campaign use.', 'type': ['string', 'null']}}}}, 'status': {'type': 'string', 'enum': ['success', 'empty_unverified', 'partial', 'error']}, 'error': {'type': 'object'}, 'run': {'type': 'object'}}, 'required': ['results', 'status']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': False, 'openWorldHint': True}},
+    {'name': 'ofac_sanctions_search', 'title': 'OFAC Sanctions Search', 'description': "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ofac-sanctions-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-40 seconds; results are exact source matches, not fuzzy compliance screening scores.\n\nUsage Guidelines:\n- When to use: Use for research, list reconciliation, sanctions-data enrichment and exact/substring name discovery.\n- When NOT to use: Do not treat a name match as a legal compliance determination; do not use for corporate filings (use 'sec_edgar_filings') or entity-registration verification (use 'us_business_entity_search').\n- Named alternatives: Use 'sec_edgar_filings' for US public-company filings, 'gleif_lei_search' for legal-entity identifiers, or 'us_business_entity_search' for state registrations.", 'inputSchema': {'type': 'object', 'properties': {'name': {'type': 'string', 'minLength': 2, 'description': 'Case-insensitive primary name or alias to search.'}, 'match_mode': {'type': 'string', 'enum': ['contains', 'exact'], 'default': 'contains', 'description': 'Substring discovery or exact normalized matching.'}, 'program': {'type': 'string', 'description': 'Optional OFAC sanctions program code.'}, 'country': {'type': 'string', 'description': 'Optional country filter across addresses and vessel flag.'}, 'entity_type': {'type': 'string', 'description': 'Optional party type such as individual, entity, vessel or aircraft.'}, 'list_scope': {'type': 'string', 'enum': ['all', 'sdn', 'non_sdn'], 'default': 'all', 'description': 'Search SDN, consolidated non-SDN, or both.'}, 'include_aliases': {'type': 'boolean', 'default': True, 'description': 'Match the query against alternate names as well as primary names.'}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': 'Maximum sanctions records to return.'}}, 'required': ['name'], 'additionalProperties': False}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'items': {'type': 'object', 'properties': {'list_type': {'title': 'OFAC List', 'description': 'Source OFAC sanctions list.', 'type': ['string', 'null']}, 'uid': {'title': 'OFAC UID', 'description': 'OFAC unique record identifier.', 'type': ['string', 'null']}, 'primary_name': {'title': 'Primary Name', 'description': 'Primary sanctioned party name.', 'type': ['string', 'null']}, 'entity_type': {'title': 'Entity Type', 'description': 'OFAC party type.', 'type': ['string', 'null']}, 'programs': {'title': 'Programs', 'description': 'Pipe-separated OFAC sanctions program codes.', 'type': ['string', 'null']}, 'aliases': {'title': 'Aliases', 'description': 'Pipe-separated alternate names.', 'type': ['string', 'null']}, 'addresses': {'title': 'Addresses', 'description': 'Pipe-separated street address values.', 'type': ['string', 'null']}, 'countries': {'title': 'Countries', 'description': 'Pipe-separated address countries.', 'type': ['string', 'null']}, 'matched_name': {'title': 'Matched Name', 'description': 'Primary or alias name that satisfied the query.', 'type': ['string', 'null']}, 'match_basis': {'title': 'Match Basis', 'description': 'Whether the name query matched a primary name or alias.', 'type': ['string', 'null']}, 'source_url': {'title': 'Official Source', 'description': 'Official OFAC Sanctions List Service page.', 'type': ['string', 'null']}, 'downloaded_at': {'title': 'Downloaded At', 'description': 'UTC timestamp when the official list files were retrieved.', 'type': ['string', 'null']}}}}, 'status': {'type': 'string', 'enum': ['success', 'empty_unverified', 'partial', 'error']}, 'error': {'type': 'object'}, 'run': {'type': 'object'}}, 'required': ['results', 'status']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': False, 'openWorldHint': True}},
+    {'name': 'sec_form_4_insider_transactions', 'title': 'SEC Form 4 Insider Transactions', 'description': "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-form-4-insider-transactions'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable; the Actor publisher supplies the SEC contact identity.\n- Latency & Limits: Typical run duration is 10-90 seconds depending on max_filings; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for insider-trading research, ownership-change monitoring and transaction-level Form 4 analysis.\n- When NOT to use: Do not use for 10-K, 10-Q or 8-K filings (use 'sec_edgar_filings') or campaign-finance data (use 'fec_campaign_finance_search').\n- Named alternatives: Use 'sec_edgar_filings' for company filings and exhibits, or 'fec_campaign_finance_search' for US political contributions and committees.", 'inputSchema': {'type': 'object', 'properties': {'company': {'type': 'string', 'minLength': 1, 'description': 'Public-company ticker or 1-10 digit SEC CIK.'}, 'date_from': {'type': 'string', 'pattern': '^\\d{4}-\\d{2}-\\d{2}$', 'description': 'Inclusive filing start date, YYYY-MM-DD.'}, 'date_to': {'type': 'string', 'pattern': '^\\d{4}-\\d{2}-\\d{2}$', 'description': 'Inclusive filing end date, YYYY-MM-DD.'}, 'transaction_codes': {'type': 'array', 'items': {'type': 'string'}, 'description': 'Exact SEC transaction codes such as P, S, A, M or G.', 'maxItems': 100}, 'include_derivative': {'type': 'boolean', 'default': True, 'description': 'Include derivative securities such as options.'}, 'include_amendments': {'type': 'boolean', 'default': True, 'description': 'Include amended Form 4/A filings.'}, 'max_filings': {'type': 'integer', 'minimum': 1, 'maximum': 1000, 'default': 100, 'description': 'Maximum ownership XML filings to inspect.'}, 'max_results': {'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 10, 'description': 'Maximum transaction rows to return.'}}, 'required': ['company'], 'additionalProperties': False}, 'outputSchema': {'type': 'object', 'properties': {'results': {'type': 'array', 'items': {'type': 'object', 'properties': {'issuer_name': {'title': 'Issuer Name', 'description': 'Issuer name reported in the ownership document.', 'type': ['string', 'null']}, 'ticker': {'title': 'Ticker', 'description': 'Issuer trading symbol.', 'type': ['string', 'null']}, 'reporting_owner_names': {'title': 'Reporting Owner Names', 'description': 'Pipe-separated reporting-owner names.', 'type': ['string', 'null']}, 'officer_titles': {'title': 'Officer Titles', 'description': 'Pipe-separated reporting-owner officer titles.', 'type': ['string', 'null']}, 'transaction_id': {'title': 'Transaction ID', 'description': 'Stable accession, table type, and sequence identifier for this transaction row.', 'type': ['string', 'null']}, 'transaction_type': {'title': 'Transaction Type', 'description': 'Non-derivative or derivative table source.', 'type': ['string', 'null']}, 'transaction_date': {'title': 'Transaction Date', 'description': 'Transaction date in YYYY-MM-DD.', 'type': ['string', 'null']}, 'transaction_code': {'title': 'Transaction Code', 'description': 'SEC ownership transaction code.', 'type': ['string', 'null']}, 'acquired_disposed_code': {'title': 'Acquired or Disposed', 'description': 'A for acquired or D for disposed.', 'type': ['string', 'null']}, 'shares': {'title': 'Transaction Shares', 'description': 'Number of securities acquired or disposed.', 'type': ['number', 'null']}, 'price_per_share': {'title': 'Price Per Share', 'description': 'Transaction price per share when reported.', 'type': ['number', 'null']}, 'shares_owned_after': {'title': 'Shares Owned After', 'description': 'Securities beneficially owned after the transaction.', 'type': ['number', 'null']}, 'filing_date': {'title': 'Filing Date', 'description': 'Date the filing was submitted.', 'type': ['string', 'null']}, 'filing_url': {'title': 'Filing URL', 'description': 'Official SEC filing index URL.', 'type': ['string', 'null']}}}}, 'status': {'type': 'string', 'enum': ['success', 'empty_unverified', 'partial', 'error']}, 'error': {'type': 'object'}, 'run': {'type': 'object'}}, 'required': ['results', 'status']}, 'annotations': {'readOnlyHint': True, 'destructiveHint': False, 'idempotentHint': False, 'openWorldHint': True}},
 ]
+
+
+TOOL_PROFILES = {
+    "leads": ["google_maps_search", "tech_stack_detector", "us_business_entity_search",
+              "alabama_business_search", "florida_new_filings_search", "florida_officer_search",
+              "french_company_search", "gleif_lei_search", "us_contractor_license_search",
+              "california_contractor_license_search", "company_registry_search"],
+    "market": ["glassdoor_jobs_search", "linkedin_jobs_search", "airbnb_listings_search",
+               "google_play_reviews_search", "youtube_video_search", "twitch_live_streams",
+               "google_news_search", "google_autocomplete_keywords"],
+    "government": ["sec_edgar_filings", "usaspending_contracts", "fec_campaign_finance_search",
+                   "epa_facility_search", "us_census_geocoder", "grants_gov_opportunity_search",
+                   "ted_eu_tender_search", "nhtsa_vehicle_recall_search",
+                   "courtlistener_case_search", "cve_vulnerability_intelligence",
+                   "ofac_sanctions_search", "sec_form_4_insider_transactions"],
+    "research": ["clinical_trials_search", "openfda_search", "cms_healthcare_provider_search",
+                 "europe_pmc_paper_search"],
+}
+
+# A profile is fixed for the process lifetime; clients reconnect after changing it.
+ACTIVE_PROFILE = os.environ.get("APIFY_TOOL_PROFILE", "all").strip().lower()
+if ACTIVE_PROFILE not in {"all", *TOOL_PROFILES}:
+    raise ValueError("APIFY_TOOL_PROFILE must be all, leads, market, government, or research")
+ACTIVE_TOOLS = [
+    tool if ACTIVE_PROFILE == "all" else {
+        **tool,
+        "description": re.sub(r"- Named alternatives:.*", "", tool["description"]).rstrip(),
+    }
+    for tool in TOOLS_DEFINITION
+    if ACTIVE_PROFILE == "all" or tool["name"] in TOOL_PROFILES[ACTIVE_PROFILE]
+]
+ACTIVE_TOOL_NAMES = {tool["name"] for tool in ACTIVE_TOOLS}
+ACTIVE_ACTORS = {
+    key: actor for key, actor in ACTORS.items()
+    if ACTIVE_PROFILE == "all" or any(
+        f"'{actor}'" in tool["description"] for tool in ACTIVE_TOOLS
+    )
+}
 
 
 def server_version() -> str:
@@ -9304,6 +9352,14 @@ RESOURCES_DEFINITION = [
 ]
 
 
+def active_prompts():
+    required = {"b2b_lead_search": "google_maps_search",
+                "sec_filing_analysis": "sec_edgar_filings",
+                "federal_procurement_audit": "usaspending_contracts"}
+    return [prompt for prompt in PROMPTS_DEFINITION
+            if required[prompt["name"]] in ACTIVE_TOOL_NAMES]
+
+
 def handle_request(req):
     req_id = req.get("id")
     method = req.get("method")
@@ -9325,12 +9381,9 @@ def handle_request(req):
                     "version": server_version()
                 },
                 "instructions": (
-                    f"Apify Public Data MCP exposes {len(TOOLS_DEFINITION)} public-data extraction tools: "
-                    "business leads (Google Maps, website tech stack), jobs (LinkedIn, Glassdoor), "
-                    "corporate and public records (SEC EDGAR, GLEIF, US state business registries, "
-                    "contractor licences, French companies), US government data (USAspending, FEC, EPA, "
-                    "Census geocoding, CMS providers), research and health (ClinicalTrials.gov, openFDA, "
-                    "Europe PMC), and media (Airbnb, YouTube, Twitch, Google Play reviews). Each call runs "
+                    f"Apify Public Data MCP exposes {len(ACTIVE_TOOLS)} tools in the {ACTIVE_PROFILE} profile. "
+                    "Only use tools returned by tools/list. Change APIFY_TOOL_PROFILE and restart "
+                    "to select another category or all tools. Each call runs "
                     "an Apify Actor on the caller's own account and returns JSON records; runs need the "
                     "APIFY_TOKEN environment variable and typically take 5-60 seconds."
                 )
@@ -9354,13 +9407,16 @@ def handle_request(req):
             "jsonrpc": "2.0",
             "id": req_id,
             "result": {
-                "prompts": PROMPTS_DEFINITION
+                "prompts": active_prompts()
             }
         }
         return res
 
     elif method == "prompts/get":
         p_name = params.get("name")
+        if p_name not in {prompt["name"] for prompt in active_prompts()}:
+            return {"jsonrpc": "2.0", "id": req_id, "error": {
+                "code": -32602, "message": "Prompt unavailable in the selected tool profile."}}
         p_args = params.get("arguments", {})
         res = {
             "jsonrpc": "2.0",
@@ -9393,7 +9449,7 @@ def handle_request(req):
     elif method == "resources/read":
         uri = params.get("uri", "")
         if uri == "apify://actors/catalog":
-            content = json.dumps({"actors": ACTORS, "maintainer": "jlucasmcrell", "registry": "io.github.jlucasmcrell/apify-scrapers"}, indent=2)
+            content = json.dumps({"actors": ACTIVE_ACTORS, "profile": ACTIVE_PROFILE, "maintainer": "jlucasmcrell", "registry": "io.github.jlucasmcrell/apify-scrapers"}, indent=2)
             mime = "application/json"
         else:
             content = "# Apify MCP Authentication\n\nSet APIFY_TOKEN environment variable with your personal token from console.apify.com."
@@ -9418,7 +9474,7 @@ def handle_request(req):
             "jsonrpc": "2.0",
             "id": req_id,
             "result": {
-                "tools": TOOLS_DEFINITION
+                "tools": ACTIVE_TOOLS
             }
         }
         return res
@@ -9427,9 +9483,9 @@ def handle_request(req):
         tool_name = params.get("name")
         tool_args = params.get("arguments", {})
         try:
-            definition = next((t for t in TOOLS_DEFINITION if t["name"] == tool_name), None)
+            definition = next((t for t in ACTIVE_TOOLS if t["name"] == tool_name), None)
             if definition is None:
-                raise ToolFailure("UNKNOWN_TOOL", "This tool is unavailable in this public release.")
+                raise ToolFailure("UNKNOWN_TOOL", "This tool is unavailable in this release or selected profile.")
             validate_value(tool_args, definition["inputSchema"])
             if tool_name == "us_census_geocoder" and len(tool_args["addresses"]) > tool_args.get("max_results", 10):
                 raise ToolFailure("INVALID_INPUT", "addresses must not exceed max_results.")
@@ -9481,6 +9537,74 @@ def handle_request(req):
                 loc = tool_args.get("location")
                 limit = int(tool_args.get("max_results", 10))
                 data = run_actor_sync(ACTORS["airbnb"], {"location": loc, "max_items": limit})
+            elif tool_name == "company_registry_search":
+                _search_queries = tool_args.get("search_queries")
+                _sources = tool_args.get("sources", ['uk', 'france', 'global'])
+                _include_details = tool_args.get("include_details", False)
+                _active_only = tool_args.get("active_only", True)
+                _max_results = tool_args.get("max_results", 10)
+                _payload = {"search_terms": _search_queries, "sources": _sources, "include_details": _include_details, "active_only": _active_only, "max_items": min(int(_max_results or 10), 100)}
+                data = run_actor_sync(ACTORS["company_registry"], _payload)
+            elif tool_name == "courtlistener_case_search":
+                _query = tool_args.get("query")
+                _search_type = tool_args.get("search_type", 'opinions')
+                _court = tool_args.get("court")
+                _nature_of_suit = tool_args.get("nature_of_suit")
+                _filed_after = tool_args.get("filed_after")
+                _filed_before = tool_args.get("filed_before")
+                _include_court_details = tool_args.get("include_court_details", True)
+                _max_results = tool_args.get("max_results", 10)
+                _payload = {"query": _query, "search_type": _search_type, "include_court_details": _include_court_details, "max_items": min(int(_max_results or 10), 100)}
+                if _court is not None: _payload["court"] = _court
+                if _nature_of_suit is not None: _payload["nature_of_suit"] = _nature_of_suit
+                if _filed_after is not None: _payload["filed_after"] = _filed_after
+                if _filed_before is not None: _payload["filed_before"] = _filed_before
+                data = run_actor_sync(ACTORS["courtlistener_case"], _payload)
+            elif tool_name == "cve_vulnerability_intelligence":
+                _query = tool_args.get("query")
+                _cve_id = tool_args.get("cve_id")
+                _severity = tool_args.get("severity")
+                _published_start = tool_args.get("published_start")
+                _published_end = tool_args.get("published_end")
+                _known_exploited_only = tool_args.get("known_exploited_only", False)
+                _max_references = tool_args.get("max_references", 50)
+                _max_cpes = tool_args.get("max_cpes", 100)
+                _max_results = tool_args.get("max_results", 10)
+                _payload = {"kev_only": _known_exploited_only, "max_references": int(_max_references), "max_cpes": int(_max_cpes), "max_items": min(int(_max_results or 10), 100)}
+                if _query is not None: _payload["query"] = str(_query)
+                if _cve_id is not None: _payload["cve_id"] = str(_cve_id)
+                if _severity is not None: _payload["severity"] = str(_severity)
+                if _published_start is not None: _payload["published_start"] = str(_published_start)
+                if _published_end is not None: _payload["published_end"] = str(_published_end)
+                data = run_actor_sync(ACTORS["cve_vulnerability_intelligence"], _payload)
+            elif tool_name == "ofac_sanctions_search":
+                _name = tool_args.get("name")
+                _match_mode = tool_args.get("match_mode", 'contains')
+                _program = tool_args.get("program")
+                _country = tool_args.get("country")
+                _entity_type = tool_args.get("entity_type")
+                _list_scope = tool_args.get("list_scope", 'all')
+                _include_aliases = tool_args.get("include_aliases", True)
+                _max_results = tool_args.get("max_results", 10)
+                _payload = {"name": _name, "match_mode": _match_mode, "list_scope": _list_scope, "include_aliases": _include_aliases, "max_items": min(int(_max_results or 10), 100)}
+                if _program is not None: _payload["program"] = _program
+                if _country is not None: _payload["country"] = _country
+                if _entity_type is not None: _payload["entity_type"] = _entity_type
+                data = run_actor_sync(ACTORS["ofac_sanctions"], _payload)
+            elif tool_name == "sec_form_4_insider_transactions":
+                _company = tool_args.get("company")
+                _date_from = tool_args.get("date_from")
+                _date_to = tool_args.get("date_to")
+                _transaction_codes = tool_args.get("transaction_codes")
+                _include_derivative = tool_args.get("include_derivative", True)
+                _include_amendments = tool_args.get("include_amendments", True)
+                _max_filings = tool_args.get("max_filings", 100)
+                _max_results = tool_args.get("max_results", 10)
+                _payload = {"company": _company, "include_derivative": _include_derivative, "include_amendments": _include_amendments, "max_filings": int(_max_filings), "max_items": min(int(_max_results or 10), 100)}
+                if _date_from is not None: _payload["date_from"] = _date_from
+                if _date_to is not None: _payload["date_to"] = _date_to
+                if _transaction_codes is not None: _payload["transaction_codes"] = [str(x) for x in (_transaction_codes if isinstance(_transaction_codes, list) else [_transaction_codes])]
+                data = run_actor_sync(ACTORS["sec_form_4_insider_transactions"], _payload)
             elif tool_name == "google_autocomplete_keywords":
                 _queries = tool_args.get("queries")
                 _language = tool_args.get("language", 'en')

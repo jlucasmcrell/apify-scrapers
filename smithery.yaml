@@ -11,6 +11,11 @@ startCommand:
     # JSON Schema defining the configuration options for the MCP.
     type: object
     properties:
+      toolProfile:
+        type: string
+        enum: [all, leads, market, government, research]
+        default: all
+        description: Focused tool selection. Restart the server after changing.
       apifyToken:
         type: string
         description: >-
@@ -22,5 +27,5 @@ startCommand:
     (config) => ({
       "command": "python",
       "args": ["-m", "mcp_server"],
-      "env": { "APIFY_TOKEN": config.apifyToken }
+      "env": { "APIFY_TOKEN": config.apifyToken, "APIFY_TOOL_PROFILE": config.toolProfile || "all" }
     })

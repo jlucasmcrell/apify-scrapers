@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.1.2",
-  "description": "30 public-data MCP tools for leads, news, jobs, SEC filings, procurement, recalls, registries, health, and research.",
-  "long_description": "30 tools backed by public Apify Actors. Runs execute on the caller account and are billed to it. Standard-library Python with validated inputs, structured results, cancellation, and bounded runs.",
+  "version": "1.2.0",
+  "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
+  "long_description": "35 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -36,11 +36,19 @@
         "${__dirname}/mcp_server.py"
       ],
       "env": {
-        "APIFY_TOKEN": "${user_config.apify_token}"
+        "APIFY_TOKEN": "${user_config.apify_token}",
+        "APIFY_TOOL_PROFILE": "${user_config.tool_profile}"
       }
     }
   },
   "user_config": {
+    "tool_profile": {
+      "type": "string",
+      "title": "Tool profile",
+      "description": "Choose all, leads, market, government, or research. Restart the server after changing. The full catalog remains the default.",
+      "default": "all",
+      "required": false
+    },
     "apify_token": {
       "type": "string",
       "title": "Apify API token",
@@ -169,6 +177,26 @@
     {
       "name": "google_news_search",
       "description": "Search Google News for companies, people, products, brands, industries, and topics. Returns current headlines, publishers, timestamps, article links, source sites, and snippets."
+    },
+    {
+      "name": "company_registry_search",
+      "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available."
+    },
+    {
+      "name": "courtlistener_case_search",
+      "description": "Search published judicial opinions or federal RECAP dockets through CourtListener. Returns case names, courts, dates, citations, judges, parties, filings, snippets, and canonical record links where available."
+    },
+    {
+      "name": "cve_vulnerability_intelligence",
+      "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references."
+    },
+    {
+      "name": "ofac_sanctions_search",
+      "description": "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers."
+    },
+    {
+      "name": "sec_form_4_insider_transactions",
+      "description": "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership."
     }
   ],
   "compatibility": {

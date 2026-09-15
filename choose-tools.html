@@ -1,0 +1,69 @@
+---
+layout: default
+title: Choose your MCP tools
+description: Install the full Apify public-data MCP server or a focused set of tools for leads, markets, government, or research.
+permalink: /choose-tools/
+---
+<h1>Choose your MCP tools</h1>
+<p>One server, four focused profiles. Keep the full catalog or show your assistant only the tools relevant to your work. No separate repository or subscription is needed.</p>
+<label for="profile">Which tools do you want?</label>
+<select id="profile">
+  <option value="all">All tools (default)</option>
+  <option value="leads">Business intelligence and lead generation</option>
+  <option value="market">Jobs, market and consumer intelligence</option>
+  <option value="government">Government and public records</option>
+  <option value="research">Research and health data</option>
+</select>
+<p id="profile-description" aria-live="polite"></p>
+<h2>Installation configuration</h2>
+<p>Requires Python 3.10+, <a href="https://docs.astral.sh/uv/getting-started/installation/">uv (provides uvx)</a>, a compatible local MCP client, and your own Apify account. Add this server entry to your client's MCP configuration without replacing other entries.</p>
+<label for="configuration">Generated configuration</label>
+<textarea id="configuration" rows="16" readonly spellcheck="false" style="display:block;width:100%;box-sizing:border-box;font-family:monospace"></textarea>
+<button id="copy" type="button">Copy configuration</button>
+<p id="copy-status" role="status"></p>
+<p>Replace <code>YOUR_APIFY_API_TOKEN</code> privately in your client, not on this page. This page never asks for or stores your token. Restart the server and reconnect or refresh its tools after changing profiles. Remove the older full-server entry if you want only the focused tools.</p>
+<p>The MCP code is MIT-licensed. Actor runs execute in Apify's cloud on your account and are billed at the Store price; other platform charges may apply. Profiles are a tool-selection convenience, not an account permission or spending boundary. Direct Actor API calls are unaffected.</p>
+<h2>What each profile includes</h2>
+<h3 id="leads">Business intelligence and lead generation</h3>
+<p>Google Maps businesses, website technology detection, company registries, contractor licenses, and LEI lookup. Try: find five electricians in Dallas and return their websites and phone numbers.</p>
+<h3 id="market">Jobs, market and consumer intelligence</h3>
+<p>Job listings, Google News, keyword suggestions, app reviews, vacation rentals, YouTube search, and Twitch streams. Try: find five Google News results about a company, with publisher and article links.</p>
+<h3 id="government">Government and public records</h3>
+<p>SEC filings and insider transactions, court cases, sanctions, vulnerability records, federal spending, campaign finance, EPA facilities, Census geocoding, grants, EU tenders, and vehicle recalls. Try: retrieve one Microsoft 10-K and its original SEC document link.</p>
+<h3 id="research">Research and health data</h3>
+<p>Clinical trials, openFDA, CMS healthcare providers, and Europe PMC papers. Try: find five clinical trials about a research topic. Source records are not medical advice.</p>
+<p><a href="https://github.com/jlucasmcrell/apify-scrapers">Source, full tool catalog, and setup help</a></p>
+<noscript><p>JavaScript is needed only to generate the configuration. Set <code>APIFY_TOOL_PROFILE</code> in your MCP server environment to <code>all</code>, <code>leads</code>, <code>market</code>, <code>government</code>, or <code>research</code>. Run <code>uvx apify-data-scrapers</code> with your private <code>APIFY_TOKEN</code>.</p></noscript>
+<script>
+const profile = document.getElementById('profile');
+const configuration = document.getElementById('configuration');
+const descriptions = {
+  all: 'All tools remain available. This is the default for existing installations.',
+  leads: 'Company records and local lead research, without unrelated research or media tools.',
+  market: 'Jobs, news, keywords, reviews and media discovery.',
+  government: 'Official filings, awards, grants, tenders and other public records.',
+  research: 'Biomedical literature, clinical trials, drug records and healthcare providers.'
+};
+function updateConfiguration() {
+  const selected = profile.value;
+  configuration.value = JSON.stringify({mcpServers: {'apify-data-scrapers': {
+    command: 'uvx', args: ['apify-data-scrapers@1.2.0'],
+    env: {APIFY_TOKEN: 'YOUR_APIFY_API_TOKEN', APIFY_TOOL_PROFILE: selected}
+  }}}, null, 2);
+  document.getElementById('profile-description').textContent = descriptions[selected];
+  document.getElementById('copy-status').textContent = '';
+}
+const initial = location.hash.slice(1);
+if (Object.hasOwn(descriptions, initial)) profile.value = initial;
+profile.addEventListener('change', updateConfiguration);
+document.getElementById('copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(configuration.value);
+    document.getElementById('copy-status').textContent = 'Configuration copied. Add your token privately in your client.';
+  } catch (_) {
+    configuration.focus(); configuration.select();
+    document.getElementById('copy-status').textContent = 'Copy the selected configuration using your keyboard.';
+  }
+});
+updateConfiguration();
+</script>

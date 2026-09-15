@@ -7,7 +7,7 @@ permalink: /mcp/job-search/
 
 # MCP server for job search: LinkedIn and Glassdoor listings
 
-[Apify Public Data MCP](/) is a 30-tool MCP server, and two of those tools make it an MCP server for job search: linkedin_jobs_search and glassdoor_jobs_search. Each one runs as its own Apify Actor on your own Apify account. Together they let an agent pull public job postings, hiring companies, and Glassdoor's estimated salary and rating data without any scraping code of your own.
+[Apify Public Data MCP](/) is a 35-tool MCP server, and two of those tools make it an MCP server for job search: linkedin_jobs_search and glassdoor_jobs_search. Each one runs as its own Apify Actor on your own Apify account. Together they let an agent pull public job postings, hiring companies, and Glassdoor's estimated salary and rating data without any scraping code of your own.
 
 ## What an agent can ask
 

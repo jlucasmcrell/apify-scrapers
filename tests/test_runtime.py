@@ -43,6 +43,46 @@ class RuntimeTests(unittest.TestCase):
             if isinstance(spec, dict) and spec.get('tool', {}).get('name') in public:
                 self.assertEqual(spec['tool'], public[spec['tool']['name']], str(path))
 
+    def test_profiles_cover_catalog_once_and_filter_every_surface(self):
+        grouped = [name for names in server.TOOL_PROFILES.values() for name in names]
+        self.assertEqual(len(grouped), len(set(grouped)))
+        self.assertEqual(set(grouped), {t['name'] for t in server.TOOLS_DEFINITION})
+        program = '''
+import json, mcp_server as s
+def request(method, **params):
+    return s.handle_request({'id': 1, 'method': method, 'params': params})
+def forbidden(*args, **kwargs):
+    raise AssertionError('A disabled tool must never reach the Actor runner')
+s.run_actor_sync = forbidden
+tools = request('tools/list')['result']['tools']
+names = {t['name'] for t in tools}
+expected = {t['name'] for t in s.TOOLS_DEFINITION} if s.ACTIVE_PROFILE == 'all' else set(s.TOOL_PROFILES[s.ACTIVE_PROFILE])
+assert names == expected
+catalog = json.loads(request('resources/read', uri='apify://actors/catalog')['result']['contents'][0]['text'])
+assert len(catalog['actors']) == len(names)
+assert str(len(names)) + ' tools' in request('initialize')['result']['instructions']
+for tool in s.TOOLS_DEFINITION:
+    if tool['name'] not in names:
+        result = request('tools/call', name=tool['name'], arguments={})['result']
+        assert result['structuredContent']['error']['code'] == 'UNKNOWN_TOOL'
+for prompt in s.PROMPTS_DEFINITION:
+    listed = {p['name'] for p in request('prompts/list')['result']['prompts']}
+    if prompt['name'] not in listed:
+        assert request('prompts/get', name=prompt['name'])['error']['code'] == -32602
+if s.ACTIVE_PROFILE != 'all':
+    assert all('Named alternatives:' not in t['description'] for t in tools)
+print(len(names))
+'''
+        for profile in ['all', *server.TOOL_PROFILES]:
+            with self.subTest(profile=profile):
+                result = subprocess.run([sys.executable, '-c', program], cwd=ROOT,
+                    env={**os.environ, 'APIFY_TOOL_PROFILE': profile}, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+        result = subprocess.run([sys.executable, '-c', 'import mcp_server'], cwd=ROOT,
+            env={**os.environ, 'APIFY_TOOL_PROFILE': 'typo'}, capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, '')
+
     def test_invalid_inputs_never_start_a_run(self):
         cases = [None, [], {}, {'search_query': ''}, {'search_query': 'dentists', 'max_results': -1},
                  {'search_query': 'dentists', 'max_results': True},
