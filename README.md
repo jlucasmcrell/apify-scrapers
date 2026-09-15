@@ -17,6 +17,8 @@ Each actor is built with strict schema validation, deterministic field mapping, 
 
 ## Runtime contract and spending control
 
+Release status: the 1.1.0 fixes are available in this repository. Registry uploads are pending; installing the currently published package does not yet include these repairs.
+
 Version 1.1.0 returns `{results, status, run?}` in both MCP structured content and text. Status is `success`, `partial`, `empty_unverified`, or `error`; errors include a stable code and retry guidance. Zero rows are not proof that no matching records exist. Existing integrations that parsed a bare result array must now read `results`. Native dataset field names are preserved.
 
 Each call requests a 120-second Actor timeout and a pay-per-event charge cap of $1 by default. Set `APIFY_MAX_CHARGE_USD` to adjust the cap. This is per run, not a total account spending limit; platform fees outside Actor event charges may still apply. Up to four calls may run concurrently. Cancelling a request attempts to abort its cloud run; check the returned run ID if confirmation fails. An ambiguous start is never retried automatically.
