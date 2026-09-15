@@ -1,6 +1,6 @@
 # Make.com (Integromat) Apify Integration Blueprints
 
-Pre-built, 1-click **Make.com scenario blueprints** that connect production Apify actors to Google Sheets, CRMs, Slack, and webhooks with zero custom code.
+Make.com scenario blueprints for sending Apify Actor results to Google Sheets or a Slack incoming webhook. Configure connections, inputs, and destinations before running. Apify and Make usage charges may apply.
 
 ---
 
@@ -8,28 +8,29 @@ Pre-built, 1-click **Make.com scenario blueprints** that connect production Apif
 
 | Scenario | Public Make Template | Blueprint File | Description |
 | :--- | :--- | :--- | :--- |
-| **Google Maps Local Leads** | [Use template](https://www.make.com/en/templates/19727-google-maps-leads-to-google-sheets-with-apify) | [`google_maps_leads_to_sheets_blueprint.json`](./google_maps_leads_to_sheets_blueprint.json) | Scrapes commercial businesses, phones, addresses, ratings directly to Google Sheets. |
-| **Google News Results** | [Use template](https://www.make.com/en/templates/19731-export-google-news-results-to-google-sheets-with-apify) | [`google_news_to_sheets_blueprint.json`](./google_news_to_sheets_blueprint.json) | Exports headlines, publishers, timestamps, article links, and snippets into Sheets. |
-| **Grants.gov Opportunities** | [Use template](https://www.make.com/en/templates/19732-export-grants-gov-opportunities-to-google-sheets-with-apify) | [`grants_gov_to_sheets_blueprint.json`](./grants_gov_to_sheets_blueprint.json) | Exports federal funding opportunities, deadlines, award amounts, contacts, and links. |
-| **TED EU Tenders** | [Use template](https://www.make.com/en/templates/19733-export-ted-eu-tenders-to-google-sheets-with-apify) | [`ted_eu_tenders_to_sheets_blueprint.json`](./ted_eu_tenders_to_sheets_blueprint.json) | Exports European procurement notices, buyers, deadlines, values, and source documents. |
-| **NHTSA Vehicle Recalls** | [Use template](https://www.make.com/en/templates/19734-export-nhtsa-vehicle-recalls-to-google-sheets-with-apify) | [`nhtsa_recalls_to_sheets_blueprint.json`](./nhtsa_recalls_to_sheets_blueprint.json) | Exports official vehicle recall campaigns, defects, warnings, affected units, and remedies. |
-| **SEC EDGAR 10-K & 8-K Filings** | [Use template](https://www.make.com/en/templates/19730-sec-edgar-filing-alerts-to-slack-with-apify) | [`sec_edgar_to_slack_blueprint.json`](./sec_edgar_to_slack_blueprint.json) | Real-time regulatory disclosure monitor pushing alerts directly to Slack/Discord/Webhook. |
-| **California Contractor Licenses** | [Use template](https://www.make.com/en/templates/19729-california-contractor-licenses-to-google-sheets-with-apify) | [`california_contractors_to_sheets_blueprint.json`](./california_contractors_to_sheets_blueprint.json) | Extracts verified state contractor licenses, bond statuses, and corporate entities into Sheets. |
-| **Glassdoor Active Job Postings** | [Use template](https://www.make.com/en/templates/19728-glassdoor-jobs-to-google-sheets-with-apify) | [`glassdoor_jobs_to_sheets_blueprint.json`](./glassdoor_jobs_to_sheets_blueprint.json) | Tracks tech hiring, salary estimates, and company ratings into a live spreadsheet. |
+| **Google Maps Local Leads** | Gallery approval pending | [`google_maps_leads_to_sheets_blueprint.json`](./google_maps_leads_to_sheets_blueprint.json) | Scrapes commercial businesses, phones, addresses, ratings directly to Google Sheets. |
+| **Google News Results** | Gallery approval pending | [`google_news_to_sheets_blueprint.json`](./google_news_to_sheets_blueprint.json) | Exports headlines, publishers, timestamps, article links, and snippets into Sheets. |
+| **Grants.gov Opportunities** | Gallery approval pending | [`grants_gov_to_sheets_blueprint.json`](./grants_gov_to_sheets_blueprint.json) | Exports federal funding opportunities, deadlines, award amounts, contacts, and links. |
+| **TED EU Tenders** | Gallery approval pending | [`ted_eu_tenders_to_sheets_blueprint.json`](./ted_eu_tenders_to_sheets_blueprint.json) | Exports European procurement notices, buyers, deadlines, values, and source documents. |
+| **NHTSA Vehicle Recalls** | Gallery approval pending | [`nhtsa_recalls_to_sheets_blueprint.json`](./nhtsa_recalls_to_sheets_blueprint.json) | Exports official vehicle recall campaigns, defects, warnings, affected units, and remedies. |
+| **SEC EDGAR 10-K & 8-K Filings** | Gallery approval pending | [`sec_edgar_to_slack_blueprint.json`](./sec_edgar_to_slack_blueprint.json) | Sends retrieved SEC filing records to a Slack incoming webhook when run. |
+| **California Contractor Licenses** | Gallery approval pending | [`california_contractors_to_sheets_blueprint.json`](./california_contractors_to_sheets_blueprint.json) | Extracts verified state contractor licenses, bond statuses, and corporate entities into Sheets. |
+| **Glassdoor Active Job Postings** | Gallery approval pending | [`glassdoor_jobs_to_sheets_blueprint.json`](./glassdoor_jobs_to_sheets_blueprint.json) | Tracks tech hiring, salary estimates, and company ratings into a live spreadsheet. |
 
-The public templates are usable by direct link and include guided setup instructions for connections, Actor inputs, destination fields, and module dropdowns. Make gallery approval is pending.
+Make gallery approval is pending. Download the blueprint files below to configure a scenario yourself; public gallery links are not yet verified.
 
 ---
 
-## How to Import a Blueprint Into Make.com (60 Seconds)
+## How to Import a Blueprint Into Make.com
 
 1. Open your [Make.com Dashboard](https://make.com) and click **Create a new scenario**.
 2. On the bottom canvas toolbar, click the **`...` (More)** menu icon.
 3. Click **`Import Blueprint`** and upload any of the `.json` files from this directory.
 4. The complete scenario appears on your canvas with all modules and field mappings pre-wired.
 5. Click **Module 1 (Apify)** to select your Apify API Token.
-6. Click the destination module (Google Sheets or Slack) to authorize your account.
-7. Click **Run once** to test.
+6. Configure Module 2 with the same Apify connection.
+7. In Google Sheets, select your connection, spreadsheet, and tab. Match the headers to the mapped fields. Use **Raw** input and **Insert rows**. For SEC, configure your own Slack incoming webhook URL.
+8. Review the Actor input and expected usage cost, then click **Run once** to test.
 
 ---
 
