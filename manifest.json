@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "30 public-data MCP tools for leads, news, jobs, SEC filings, procurement, recalls, registries, health, and research.",
   "long_description": "30 tools backed by public Apify Actors. Runs execute on the caller account and are billed to it. Standard-library Python with validated inputs, structured results, cancellation, and bounded runs.",
   "author": {
@@ -88,7 +88,7 @@
     },
     {
       "name": "epa_facility_search",
-      "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true)."
+      "description": "Search the official EPA ECHO service for US regulated facilities by state, facility name, NAICS code, or environmental program, and export compliance status, inspection, and penalty data. City, ZIP, and violation-only filtering are available in the underlying Actor, not this MCP tool."
     },
     {
       "name": "fec_campaign_finance_search",

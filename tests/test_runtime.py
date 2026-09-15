@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import queue
+import re
 import subprocess
 import sys
 import threading
@@ -54,6 +55,19 @@ class RuntimeTests(unittest.TestCase):
                     self.assertTrue(result['isError'])
                     self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
             run.assert_not_called()
+
+    def test_named_alternatives_are_public_tools(self):
+        public = {tool['name'] for tool in server.TOOLS_DEFINITION}
+        for tool in server.TOOLS_DEFINITION:
+            alternatives = tool['description'].split('- Named alternatives:')[-1]
+            for name in re.findall(r"'([a-z]+(?:_[a-z0-9]+)+)'", alternatives):
+                self.assertIn(name, public, (tool['name'], name))
+
+    def test_epa_description_does_not_offer_unavailable_filters(self):
+        tool = next(t for t in server.TOOLS_DEFINITION if t['name'] == 'epa_facility_search')
+        self.assertNotIn('city', tool['inputSchema']['properties'])
+        self.assertNotIn('ZIP', tool['description'].split('.')[0])
+        self.assertIn('not this MCP tool', tool['description'])
 
     def test_empty_results_are_explicitly_unverified(self):
         with patch.object(server, 'run_actor_sync', return_value=[]):

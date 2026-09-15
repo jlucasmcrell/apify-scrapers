@@ -4456,10 +4456,9 @@ TOOLS_DEFINITION = [
                      'openWorldHint': True}},
     {'name': 'epa_facility_search',
      'title': 'EPA ECHO Facility Compliance Search',
-     'description': 'Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, '
-                    'facility name, or NAICS code, and export compliance status, inspection, and penalty data. '
-                    "By default only facilities currently showing a violation are returned (the Actor's "
-                    'violations_only filter defaults to true).\n'
+     'description': 'Search the official EPA ECHO service for US regulated facilities by state, facility name, '
+                    'NAICS code, or environmental program, and export compliance status, inspection, and penalty data. '
+                    'City, ZIP, and violation-only filtering are available in the underlying Actor, not this MCP tool.\n'
                     '\n'
                     'Behavioral Transparency:\n'
                     '- Execution: Network call executed synchronously in the cloud via Apify Actor '
@@ -8887,8 +8886,8 @@ TOOLS_DEFINITION = [
                     'planning, and localized keyword ideation.\n'
                     '- When NOT to use: Do not treat suggestions as verified search-volume, CPC, or competition '
                     'data.\n'
-                    "- Named alternatives: Use 'google_search' for live search results or 'google_news_search' "
-                    'for current news coverage.',
+                    "- Named alternatives: Use 'google_news_search' for current news coverage. This server "
+                    'does not include a general web search tool.',
      'inputSchema': {'type': 'object',
                      'properties': {'queries': {'type': 'array',
                                                 'items': {'type': 'string'},
@@ -8999,7 +8998,7 @@ TOOLS_DEFINITION = [
                     '- When NOT to use: Do not use for full article text, historical news archives, or verified '
                     'fact checking.\n'
                     "- Named alternatives: Use 'sec_edgar_filings' for official company filings, "
-                    "'federal_register_search' for US agency publications, or 'europe_pmc_paper_search' for "
+                    "or 'europe_pmc_paper_search' for "
                     'biomedical literature.',
      'inputSchema': {'type': 'object',
                      'properties': {'query': {'type': 'string',
