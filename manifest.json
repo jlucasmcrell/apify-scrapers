@@ -4,13 +4,13 @@
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
   "version": "1.0.13",
-  "description": "Public data MCP tools: Google Maps, SEC EDGAR, Glassdoor, USAspending, Twitch, Airbnb.",
+  "description": "33 public-data MCP tools for leads, news, jobs, SEC filings, procurement, sanctions, recalls, registries, health, and research.",
   "long_description": "Thirty-three read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
   },
-  "homepage": "https://github.com/jlucasmcrell/apify-scrapers",
+  "homepage": "https://apify.revenuesystemslabs.com/",
   "documentation": "https://github.com/jlucasmcrell/apify-scrapers#readme",
   "license": "MIT",
   "keywords": [
@@ -19,7 +19,13 @@
     "lead-generation",
     "google-maps",
     "sec-edgar",
-    "public-data"
+    "public-data",
+    "model-context-protocol",
+    "mcp-server",
+    "government-data",
+    "workflow-automation",
+    "n8n",
+    "make"
   ],
   "server": {
     "type": "python",

@@ -17,7 +17,14 @@
     "sec-edgar",
     "usaspending",
     "lead-generation",
-    "web-scraping"
+    "web-scraping",
+    "model-context-protocol",
+    "mcp-server",
+    "public-data",
+    "government-data",
+    "workflow-automation",
+    "n8n",
+    "make"
   ],
   "author": "Joseph McRell",
   "license": "MIT",

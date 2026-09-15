@@ -8,6 +8,22 @@ setuptools.setup(
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/jlucasmcrell/apify-scrapers",
+    project_urls={
+        "Documentation": "https://apify.revenuesystemslabs.com/",
+        "Source": "https://github.com/jlucasmcrell/apify-scrapers",
+        "Apify Store": "https://apify.com/captainhandsome",
+    },
+    keywords=[
+        "apify",
+        "mcp",
+        "model-context-protocol",
+        "public-data",
+        "government-data",
+        "lead-generation",
+        "workflow-automation",
+        "n8n",
+        "make",
+    ],
     packages=setuptools.find_packages(),
     py_modules=["mcp_server"],
     classifiers=[

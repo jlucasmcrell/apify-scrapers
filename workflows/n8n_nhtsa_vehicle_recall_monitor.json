@@ -1,0 +1,118 @@
+{
+  "name": "Daily NHTSA Vehicle Recall Monitor to Slack or Discord",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "77777777-0000-0000-0000-000000000001",
+      "name": "Every 24 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/captainhandsome~nhtsa-vehicle-recall-search/run-sync-get-dataset-items?clean=true&format=json&timeout=300&maxItems=20",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"make\": \"Honda\",\n  \"model\": \"Civic\",\n  \"model_year\": 2020,\n  \"max_items\": 20\n}",
+        "options": {}
+      },
+      "id": "77777777-0000-0000-0000-000000000002",
+      "name": "Search NHTSA Recalls",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = [row.campaign_number, row.make, row.model, row.model_year].filter(Boolean).join('|');\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 2000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
+      },
+      "id": "77777777-0000-0000-0000-000000000003",
+      "name": "Only New Recall Campaigns",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: '*New NHTSA vehicle recall*\\n*Vehicle:* ' + $json.model_year + ' ' + $json.make + ' ' + $json.model + '\\n*Campaign:* ' + $json.campaign_number + '\\n*Component:* ' + $json.component + '\\n*Park-it warning:* ' + $json.park_it + '\\n*Summary:* ' + $json.summary + '\\n*Remedy:* ' + $json.remedy }) }}",
+        "options": {}
+      },
+      "id": "77777777-0000-0000-0000-000000000004",
+      "name": "Send Recall Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        920,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Search NHTSA Recalls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search NHTSA Recalls": {
+      "main": [
+        [
+          {
+            "node": "Only New Recall Campaigns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only New Recall Campaigns": {
+      "main": [
+        [
+          {
+            "node": "Send Recall Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateId": "apify-nhtsa-vehicle-recall-monitor",
+    "instanceId": "community-template",
+    "description": "Monitor official NHTSA vehicle recalls with captainhandsome/nhtsa-vehicle-recall-search, suppress previously seen campaign and vehicle combinations, and send new safety alerts to Slack or Discord."
+  }
+}

@@ -43,6 +43,7 @@ One page per question an agent gets asked, each listing the tools, arguments, re
 
 Focused, end-to-end tutorials:
 
+- [Use public-data Actors directly in ChatGPT with Apify MCP](/tutorials/use-apify-actors-in-chatgpt/)
 - [Monitor SEC EDGAR filings automatically](/tutorials/monitor-sec-filings/)
 - [Build a contractor lead list from Google Maps](/tutorials/contractor-lead-generation/)
 - [Monitor CMS healthcare-provider changes](/tutorials/monitor-healthcare-provider-changes/)
@@ -182,7 +183,8 @@ If you automate via n8n, Make, Zapier, or Google Sheets, ready-to-import bluepri
 - **[Competitor News Alerts (n8n)](workflows/n8n_google_news_competitor_monitor.json):** Daily Google News monitoring with persistent duplicate suppression.
 - **[Grants.gov Opportunity Alerts (n8n)](workflows/n8n_grants_gov_opportunity_monitor.json):** Daily funding-opportunity monitoring with persistent duplicate suppression.
 - **[TED European Tender Alerts (n8n)](workflows/n8n_ted_eu_tender_monitor.json):** Daily procurement monitoring with persistent duplicate suppression.
-- **[Make.com blueprints](templates/make_blueprints/):** Google Maps, SEC EDGAR, Glassdoor, and California contractor scenarios.
+- **[NHTSA Vehicle Recall Alerts (n8n)](workflows/n8n_nhtsa_vehicle_recall_monitor.json):** Daily safety-recall monitoring with persistent duplicate suppression.
+- **[Eight public Make.com templates](templates/make_blueprints/):** One-click Google Sheets and webhook scenarios for Google Maps, Google News, Grants.gov, TED, NHTSA, SEC EDGAR, Glassdoor, and California contractor data.
 
 ---
 

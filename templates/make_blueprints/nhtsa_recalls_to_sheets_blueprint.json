@@ -1,0 +1,588 @@
+{
+  "name": "Export NHTSA Vehicle Recalls to Google Sheets with Apify",
+  "flow": [
+    {
+      "id": 1,
+      "module": "apify:runActorNew",
+      "version": 1,
+      "parameters": {},
+      "filter": null,
+      "mapper": {
+        "actor_search_type": "user",
+        "runSync": true,
+        "actorId": "WOxFvtKuuK5Rt9u6c",
+        "inputBodyWOxFvtKuuK5Rt9u6c": "{\n    \"make\": \"Honda\",\n    \"model\": \"Civic\",\n    \"model_year\": 2020,\n    \"max_items\": 20\n}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Apify connection",
+              "data": {
+                "scoped": "true",
+                "connection": "apify"
+              }
+            }
+          },
+          "expect": {
+            "actor_search_type": {
+              "label": "Recently used Actors"
+            },
+            "runSync": {
+              "mode": "chose"
+            },
+            "memory": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "actorId": {
+              "mode": "chose",
+              "label": "NHTSA Vehicle Recall Search (captainhandsome/nhtsa-vehicle-recall-search)"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:apify2,apify",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "actor_search_type",
+            "type": "select",
+            "label": "Search Actors from",
+            "required": true,
+            "validate": {
+              "enum": [
+                "user",
+                "store"
+              ]
+            }
+          },
+          {
+            "name": "runSync",
+            "type": "boolean",
+            "label": "Run synchronously",
+            "required": true
+          },
+          {
+            "name": "build",
+            "type": "text",
+            "label": "Build"
+          },
+          {
+            "name": "timeout",
+            "type": "uinteger",
+            "label": "Timeout"
+          },
+          {
+            "name": "memory",
+            "type": "select",
+            "label": "Memory",
+            "validate": {
+              "enum": [
+                128,
+                256,
+                512,
+                1024,
+                2048,
+                4096,
+                8192,
+                16384,
+                32768
+              ]
+            }
+          },
+          {
+            "name": "actorId",
+            "type": "select",
+            "label": "Actor",
+            "required": true
+          },
+          {
+            "name": "inputBodyWOxFvtKuuK5Rt9u6c",
+            "type": "text",
+            "label": "Input JSON",
+            "required": true
+          },
+          {
+            "name": "maxTotalChargeUsd",
+            "type": "number",
+            "label": "Maximum cost per run"
+          },
+          {
+            "name": "maxItems",
+            "type": "hidden",
+            "label": "Maximum charged results"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "module": "apify:fetchDatasetItems",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "datasetId": "{{1.defaultDatasetId}}",
+        "type": "clean",
+        "format": "json",
+        "limit": "100"
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Apify connection",
+              "data": {
+                "scoped": "true",
+                "connection": "apify"
+              }
+            }
+          },
+          "expect": {
+            "type": {
+              "mode": "chose",
+              "label": "Clean"
+            },
+            "format": {
+              "mode": "chose",
+              "label": "JSON"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:apify2,apify",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "datasetId",
+            "type": "text",
+            "label": "Dataset ID",
+            "required": true
+          },
+          {
+            "name": "type",
+            "type": "select",
+            "label": "Data transformation",
+            "required": true,
+            "validate": {
+              "enum": [
+                "clean",
+                "simplified",
+                "none"
+              ]
+            }
+          },
+          {
+            "name": "format",
+            "type": "select",
+            "label": "Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "json",
+                "csv",
+                "html",
+                "xml",
+                "rss",
+                "xlsx"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "validate": {
+              "max": 100000,
+              "min": 1
+            }
+          },
+          {
+            "name": "offset",
+            "type": "uinteger",
+            "label": "Offset",
+            "validate": {
+              "min": 0
+            }
+          },
+          {
+            "name": "fields",
+            "type": "text",
+            "label": "Fields"
+          },
+          {
+            "name": "omit",
+            "type": "text",
+            "label": "Omit Fields"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "mode": "select",
+        "insertUnformatted": false,
+        "valueInputOption": "USER_ENTERED",
+        "insertDataOption": "INSERT_ROWS",
+        "from": "drive",
+        "spreadsheetId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetId": "Recalls",
+        "includesHeaders": true,
+        "useColumnHeaders": false,
+        "values": {
+          "0": "{{2.campaign_number}}",
+          "1": "{{2.make}}",
+          "2": "{{2.model}}",
+          "3": "{{2.model_year}}",
+          "4": "{{2.component}}",
+          "5": "{{2.report_received_date}}",
+          "6": "{{2.potential_units_affected}}",
+          "7": "{{2.park_it}}",
+          "8": "{{2.park_outside}}",
+          "9": "{{2.summary}}",
+          "10": "{{2.remedy}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "restore": {
+          "parameters": {
+            "__IMTCONN__": {
+              "label": "Google Sheets connection",
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              }
+            }
+          },
+          "expect": {
+            "mode": {
+              "label": "Search by path"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "from": {
+              "label": "My Drive"
+            },
+            "spreadsheetId": {
+              "path": [
+                "Apify Public Data"
+              ]
+            },
+            "sheetId": {
+              "label": "Recalls"
+            },
+            "includesHeaders": {
+              "label": "Yes"
+            },
+            "useColumnHeaders": {
+              "label": "No"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ],
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "required": true,
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "type": "select",
+            "label": "Drive",
+            "required": true,
+            "validate": {
+              "enum": [
+                "drive",
+                "share",
+                "team"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "file",
+            "label": "Spreadsheet Name",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "useColumnHeaders",
+            "type": "select",
+            "label": "Use column headers as IDs of the columns",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "type": "collection",
+            "label": "Values in columns",
+            "metadata": [
+              [
+                [
+                  "Business Name",
+                  "Phone Number",
+                  "Address",
+                  "Website",
+                  "Verified Email",
+                  "Rating",
+                  "Review Count"
+                ]
+              ]
+            ],
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "Business Name (A)"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "Phone Number (B)"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "Address (C)"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "Website (D)"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "Verified Email (E)"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "Rating (F)"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "Review Count (G)"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "(H)"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "(I)"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "(J)"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "(K)"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "(L)"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "(M)"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "(N)"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "(O)"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "(P)"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "(Q)"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "(R)"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "(S)"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "(T)"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "(U)"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "(V)"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "(W)"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "(X)"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "(Y)"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "(Z)"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "slots": null
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us2.make.com",
+    "notes": []
+  }
+}

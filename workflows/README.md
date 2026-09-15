@@ -71,7 +71,18 @@ Configure an Apify HTTP Header Auth credential and replace YOUR_SLACK_OR_DISCORD
 
 ---
 
-## 6. Zapier & Make.com Webhook Quick Recipe
+## 6. Daily NHTSA Vehicle Recall Alerts
+
+Import `n8n_nhtsa_vehicle_recall_monitor.json` to check a year, make, and model every 24 hours, retain up to 2,000 previously seen campaign-and-vehicle combinations, and send only newly observed recalls to Slack or Discord.
+
+Configure an Apify HTTP Header Auth credential and replace `YOUR_SLACK_OR_DISCORD_WEBHOOK_URL`. Edit the example 2020 Honda Civic input for the vehicle or fleet you want to monitor.
+
+- **Underlying Actor:** [captainhandsome/nhtsa-vehicle-recall-search](https://apify.com/captainhandsome/nhtsa-vehicle-recall-search)
+- **Preconfigured Public Task:** [Check 2020 Honda Civic Safety Recalls](https://apify.com/captainhandsome/nhtsa-vehicle-recall-search/examples/2020-honda-civic-recalls)
+
+---
+
+## 7. Zapier & Make.com Webhook Quick Recipe
 
 If you are using **Zapier** or **Make.com** instead of n8n:
 
