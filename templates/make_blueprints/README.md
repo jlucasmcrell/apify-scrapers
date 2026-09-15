@@ -32,6 +32,14 @@ Make gallery approval is pending. Download the blueprint files below to configur
 7. In Google Sheets, select your connection, spreadsheet, and tab. Match the headers to the mapped fields. Use **Raw** input and **Insert rows**. For SEC, configure your own Slack incoming webhook URL.
 8. Review the Actor input and expected usage cost, then click **Run once** to test.
 
+### SEC duplicate prevention
+
+Before running the SEC blueprint, create a Make data store with a `sent_at` field of type **Date**. Select that same store in both Data store modules (4 and 5). Use a separate store for each independently notified Slack destination. The store and its history are not included in a blueprint import.
+
+The workflow checks each filing's `accession_number`, skips recorded filings, and saves a receipt only after Slack succeeds. Keep **Sequential processing** enabled and HTTP error handling enabled. Do not run multiple scenario copies against the same store concurrently. Failed deliveries remain eligible for retry.
+
+The first run sends the matching filings it finds, including older filings. History persists until you remove records or change stores; a full store requires attention. This is not an exactly-once guarantee: a timeout or interruption after Slack accepts a message but before the receipt is saved can still cause a repeat. Check Slack before manually replaying an ambiguous failure.
+
 ---
 
 ## Native Apify Mapping Architecture (The Dataset ID Pattern)

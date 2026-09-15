@@ -237,6 +237,44 @@
       }
     },
     {
+      "id": 4,
+      "mapper": {
+        "key": "{{2.accession_number}}"
+      },
+      "module": "datastore:ExistRecord",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "key",
+            "type": "text",
+            "label": "Key",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "datastore": {
+              "label": "Select your SEC sent-filings data store"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "datastore",
+            "type": "datastore",
+            "label": "Data store",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
       "id": 3,
       "module": "http:ActionSendData",
       "version": 3,
@@ -273,10 +311,85 @@
       },
       "metadata": {
         "designer": {
-          "x": 600,
+          "x": 900,
           "y": 0
         }
+      },
+      "filter": {
+        "name": "Not previously delivered",
+        "conditions": [
+          [
+            {
+              "a": "{{4.exist}}",
+              "o": "boolean:isfalse"
+            }
+          ]
+        ]
       }
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "key": "{{2.accession_number}}",
+        "data": {
+          "sent_at": "{{now}}"
+        },
+        "overwrite": false
+      },
+      "module": "datastore:AddRecord",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "key",
+            "type": "text",
+            "label": "Key"
+          },
+          {
+            "name": "overwrite",
+            "type": "boolean",
+            "label": "Overwrite an existing record",
+            "required": true
+          },
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "sent_at",
+                "type": "date",
+                "label": "Sent at"
+              }
+            ],
+            "type": "collection",
+            "label": "Record"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "overwrite": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "datastore": {
+              "label": "Select your SEC sent-filings data store"
+            }
+          }
+        },
+        "designer": {
+          "x": 1200,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "datastore",
+            "type": "datastore",
+            "label": "Data store",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {}
     }
   ],
   "metadata": {
@@ -287,7 +400,7 @@
       "maxErrors": 3,
       "autoCommit": true,
       "autoCommitTriggerLast": true,
-      "sequential": false,
+      "sequential": true,
       "slots": null
     },
     "designer": {
