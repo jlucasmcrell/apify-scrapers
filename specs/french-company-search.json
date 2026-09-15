@@ -3,7 +3,7 @@
   "tool": {
     "name": "french_company_search",
     "title": "French Company Registry Search (SIRENE)",
-    "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/french-company-search'.\n- Side Effects: Strictly read-only; queries the French public company-data API backed by the SIRENE register, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for French corporate due diligence, company/officer lookups, industry (NAF) or regional market surveys, or B2B vendor verification in France.\n- When NOT to use: Do not use for US environmental compliance, US campaign finance, clinical trials, or FDA drug/device data.\n- Named alternatives: Use 'fec_campaign_finance_search' for US political funding, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+    "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/french-company-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for French corporate due diligence, company/officer lookups, industry (NAF) or regional market surveys, or B2B vendor verification in France.\n- When NOT to use: Do not use for US environmental compliance, US campaign finance, clinical trials, or FDA drug/device data.\n- Named alternatives: Use 'fec_campaign_finance_search' for US political funding, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -35,65 +35,109 @@
       },
       "required": [
         "query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of French company records from the SIRENE register.",
           "items": {
             "type": "object",
             "properties": {
               "siren": {
-                "type": "string",
-                "description": "9-digit SIREN company identifier."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Siren",
+                "description": "Structured siren value returned by the French public company-data API backed by the SIRENE register."
               },
               "name": {
-                "type": "string",
-                "description": "Organization or company name as published by the source."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Name",
+                "description": "Organization, company, facility or record name as published by the source."
               },
               "legal_name": {
-                "type": "string",
-                "description": "Registered legal name of the company."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Legal Name",
+                "description": "Structured legal name value returned by the French public company-data API backed by the SIRENE register."
               },
               "status": {
-                "type": "string",
-                "description": "Current company status, e.g. 'active'."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Status",
+                "description": "Current source-defined status of the organization, provider or study."
               },
               "naf_code": {
-                "type": "string",
-                "description": "Main NAF/APE economic activity code."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Naf Code",
+                "description": "Structured naf code value returned by the French public company-data API backed by the SIRENE register."
               },
               "hq_city": {
-                "type": "string",
-                "description": "Headquarters city."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Hq City",
+                "description": "Structured hq city value returned by the French public company-data API backed by the SIRENE register."
               },
               "employees": {
-                "type": "string",
-                "description": "Company-wide workforce size band."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Employees",
+                "description": "Structured employees value returned by the French public company-data API backed by the SIRENE register."
               },
               "revenue": {
-                "type": "number",
-                "description": "Most recently reported annual revenue."
+                "title": "Revenue (EUR)",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Turnover for financials_year in whole euros, taken from the accounts filed with the commercial court. Only companies that file publicly have it."
               }
-            },
-            "required": [
-              "siren",
-              "name"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

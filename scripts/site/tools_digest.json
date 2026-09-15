@@ -1,1311 +1,1571 @@
 [
- {
-  "tool": "google_maps_search",
-  "title": "Google Maps Local Business and B2B Lead Extractor",
-  "actor": "captainhandsome/google-maps-business-search",
-  "summary": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps.",
-  "description": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-maps-business-search'.\n- Side Effects: Strictly read-only; does not modify external databases, accounts, or state.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when the user requests local commercial directories, trade contractors, physical retail storefronts, or B2B regional sales leads.\n- When NOT to use: Do not use for employment job listings, corporate regulatory filings, federal procurement awards, or short-term vacation rentals.\n- Named alternatives: Use 'glassdoor_jobs_search' for employer vacancies, 'sec_edgar_filings' for corporate SEC disclosures, 'usaspending_contracts' for government awards, or 'airbnb_listings_search' for vacation rentals.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Geographic search query combining target trade category and municipal market location (e.g. 'HVAC contractors in Phoenix, AZ' or 'Commercial Electricians Dallas TX').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum count of business lead records to extract and return. Defaults to 10.",
-    "default": 10
-   }
+  {
+    "tool": "google_maps_search",
+    "title": "Google Maps Local Business and B2B Lead Extractor",
+    "actor": "captainhandsome/google-maps-business-search",
+    "summary": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps.",
+    "description": "Extract verified commercial business listings, postal addresses, phone numbers, customer review ratings, and canonical websites from Google Maps.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-maps-business-search'.\n- Side Effects: Strictly read-only; does not modify external databases, accounts, or state.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when the user requests local commercial directories, trade contractors, physical retail storefronts, or B2B regional sales leads.\n- When NOT to use: Do not use for employment job listings, corporate regulatory filings, federal procurement awards, or short-term vacation rentals.\n- Named alternatives: Use 'glassdoor_jobs_search' for employer vacancies, 'sec_edgar_filings' for corporate SEC disclosures, 'usaspending_contracts' for government awards, or 'airbnb_listings_search' for vacation rentals.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 3,
+        "description": "Geographic search query combining target trade category and municipal market location (e.g. 'HVAC contractors in Phoenix, AZ' or 'Commercial Electricians Dallas TX')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum count of business lead records to extract and return. Defaults to 10."
+      },
+      "location": {
+        "type": "string",
+        "default": "",
+        "description": "Optional city or region. Omit if already included in search_query."
+      }
+    },
+    "output_fields": [
+      "name",
+      "place_url",
+      "place_id",
+      "category",
+      "address",
+      "street",
+      "city",
+      "state",
+      "postal_code",
+      "phone",
+      "phone_unformatted",
+      "website",
+      "rating",
+      "reviews_count",
+      "reviews_5_star",
+      "reviews_4_star",
+      "reviews_3_star",
+      "reviews_2_star",
+      "reviews_1_star",
+      "open_state",
+      "opening_hours_today",
+      "opening_hours",
+      "description",
+      "booking_url",
+      "image_url",
+      "located_in",
+      "plus_code",
+      "latitude",
+      "longitude",
+      "search_url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.0025,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Google Maps Business Leads Scraper - Local Lead Generation",
+      "store_url": "https://apify.com/captainhandsome/google-maps-business-search"
+    }
   },
-  "output_fields": {
-   "title": "Trading name or legal corporate title of the business.",
-   "phone": "Primary commercial telephone number with regional area code.",
-   "website": "Canonical HTTP/HTTPS business website or landing page.",
-   "address": "Full formatted postal street address including city, state, and ZIP.",
-   "totalScore": "Aggregate customer review rating on a 1.0 to 5.0 scale.",
-   "reviewsCount": "Total count of public Google reviews submitted by customers.",
-   "categoryName": "Primary industry classification or business trade category.",
-   "url": "Direct canonical Google Maps place URL."
+  {
+    "tool": "glassdoor_jobs_search",
+    "title": "Glassdoor Active Job Postings and Salary Search",
+    "actor": "captainhandsome/glassdoor-jobs-scraper",
+    "summary": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor.",
+    "description": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/glassdoor-jobs-scraper'.\n- Side Effects: Strictly read-only; does not modify external accounts or submit applications.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when researching active job openings, hiring trends, employer compensation ranges, or workplace ratings for specific professions.\n- When NOT to use: Do not use for local commercial lead generation, corporate financial filings, or live video streaming.\n- Named alternatives: Use 'google_maps_search' for commercial trade directories, 'sec_edgar_filings' for SEC corporate filings, or 'usaspending_contracts' for federal prime contractor records.",
+    "args": {
+      "job_title": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Target job title, professional role, or occupational keyword (e.g. 'Software Engineer', 'Data Analyst', or 'DevOps Architect')."
+      },
+      "location": {
+        "type": "string",
+        "default": "",
+        "description": "Geographic municipality, metropolitan area, or 'Remote' filter (e.g. 'Austin, TX' or 'New York, NY'). Defaults to all locations if empty."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of active job listings to retrieve. Integer between 1 and 100. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "job_title",
+      "job_url",
+      "job_id",
+      "employer",
+      "rating",
+      "location",
+      "salary",
+      "posting_age",
+      "posting_date_estimated",
+      "posting_date_precision",
+      "scraped_at",
+      "employer_id",
+      "employer_name_full",
+      "employer_logo_url",
+      "normalized_job_title",
+      "job_description_snippet",
+      "job_skills",
+      "job_attributes",
+      "easy_apply",
+      "is_sponsored",
+      "age_in_days",
+      "posting_date_exact",
+      "pay_period",
+      "pay_currency",
+      "salary_source",
+      "salary_min",
+      "salary_median",
+      "salary_max",
+      "location_id",
+      "location_type"
+    ],
+    "pricing": {
+      "per_result_usd": 0.0004,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Glassdoor Job Listings Scraper - Salary & Company Reviews Data",
+      "store_url": "https://apify.com/captainhandsome/glassdoor-jobs-scraper"
+    }
   },
-  "pricing": {
-   "per_result_usd": 0.0025,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Google Maps Business Leads Scraper - Local Lead Generation",
-   "store_url": "https://apify.com/captainhandsome/google-maps-business-search"
+  {
+    "tool": "sec_edgar_filings",
+    "title": "SEC EDGAR Public Corporate Filings Retrieval",
+    "actor": "captainhandsome/sec-edgar-filings-search",
+    "summary": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.",
+    "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n- Side Effects: Strictly read-only; queries public federal securities disclosures.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for public corporate financial statements, audited balance sheets, executive compensation disclosures, and regulatory material event filings.\n- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, or local trade vendor lists.\n- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, 'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends.",
+    "args": {
+      "ticker": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Public stock ticker symbol or official company name (e.g. 'AAPL', 'NVDA', or 'Tesla Inc')."
+      },
+      "form_type": {
+        "type": "string",
+        "enum": [
+          "10-K",
+          "10-Q",
+          "8-K",
+          "ALL"
+        ],
+        "default": "10-K",
+        "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 5,
+        "description": "Maximum count of chronological filing records to retrieve. Defaults to 5."
+      }
+    },
+    "output_fields": [
+      "cik",
+      "company_name",
+      "tickers",
+      "exchanges",
+      "sic",
+      "sic_description",
+      "state_of_incorporation",
+      "fiscal_year_end",
+      "form",
+      "is_amendment",
+      "filing_date",
+      "report_date",
+      "acceptance_datetime",
+      "accession_number",
+      "act",
+      "file_number",
+      "film_number",
+      "items",
+      "size_bytes",
+      "is_xbrl",
+      "is_inline_xbrl",
+      "primary_document",
+      "primary_document_description",
+      "filing_url",
+      "primary_document_url",
+      "company_submissions_url",
+      "ticker",
+      "exchange",
+      "entity_type",
+      "filer_category",
+      "owner_org",
+      "ein",
+      "phone",
+      "state_of_incorporation_description",
+      "business_address",
+      "business_address_street1",
+      "business_address_street2",
+      "business_address_city",
+      "business_address_state",
+      "business_address_state_description",
+      "business_address_zip",
+      "business_address_country",
+      "business_address_is_foreign",
+      "mailing_address",
+      "mailing_address_street1",
+      "mailing_address_street2",
+      "mailing_address_city",
+      "mailing_address_state",
+      "mailing_address_zip",
+      "mailing_address_country",
+      "former_names",
+      "current_name_since",
+      "has_insider_transactions_as_owner",
+      "has_insider_transactions_as_issuer",
+      "filing_directory_url",
+      "filing_txt_url",
+      "company_filings_url",
+      "document_count",
+      "document_types",
+      "exhibit_count",
+      "item_descriptions",
+      "filer_names",
+      "filer_ciks",
+      "reporting_owner_names",
+      "reporting_owner_ciks",
+      "issuer_name",
+      "issuer_cik",
+      "subject_company_name",
+      "subject_company_cik",
+      "group_members",
+      "filing_date_changed"
+    ],
+    "pricing": {
+      "per_result_usd": 0.002,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "SEC EDGAR Filings Scraper & Search API - 10-K, 10-Q, 8-K",
+      "store_url": "https://apify.com/captainhandsome/sec-edgar-filings-search"
+    }
+  },
+  {
+    "tool": "usaspending_contracts",
+    "title": "USAspending Federal Procurement and Defense Awards Search",
+    "actor": "captainhandsome/usaspending-federal-awards",
+    "summary": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.",
+    "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n- Side Effects: Strictly read-only; queries public federal procurement databases.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for government contracting intelligence, prime federal vendor tracking, defense obligation amounts, and public procurement research.\n- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, or consumer vacation pricing.\n- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data.",
+    "args": {
+      "recipient_name": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Legal entity name of the prime contractor, corporate vendor, or recipient institution (e.g. 'Lockheed Martin', 'Palantir Technologies', or 'Boeing')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of federal contract award records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "award_family",
+      "award_id",
+      "recipient_name",
+      "award_type",
+      "amount",
+      "total_outlays",
+      "subsidy_cost",
+      "awarding_agency",
+      "awarding_sub_agency",
+      "start_date",
+      "end_date",
+      "pop_state",
+      "pop_city",
+      "pop_zip",
+      "naics_code",
+      "naics_description",
+      "psc_code",
+      "psc_description",
+      "cfda_number",
+      "description",
+      "url",
+      "recipient_uei",
+      "recipient_profile_url",
+      "recipient_address",
+      "recipient_city",
+      "recipient_state",
+      "recipient_country",
+      "awarding_agency_code",
+      "awarding_sub_agency_code",
+      "funding_agency",
+      "funding_agency_code",
+      "funding_sub_agency",
+      "funding_sub_agency_code",
+      "pop_country",
+      "pop_country_code",
+      "issued_date",
+      "last_date_to_order",
+      "base_obligation_date",
+      "last_modified_date",
+      "cfda_program_title",
+      "assistance_listings",
+      "def_codes",
+      "covid19_obligations",
+      "covid19_outlays",
+      "infrastructure_obligations",
+      "infrastructure_outlays",
+      "award_type_code",
+      "date_signed",
+      "potential_end_date",
+      "base_exercised_options",
+      "base_and_all_options",
+      "subaward_count",
+      "total_subaward_amount",
+      "parent_award_id",
+      "parent_award_type",
+      "parent_recipient_name",
+      "parent_recipient_uei",
+      "recipient_business_categories",
+      "recipient_county",
+      "recipient_congressional_district",
+      "pop_county",
+      "pop_congressional_district",
+      "awarding_office",
+      "funding_office",
+      "naics_sector_code",
+      "naics_sector_description",
+      "psc_category_code",
+      "psc_category_description",
+      "set_aside_type",
+      "extent_competed",
+      "other_than_full_and_open",
+      "number_of_offers_received",
+      "contract_pricing_type",
+      "solicitation_id",
+      "solicitation_procedures",
+      "executive_compensation",
+      "top_executive_name",
+      "top_executive_compensation",
+      "funding_opportunity_number",
+      "non_federal_funding",
+      "total_funding"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "USAspending US Government Contracts - Federal Spending Data API",
+      "store_url": "https://apify.com/captainhandsome/usaspending-federal-awards"
+    }
+  },
+  {
+    "tool": "twitch_live_streams",
+    "title": "Twitch Real-Time Live Stream Intelligence and Viewership",
+    "actor": "captainhandsome/twitch-live-streams-scraper",
+    "summary": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch.",
+    "description": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/twitch-live-streams-scraper'.\n- Side Effects: Strictly read-only; queries active public Twitch broadcasts.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for live video broadcasting metrics, concurrent esports viewership tracking, influencer intelligence, and gaming category analysis.\n- When NOT to use: Do not use for recorded video-on-demand archives, YouTube channels, or employment job boards.\n- Named alternatives: Use 'glassdoor_jobs_search' for corporate hiring data, 'google_maps_search' for local retail directories, or 'airbnb_listings_search' for travel pricing.",
+    "args": {
+      "game_name": {
+        "type": "string",
+        "default": "minecraft",
+        "description": "Twitch category slug, such as minecraft or just-chatting. Defaults to minecraft.",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "language": {
+        "type": "string",
+        "default": "en",
+        "description": "ISO 639-1 language code filter for the live broadcast (e.g. 'en' for English, 'es' for Spanish, 'fr' for French). Defaults to 'en'."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of live stream channels to return. Integer between 1 and 100. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "stream_label",
+      "channel_url",
+      "channel_name",
+      "viewer_count",
+      "thumbnail_url",
+      "live_status",
+      "stream_title",
+      "channel_display_name",
+      "verified_badge",
+      "stream_tags",
+      "profile_image_url",
+      "stream_category"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Twitch Live Streams Scraper - Stream Search & Viewer Data API",
+      "store_url": "https://apify.com/captainhandsome/twitch-live-streams-scraper"
+    }
+  },
+  {
+    "tool": "airbnb_listings_search",
+    "title": "Airbnb Short-Term Rental Rates and Property Search",
+    "actor": "captainhandsome/airbnb-listings-search",
+    "summary": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb.",
+    "description": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/airbnb-listings-search'.\n- Side Effects: Strictly read-only; queries public hospitality and vacation listings.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for short-term vacation rental market research, hospitality pricing comparisons, and regional accommodation rate benchmarking.\n- When NOT to use: Do not use for long-term residential apartment leases, MLS residential home sales, or commercial office leasing.\n- Named alternatives: Use 'google_maps_search' for hotel and lodging business contacts, 'glassdoor_jobs_search' for hospitality employment, or 'sec_edgar_filings' for public REIT financial filings.",
+    "args": {
+      "location": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Destination metropolitan city, tourist region, or geographic market (e.g. 'Austin, TX', 'Miami, FL', or 'Denver, CO')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of rental properties to retrieve. Integer between 1 and 100. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "title",
+      "url",
+      "description",
+      "price",
+      "listing_id",
+      "listing_name",
+      "property_type",
+      "area",
+      "room_details",
+      "rating",
+      "reviews_count",
+      "badge",
+      "price_total",
+      "nights",
+      "checkin_date",
+      "checkout_date",
+      "photos_count",
+      "image_url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.002,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Airbnb Scraper - Vacation & Short Term Rental Listings Data",
+      "store_url": "https://apify.com/captainhandsome/airbnb-listings-search"
+    }
+  },
+  {
+    "tool": "alabama_business_search",
+    "title": "Alabama Business Entity Registry Search",
+    "actor": "captainhandsome/al-business-entity-search",
+    "summary": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.",
+    "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Strictly read-only; queries the public Alabama Secretary of State registry.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Full or partial Alabama business name to search (e.g. 'SMITH' or 'Smith Services LLC')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 10,
+        "description": "Maximum number of entity records to return and bill. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each result's detail page to add formation date, registered agent, and registered/principal addresses. Slower; leave off for a fast name-and-status lookup."
+      }
+    },
+    "output_fields": [
+      "entity_id",
+      "entity_name",
+      "entity_type",
+      "status",
+      "location",
+      "formation_date",
+      "registered_agent",
+      "principal_address"
+    ],
+    "pricing": {
+      "per_result_usd": 0.0025,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "Alabama Business Entity Search - LLC & Corporation Lookup",
+      "store_url": "https://apify.com/captainhandsome/al-business-entity-search"
+    }
+  },
+  {
+    "tool": "california_contractor_license_search",
+    "title": "California CSLB Contractor License Search",
+    "actor": "captainhandsome/ca-contractor-license-search",
+    "summary": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.",
+    "description": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ca-contractor-license-search'.\n- Side Effects: Strictly read-only; queries the public CSLB license lookup.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for subcontractor vetting, contractor license verification, or lead building against California licensed contractors and businesses.\n- When NOT to use: Do not use for Oregon-only licence lookups (use 'us_contractor_license_search' with states=['oregon']), business entity/registry searches, or non-contractor trades.\n- Named alternatives: Use 'us_contractor_license_search' to search California and Oregon in one call, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Full or partial contractor or business name to search in California CSLB records (e.g. 'SMITH' or 'Smith Construction')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 10,
+        "description": "Maximum number of licence records to return and bill. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each licence's CSLB detail page to add issue/expiration dates, business address and phone, classifications, bonding, and workers' comp status. Slower; leave off for a fast name-and-status lookup."
+      }
+    },
+    "output_fields": [
+      "contractor_name",
+      "license_number",
+      "name_type",
+      "city",
+      "status",
+      "business_entity",
+      "issue_date",
+      "expire_date"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "California Contractor License Lookup & Search API - CSLB",
+      "store_url": "https://apify.com/captainhandsome/ca-contractor-license-search"
+    }
+  },
+  {
+    "tool": "clinical_trials_search",
+    "title": "ClinicalTrials.gov Study Search",
+    "actor": "captainhandsome/clinical-trials-search",
+    "summary": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study.",
+    "description": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/clinical-trials-search'.\n- Side Effects: Strictly read-only; queries the public ClinicalTrials.gov API v2, no login or write access.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for medical research surveillance, competitive drug-pipeline tracking, patient-recruitment intelligence, or sponsor and trial-portfolio analysis.\n- When NOT to use: Do not use for FDA drug/device approvals or adverse-event data, environmental compliance records, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'openfda_search' for FDA drug and device safety/approval data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political campaign funding, or 'french_company_search' for the French corporate registry.",
+    "args": {
+      "condition": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Keywords, condition, intervention, sponsor name, or other free-text search expression accepted by ClinicalTrials.gov (e.g. 'Alzheimer disease', 'semaglutide', 'Mayo Clinic')."
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "RECRUITING",
+          "NOT_YET_RECRUITING",
+          "ACTIVE_NOT_RECRUITING",
+          "COMPLETED",
+          "TERMINATED",
+          "WITHDRAWN",
+          "SUSPENDED",
+          "ENROLLING_BY_INVITATION",
+          "UNKNOWN"
+        ],
+        "description": "Optional overall recruitment status filter. Omit to return studies in any status."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of study records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "nct_id",
+      "title",
+      "status",
+      "phase",
+      "conditions",
+      "sponsor",
+      "enrollment",
+      "url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "Clinical Trials API - ClinicalTrials.gov Search & Data Export",
+      "store_url": "https://apify.com/captainhandsome/clinical-trials-search"
+    }
+  },
+  {
+    "tool": "epa_facility_search",
+    "title": "EPA ECHO Facility Compliance Search",
+    "actor": "captainhandsome/epa-echo-facility-search",
+    "summary": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).",
+    "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Strictly read-only; queries the public EPA ECHO service, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+    "args": {
+      "state": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "description": "Two-letter US state code to search within (e.g. 'RI', 'CA')."
+      },
+      "facility_name": {
+        "type": "string",
+        "description": "Substring to match against the facility name."
+      },
+      "naics_code": {
+        "type": "string",
+        "description": "Industry NAICS code to filter by, e.g. '327910'."
+      },
+      "program": {
+        "type": "string",
+        "enum": [
+          "A",
+          "W",
+          "S",
+          "R"
+        ],
+        "description": "Environmental program to filter by: 'A' Clean Air Act, 'W' Clean Water Act, 'S' Safe Drinking Water Act, 'R' RCRA hazardous waste. Defaults to 'A' (Clean Air Act) when omitted."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of facility records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "registry_id",
+      "name",
+      "city",
+      "state",
+      "naics_codes",
+      "compliance_status",
+      "total_penalties",
+      "url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "EPA Data API - ECHO Facility Violations & Compliance Scraper",
+      "store_url": "https://apify.com/captainhandsome/epa-echo-facility-search"
+    }
+  },
+  {
+    "tool": "fec_campaign_finance_search",
+    "title": "FEC Campaign Finance Search",
+    "actor": "captainhandsome/fec-campaign-finance-search",
+    "summary": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.",
+    "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Strictly read-only; queries the FEC's own public API, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+    "args": {
+      "data_type": {
+        "type": "string",
+        "enum": [
+          "candidates",
+          "committees",
+          "contributions"
+        ],
+        "default": "candidates",
+        "description": "Which register to search: federal candidates, committees and PACs, or individual contributions. Defaults to 'candidates'."
+      },
+      "name": {
+        "type": "string",
+        "description": "Candidate, committee, or contributor name to search for, depending on data_type."
+      },
+      "state": {
+        "type": "string",
+        "description": "Two-letter state code. For contributions this filters the contributor's state, not the recipient's."
+      },
+      "party": {
+        "type": "string",
+        "description": "Three-letter party code, e.g. 'DEM', 'REP', 'LIB'. Applies to candidates only."
+      },
+      "office": {
+        "type": "string",
+        "enum": [
+          "H",
+          "S",
+          "P"
+        ],
+        "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "record_type",
+      "id",
+      "name",
+      "party",
+      "office",
+      "state",
+      "district",
+      "url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "FEC Campaign Finance API - Candidates, Donors & PAC Scraper",
+      "store_url": "https://apify.com/captainhandsome/fec-campaign-finance-search"
+    }
+  },
+  {
+    "tool": "florida_new_filings_search",
+    "title": "Florida Sunbiz Business Entity Search",
+    "actor": "captainhandsome/fl-sos-new-filings",
+    "summary": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.",
+    "description": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sos-new-filings'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Florida LLC/corporation lookup by company name, due-diligence checks, or monitoring new Florida business filings.\n- When NOT to use: Do not use to search by a person's or officer's name (use 'florida_officer_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_officer_search' to find companies tied to a person or registered agent, 'us_business_entity_search' for a multi-state lookup that includes Florida, or 'alabama_business_search' for Alabama-only records.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Full or partial Florida business name to search on Sunbiz (e.g. 'SMITH' or 'Smith Services LLC')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 10,
+        "description": "Maximum number of entity records to return and bill. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each result's Sunbiz detail page to add date filed, FEI/EIN, registered agent, principal/mailing addresses, officers, and annual-report history. Slower; leave off for a fast name-and-status lookup."
+      }
+    },
+    "output_fields": [
+      "entity_name",
+      "document_number",
+      "status",
+      "entity_type",
+      "date_filed",
+      "fei_ein",
+      "registered_agent",
+      "principal_address"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Florida Sunbiz Business Entity Search - New LLC Filings",
+      "store_url": "https://apify.com/captainhandsome/fl-sos-new-filings"
+    }
+  },
+  {
+    "tool": "florida_officer_search",
+    "title": "Florida Sunbiz Officer and Registered Agent Search",
+    "actor": "captainhandsome/fl-sunbiz-officer-search",
+    "summary": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.",
+    "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sunbiz-officer-search'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled (one extra page load per matched company); timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use to find every Florida company associated with a specific person's name (officer, director, or registered agent), for background research or ownership mapping.\n- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Full or partial officer, director, or registered-agent person name to search on Sunbiz (e.g. 'SMITH' or 'Smith, John')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 10,
+        "description": "Maximum number of officer-to-entity records to return and bill. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each matched company's Sunbiz detail page to add status, filing date, FEI/EIN, addresses, the full officer list, and annual-report history. Slower; leave off for a fast person-to-company lookup."
+      }
+    },
+    "output_fields": [
+      "officer_name",
+      "entity_name",
+      "document_number",
+      "detail_url",
+      "entity_type",
+      "status",
+      "date_filed",
+      "principal_address"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "Florida Sunbiz Officers Search - Registered Agent Lookup",
+      "store_url": "https://apify.com/captainhandsome/fl-sunbiz-officer-search"
+    }
+  },
+  {
+    "tool": "french_company_search",
+    "title": "French Company Registry Search (SIRENE)",
+    "actor": "captainhandsome/french-company-search",
+    "summary": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.",
+    "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/french-company-search'.\n- Side Effects: Strictly read-only; queries the French public company-data API backed by the SIRENE register, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for French corporate due diligence, company/officer lookups, industry (NAF) or regional market surveys, or B2B vendor verification in France.\n- When NOT to use: Do not use for US environmental compliance, US campaign finance, clinical trials, or FDA drug/device data.\n- Named alternatives: Use 'fec_campaign_finance_search' for US political funding, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+    "args": {
+      "query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Company name, trade name, or keyword to search for (e.g. 'boulangerie', 'Airbus')."
+      },
+      "department": {
+        "type": "string",
+        "description": "French department code to filter by, e.g. '75' or '13'."
+      },
+      "naf_code": {
+        "type": "string",
+        "description": "French NAF/APE economic activity code to filter by, e.g. '62.01Z'."
+      },
+      "active_only": {
+        "type": "boolean",
+        "default": true,
+        "description": "Return only companies currently marked active. Defaults to true."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of company records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "siren",
+      "name",
+      "legal_name",
+      "status",
+      "naf_code",
+      "hq_city",
+      "employees",
+      "revenue"
+    ],
+    "pricing": {
+      "per_result_usd": 0.002,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "French Business Registry Scraper - SIRENE, SIREN & SIRET API",
+      "store_url": "https://apify.com/captainhandsome/french-company-search"
+    }
+  },
+  {
+    "tool": "google_play_reviews_search",
+    "title": "Google Play App Reviews Search",
+    "actor": "captainhandsome/google-play-reviews-scraper",
+    "summary": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).",
+    "description": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-play-reviews-scraper'.\n- Side Effects: Strictly read-only; does not modify any Google Play account, app listing, or review.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds per app; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for app-store sentiment research, competitor review monitoring, feature/complaint mining, or tracking developer response rates across one or more Android apps.\n- When NOT to use: Do not use for iOS App Store reviews, general web search, or employment/job data.\n- Named alternatives: Use 'linkedin_jobs_search' for hiring/job listings or 'youtube_video_search' for video content discovery; neither covers app-store review data.",
+    "args": {
+      "app_ids": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "maxItems": 25,
+        "description": "Android package IDs or full Google Play app URLs to pull reviews for, up to 25 (e.g. ['com.spotify.music', 'com.google.android.youtube'])."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 200,
+        "default": 25,
+        "description": "Maximum number of review records to return per app. Defaults to 25."
+      },
+      "scores": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "description": "Optional star-rating filter (1-5). Keep only reviews matching any of these ratings, e.g. [1, 2] for negative reviews. Omit to return all ratings.",
+        "maxItems": 100
+      },
+      "keywords": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Optional list of words or phrases; keep only reviews whose text contains any of them (case-insensitive). Omit to skip this filter.",
+        "maxItems": 100
+      },
+      "recent_days": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "Optional recency filter: keep only reviews posted within this many days of now (e.g. 30). Omit to return reviews of any age."
+      }
+    },
+    "output_fields": [
+      "app_id",
+      "app_title",
+      "user_name",
+      "score",
+      "text",
+      "reviewed_at",
+      "thumbs_up",
+      "developer_reply"
+    ],
+    "pricing": {
+      "per_result_usd": 0.00015,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "Google Play Store Reviews Scraper - App Reviews Data Export",
+      "store_url": "https://apify.com/captainhandsome/google-play-reviews-scraper"
+    }
+  },
+  {
+    "tool": "linkedin_jobs_search",
+    "title": "LinkedIn Public Job Listings Search",
+    "actor": "captainhandsome/linkedin-public-jobs-search",
+    "summary": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.",
+    "description": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/linkedin-public-jobs-search'.\n- Side Effects: Strictly read-only; does not log in, apply to jobs, or modify any LinkedIn account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for hiring-trend research, talent-market mapping, competitor headcount signals, or sourcing public job openings by role and location.\n- When NOT to use: Do not use for LinkedIn people/profile search, private candidate data, or submitting job applications.\n- Named alternatives: Use 'glassdoor_jobs_search' for Glassdoor's own listings and employer ratings, or 'google_play_reviews_search'/'youtube_video_search' for app-review or video data instead of hiring data.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Job title, skill, or keyword to search in public LinkedIn job listings (e.g. 'data engineer' or 'registered nurse')."
+      },
+      "location": {
+        "type": "string",
+        "default": "",
+        "description": "City, region, or country used to localize results (e.g. 'Seattle, WA'). Defaults to all locations if empty."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 200,
+        "default": 10,
+        "description": "Maximum number of job listings to retrieve. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each job posting to add seniority level, employment type, job function, industries, applicant count, and full job description. Costs one extra request per job, so runs take noticeably longer. Defaults to false."
+      }
+    },
+    "output_fields": [
+      "title",
+      "company",
+      "location",
+      "url",
+      "posted_at",
+      "posted_at_timestamp",
+      "job_id",
+      "company_url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.001,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "LinkedIn Jobs Scraper - Public Job Listings Search API",
+      "store_url": "https://apify.com/captainhandsome/linkedin-public-jobs-search"
+    }
+  },
+  {
+    "tool": "openfda_search",
+    "title": "openFDA Drug and Device Search",
+    "actor": "captainhandsome/openfda-search",
+    "summary": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.",
+    "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/openfda-search'.\n- Side Effects: Strictly read-only; queries the public openFDA API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for drug/device safety surveillance, regulatory approval history, adverse-event monitoring, or recall tracking.\n- When NOT to use: Do not use for clinical trial recruitment data (use 'clinical_trials_search'), environmental compliance, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+    "args": {
+      "dataset": {
+        "type": "string",
+        "enum": [
+          "drug_label",
+          "drug_approval",
+          "drug_event",
+          "drug_recall",
+          "device_recall",
+          "food_recall"
+        ],
+        "default": "drug_approval",
+        "description": "Which openFDA dataset to search. Defaults to 'drug_approval'."
+      },
+      "search": {
+        "type": "string",
+        "minLength": 2,
+        "description": "openFDA query. A plain word works (e.g. 'semaglutide'), or target a field, e.g. 'openfda.manufacturer_name:\"Pfizer\"'."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "Also look up each result's product NDC to add labeler, marketing category, and DEA schedule. Costs one extra request per 20 records. Defaults to false."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "dataset",
+      "id",
+      "brand_name",
+      "generic_name",
+      "manufacturer",
+      "substance",
+      "route",
+      "application_number"
+    ],
+    "pricing": {
+      "per_result_usd": 0.002,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "FDA API Scraper - Drug Approvals, Recalls & Adverse Events",
+      "store_url": "https://apify.com/captainhandsome/openfda-search"
+    }
+  },
+  {
+    "tool": "us_business_entity_search",
+    "title": "US Multi-State Business Entity Search",
+    "actor": "captainhandsome/us-business-entity-search",
+    "summary": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.",
+    "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-business-entity-search'.\n- Side Effects: Strictly read-only; queries public state business registries.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when a company name lookup should span multiple states at once, or when the entity's state of registration is unknown among Florida, Alabama, Iowa, or Wisconsin.\n- When NOT to use: Do not use for a single known state where a dedicated tool exists and is faster (e.g. 'alabama_business_search' or 'florida_new_filings_search'), for states outside this coverage, for officer/person-name lookups (use 'florida_officer_search'), or for contractor licences.\n- Named alternatives: Use 'alabama_business_search' or 'florida_new_filings_search' for a single-state lookup, 'florida_officer_search' for a person-to-company search, or 'us_contractor_license_search'/'california_contractor_license_search' for licensed contractors rather than general business entities.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Full or partial business name to search across the selected state registries (e.g. 'SMITH' or 'Smith Services LLC')."
+      },
+      "states": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "florida",
+            "alabama",
+            "iowa",
+            "wisconsin"
+          ]
+        },
+        "minItems": 1,
+        "uniqueItems": true,
+        "default": [
+          "florida",
+          "alabama",
+          "iowa",
+          "wisconsin"
+        ],
+        "description": "State registries to search. Defaults to all four supported states; narrow this to speed up a run when the state is already known.",
+        "maxItems": 100
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 2000,
+        "default": 10,
+        "description": "Maximum number of normalized entity records to return and bill across all selected states. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each result's detail page to add formation date, registered agent, officers, and both address blocks. Adds one request per record and per state; leave off for a fast lookup."
+      }
+    },
+    "output_fields": [
+      "source",
+      "entity_name",
+      "entity_id",
+      "status",
+      "entity_type",
+      "location",
+      "date_filed",
+      "registered_agent"
+    ],
+    "pricing": {
+      "per_result_usd": 0.0025,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "Secretary of State Business Entity Search - Registry Scraper",
+      "store_url": "https://apify.com/captainhandsome/us-business-entity-search"
+    }
+  },
+  {
+    "tool": "us_contractor_license_search",
+    "title": "US Multi-State Contractor License Search",
+    "actor": "captainhandsome/us-contractor-license-search",
+    "summary": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.",
+    "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-contractor-license-search'.\n- Side Effects: Strictly read-only; queries public state contractor-license boards.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for contractor vetting or lead building across California and Oregon in one call, or when it is not yet known which of the two states holds the licence.\n- When NOT to use: Do not use for a single known state where a dedicated tool is faster (e.g. 'california_contractor_license_search'), for states outside California/Oregon, or for general business-entity (non-licence) registry lookups.\n- Named alternatives: Use 'california_contractor_license_search' for a California-only lookup, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Business, qualifier, or person name to look up in the selected contractor-license registries (e.g. 'SMITH' or 'Smith Construction')."
+      },
+      "states": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "california",
+            "oregon"
+          ]
+        },
+        "minItems": 1,
+        "uniqueItems": true,
+        "default": [
+          "california",
+          "oregon"
+        ],
+        "description": "State licence sources to search. Defaults to both California and Oregon; narrow this to speed up a run when the state is already known.",
+        "maxItems": 100
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10000,
+        "default": 10,
+        "description": "Maximum number of licence records to return and bill across all selected states. Defaults to 10."
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "When true, opens each licence's detail page to add bonding, insurance, workers' compensation, classifications, disciplinary history, and issue/expiry dates. Adds one request per record; leave off for a fast lookup."
+      }
+    },
+    "output_fields": [
+      "source",
+      "business_name",
+      "contractor_name",
+      "license_number",
+      "status",
+      "city",
+      "name_type",
+      "business_entity"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "US Contractor License Lookup & Search API - Multi-State",
+      "store_url": "https://apify.com/captainhandsome/us-contractor-license-search"
+    }
+  },
+  {
+    "tool": "youtube_video_search",
+    "title": "YouTube Video Search",
+    "actor": "captainhandsome/youtube-search-scraper",
+    "summary": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.",
+    "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/youtube-search-scraper'.\n- Side Effects: Strictly read-only; does not modify any YouTube account, subscription, or playlist.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for content research, competitor video monitoring, trend discovery, or building a list of videos on a topic.\n- When NOT to use: Do not use for retrieving a video's transcript/captions, channel analytics dashboards, or non-YouTube platforms.\n- Named alternatives: Use 'google_play_reviews_search' for app-store sentiment or 'linkedin_jobs_search' for job-market data; neither covers video content.",
+    "args": {
+      "search_query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Keyword or phrase to search for on YouTube (e.g. 'small business marketing')."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 500,
+        "default": 25,
+        "description": "Maximum number of unique video records to return. Defaults to 25."
+      }
+    },
+    "output_fields": [
+      "title",
+      "video_url",
+      "channel_name",
+      "channel_url",
+      "views",
+      "view_count",
+      "published",
+      "duration"
+    ],
+    "pricing": {
+      "per_result_usd": 0.001,
+      "per_start_usd": 0.001,
+      "memory_mb": 2048,
+      "store_title": "YouTube Video Search API & Scraper - Export Results to CSV",
+      "store_url": "https://apify.com/captainhandsome/youtube-search-scraper"
+    }
+  },
+  {
+    "tool": "cms_healthcare_provider_search",
+    "title": "CMS Healthcare Provider Search",
+    "actor": "captainhandsome/cms-healthcare-provider-search",
+    "summary": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.",
+    "description": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/cms-healthcare-provider-search'.\n- Side Effects: Strictly read-only; queries the public CMS Provider Data Catalog API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for healthcare facility due diligence, star-rating and quality comparisons, nursing-home staffing/inspection/fines research, or building a location-bounded list of Medicare-certified providers.\n- When NOT to use: Do not use for clinical trial recruitment data, environmental compliance, campaign finance, corporate registry lookups, or contractor licensing.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'us_business_entity_search' or 'us_contractor_license_search' for corporate/contractor registries, or 'europe_pmc_paper_search' for biomedical literature.",
+    "args": {
+      "provider_types": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "hospital",
+            "nursing_home",
+            "home_health",
+            "hospice",
+            "dialysis",
+            "long_term_care_hospital",
+            "inpatient_rehab"
+          ]
+        },
+        "description": "One or more CMS provider-directory types to search, e.g. ['hospital'] or ['nursing_home', 'hospice']. Omit to search hospitals only, the Actor's own fallback.",
+        "maxItems": 100
+      },
+      "state": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "description": "Two-letter US state or territory abbreviation to search within, e.g. 'TX'."
+      },
+      "city": {
+        "type": "string",
+        "description": "City name to filter by, matched exactly (case-insensitive, not a substring), e.g. 'Houston'."
+      },
+      "zip": {
+        "type": "string",
+        "description": "Five-digit US ZIP code to filter by, e.g. '77030'."
+      },
+      "county": {
+        "type": "string",
+        "description": "County name to filter by, matched exactly (case-insensitive), e.g. 'Harris'."
+      },
+      "name_contains": {
+        "type": "string",
+        "description": "Case-insensitive substring to match against the provider or facility name, e.g. 'Memorial'."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of provider records to retrieve and bill. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "provider_type",
+      "ccn",
+      "name",
+      "address",
+      "city",
+      "state",
+      "zip",
+      "county",
+      "phone",
+      "ownership",
+      "subtype",
+      "star_rating",
+      "certification_date",
+      "beds",
+      "chain",
+      "emergency_services"
+    ],
+    "pricing": {
+      "per_result_usd": 0.02,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "CMS Healthcare Provider Data - Hospital Compare & Nursing Home",
+      "store_url": "https://apify.com/captainhandsome/cms-healthcare-provider-search"
+    }
+  },
+  {
+    "tool": "europe_pmc_paper_search",
+    "title": "Europe PMC Research Paper Search",
+    "actor": "captainhandsome/europe-pmc-paper-search",
+    "summary": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.",
+    "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Strictly read-only; queries the official Europe PMC REST API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
+    "args": {
+      "query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Keywords, topic, condition, intervention or Europe PMC search expression. Example: 'gut microbiome obesity'."
+      },
+      "author": {
+        "type": "string",
+        "description": "Filter to papers by this author's name. Example: 'Villapol S'."
+      },
+      "journal": {
+        "type": "string",
+        "description": "Filter to papers published in this journal. Example: 'Nature Medicine'."
+      },
+      "year_from": {
+        "type": "integer",
+        "description": "Return only papers published in this year or later. Example: 2022."
+      },
+      "year_to": {
+        "type": "integer",
+        "description": "Return only papers published in this year or earlier. Example: 2026."
+      },
+      "open_access_only": {
+        "type": "boolean",
+        "description": "Return only records Europe PMC marks as open access. Example: true."
+      },
+      "has_abstract_only": {
+        "type": "boolean",
+        "description": "Return only papers for which Europe PMC provides an abstract. Example: true."
+      },
+      "sort_by": {
+        "type": "string",
+        "enum": [
+          "relevance",
+          "cited",
+          "date"
+        ],
+        "default": "relevance",
+        "description": "Order results by relevance, citation count, or newest publication date. Defaults to 'relevance'. Example: 'cited'."
+      },
+      "include_entities": {
+        "type": "boolean",
+        "default": false,
+        "description": "Add genes, diseases, organisms, chemicals, Gene Ontology terms, experimental methods and accession numbers mined from the full text. Adds roughly one extra request per 8 results. Defaults to false. Example: true."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of papers to retrieve. Defaults to 10. Example: 25."
+      }
+    },
+    "output_fields": [
+      "id",
+      "source",
+      "pmid",
+      "pmcid",
+      "doi",
+      "title",
+      "authors",
+      "first_author",
+      "journal",
+      "pub_year",
+      "publication_date",
+      "abstract",
+      "keywords",
+      "mesh_terms",
+      "cited_by_count",
+      "is_open_access",
+      "full_text_availability",
+      "pdf_url",
+      "url",
+      "funders"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "PubMed API - Research Paper Scraper via Europe PMC Search",
+      "store_url": "https://apify.com/captainhandsome/europe-pmc-paper-search"
+    }
+  },
+  {
+    "tool": "gleif_lei_search",
+    "title": "GLEIF Legal Entity Identifier Search",
+    "actor": "captainhandsome/gleif-lei-search",
+    "summary": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.",
+    "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Strictly read-only; queries the free, public GLEIF API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
+    "args": {
+      "query": {
+        "type": "string",
+        "minLength": 2,
+        "description": "Company name, an LEI code, or free text to search for, depending on search_mode. Example: 'Siemens'."
+      },
+      "search_mode": {
+        "type": "string",
+        "enum": [
+          "name",
+          "fulltext",
+          "lei"
+        ],
+        "default": "name",
+        "description": "How to interpret query. 'name' matches the registered legal name only, 'fulltext' matches the whole record including addresses and former names, 'lei' is an exact 20-character LEI lookup. Defaults to 'name'."
+      },
+      "country": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "description": "Two-letter ISO country code of the entity's legal address to filter on, e.g. 'DE' for Germany. Omit to search every country."
+      },
+      "jurisdiction": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "description": "Two-letter code of the registering jurisdiction to filter on, e.g. 'FR'. Can differ from country. Omit to search every jurisdiction."
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "INACTIVE"
+        ],
+        "description": "Limit results to entities with this operating status, e.g. 'ACTIVE'. Omit to return both active and inactive entities."
+      },
+      "include_relationships": {
+        "type": "boolean",
+        "default": false,
+        "description": "Also fetch direct and ultimate parent, subsidiary count and names, and ISINs. Costs up to six extra requests per record and slows the run. Defaults to false."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of LEI records to retrieve. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "lei",
+      "legal_name",
+      "status",
+      "registration_status",
+      "jurisdiction",
+      "legal_form_name",
+      "registered_as",
+      "registered_at_name",
+      "legal_country",
+      "legal_city",
+      "corroboration_level",
+      "next_renewal_date",
+      "gleif_profile_url"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "LEI Lookup API - GLEIF Legal Entity Identifier Search",
+      "store_url": "https://apify.com/captainhandsome/gleif-lei-search"
+    }
+  },
+  {
+    "tool": "tech_stack_detector",
+    "title": "Website Tech Stack & Ecommerce Scanner",
+    "actor": "captainhandsome/tech-stack-detector",
+    "summary": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.",
+    "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Strictly read-only; fetches each site's homepage (and, with include_details, its robots.txt and one contact/about page) as a normal browser would, no login or API key required on the target site.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
+    "args": {
+      "urls": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"].",
+        "maxItems": 100
+      },
+      "include_details": {
+        "type": "boolean",
+        "default": false,
+        "description": "Also fetch /robots.txt and a discovered contact or about page per site, adding the sitemap URL, crawl-rule count, and any extra emails/phones the homepage omits. Costs up to two extra requests per site. Defaults to false."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Maximum number of site records to return. Defaults to 10."
+      }
+    },
+    "output_fields": [
+      "url",
+      "final_url",
+      "status",
+      "domain",
+      "is_https",
+      "technologies",
+      "count",
+      "categories",
+      "cms",
+      "ecommerce_platform",
+      "framework",
+      "analytics",
+      "payments",
+      "cdn",
+      "hosting",
+      "security_tech",
+      "title",
+      "meta_description",
+      "emails",
+      "phones",
+      "linkedin_url",
+      "twitter_url",
+      "github_url",
+      "contact_page_url",
+      "robots_txt_found",
+      "sitemap_url",
+      "error"
+    ],
+    "pricing": {
+      "per_result_usd": 0.003,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "Website Tech Stack Detector API - Ecommerce Technology Scanner",
+      "store_url": "https://apify.com/captainhandsome/tech-stack-detector"
+    }
+  },
+  {
+    "tool": "us_census_geocoder",
+    "title": "US Census Address Geocoder",
+    "actor": "captainhandsome/us-census-geocoder",
+    "summary": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.",
+    "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Strictly read-only; queries the public Census Bureau geocoder API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.",
+    "args": {
+      "addresses": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "description": "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not.",
+        "maxItems": 100
+      },
+      "benchmark": {
+        "type": "string",
+        "enum": [
+          "Public_AR_Current",
+          "Public_AR_Census2020"
+        ],
+        "default": "Public_AR_Current",
+        "description": "Which Census address file to match against. Defaults to 'Public_AR_Current', the live, continuously updated file. Use 'Public_AR_Census2020' to reconcile against the address file as it stood at the 2020 Census."
+      },
+      "vintage": {
+        "type": "string",
+        "enum": [
+          "Current_Current",
+          "Census2020_Current"
+        ],
+        "default": "Current_Current",
+        "description": "Which geography vintage to report tract, block and district boundaries from. Defaults to 'Current_Current'. Use 'Census2020_Current' when you need boundaries as drawn at the 2020 Census, e.g. before a later congressional redistricting."
+      },
+      "max_results": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 10,
+        "description": "Ceiling on the number of address rows you are willing to pay for. Defaults to 10. This Actor emits exactly one row per address (matched or not) and does not truncate your address list to this number, so keep 'addresses' at or below max_results to control both output volume and cost."
+      }
+    },
+    "output_fields": [
+      "input_address",
+      "matched",
+      "match_count",
+      "matched_address",
+      "latitude",
+      "longitude",
+      "city",
+      "state",
+      "zip",
+      "state_fips",
+      "county_fips",
+      "county_name",
+      "place_name",
+      "place_geoid",
+      "tract_geoid",
+      "block_group_geoid",
+      "block_geoid",
+      "zcta",
+      "urban_rural",
+      "congressional_district_geoid",
+      "cbsa_name",
+      "metro_area_name",
+      "school_district_name",
+      "benchmark_name",
+      "vintage_name"
+    ],
+    "pricing": {
+      "per_result_usd": 0.01,
+      "per_start_usd": 0.0005,
+      "memory_mb": 1024,
+      "store_title": "US Address Geocoder API - Census Tract, FIPS & Block Lookup",
+      "store_url": "https://apify.com/captainhandsome/us-census-geocoder"
+    }
   }
- },
- {
-  "tool": "glassdoor_jobs_search",
-  "title": "Glassdoor Active Job Postings and Salary Search",
-  "actor": "captainhandsome/glassdoor-jobs-scraper",
-  "summary": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor.",
-  "description": "Search active employment vacancies, hiring employers, estimated compensation bands, and corporate ratings from Glassdoor.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/glassdoor-jobs-scraper'.\n- Side Effects: Strictly read-only; does not modify external accounts or submit applications.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when researching active job openings, hiring trends, employer compensation ranges, or workplace ratings for specific professions.\n- When NOT to use: Do not use for local commercial lead generation, corporate financial filings, or live video streaming.\n- Named alternatives: Use 'google_maps_search' for commercial trade directories, 'sec_edgar_filings' for SEC corporate filings, or 'usaspending_contracts' for federal prime contractor records.",
-  "args": {
-   "job_title": {
-    "type": "string",
-    "required": true,
-    "description": "Target job title, professional role, or occupational keyword (e.g. 'Software Engineer', 'Data Analyst', or 'DevOps Architect').",
-    "default": null
-   },
-   "location": {
-    "type": "string",
-    "required": false,
-    "description": "Geographic municipality, metropolitan area, or 'Remote' filter (e.g. 'Austin, TX' or 'New York, NY'). Defaults to all locations if empty.",
-    "default": ""
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of active job listings to retrieve. Integer between 1 and 100. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "jobTitle": "Official employment position or vacancy title.",
-   "companyName": "Name of the recruiting employer or corporate entity.",
-   "location": "Geographic workplace location or remote designation.",
-   "salaryEstimate": "Estimated annual or hourly compensation range when published.",
-   "rating": "Employer workplace review rating on a 1.0 to 5.0 scale.",
-   "jobUrl": "Direct canonical URL to the employment application posting."
-  },
-  "pricing": {
-   "per_result_usd": 0.0004,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Glassdoor Job Listings Scraper - Salary & Company Reviews Data",
-   "store_url": "https://apify.com/captainhandsome/glassdoor-jobs-scraper"
-  }
- },
- {
-  "tool": "sec_edgar_filings",
-  "title": "SEC EDGAR Public Corporate Filings Retrieval",
-  "actor": "captainhandsome/sec-edgar-filings-search",
-  "summary": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.",
-  "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n- Side Effects: Strictly read-only; queries public federal securities disclosures.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for public corporate financial statements, audited balance sheets, executive compensation disclosures, and regulatory material event filings.\n- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, or local trade vendor lists.\n- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, 'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends.",
-  "args": {
-   "ticker": {
-    "type": "string",
-    "required": true,
-    "description": "Public stock ticker symbol or official company name (e.g. 'AAPL', 'NVDA', or 'Tesla Inc').",
-    "default": null
-   },
-   "form_type": {
-    "type": "string",
-    "required": false,
-    "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing.",
-    "default": "10-K"
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum count of chronological filing records to retrieve. Defaults to 5.",
-    "default": 5
-   }
-  },
-  "output_fields": {
-   "formType": "Regulatory filing form designation code (e.g. 10-K, 10-Q, 8-K).",
-   "filingDate": "Official chronological submission date in YYYY-MM-DD format.",
-   "accessionNumber": "Unique SEC EDGAR document accession identifier.",
-   "companyName": "Official registered legal name of the filing corporation.",
-   "cik": "Central Index Key (CIK) ten-digit company identifier assigned by the SEC.",
-   "documentUrl": "Canonical HTTPS link to the full filing disclosure on SEC.gov."
-  },
-  "pricing": {
-   "per_result_usd": 0.002,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "SEC EDGAR Filings Scraper & Search API - 10-K, 10-Q, 8-K",
-   "store_url": "https://apify.com/captainhandsome/sec-edgar-filings-search"
-  }
- },
- {
-  "tool": "usaspending_contracts",
-  "title": "USAspending Federal Procurement and Defense Awards Search",
-  "actor": "captainhandsome/usaspending-federal-awards",
-  "summary": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.",
-  "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n- Side Effects: Strictly read-only; queries public federal procurement databases.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for government contracting intelligence, prime federal vendor tracking, defense obligation amounts, and public procurement research.\n- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, or consumer vacation pricing.\n- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data.",
-  "args": {
-   "recipient_name": {
-    "type": "string",
-    "required": true,
-    "description": "Legal entity name of the prime contractor, corporate vendor, or recipient institution (e.g. 'Lockheed Martin', 'Palantir Technologies', or 'Boeing').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of federal contract award records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "recipientName": "Legal business or institutional name of the award recipient.",
-   "awardingAgency": "Federal department or agency authorizing the procurement contract.",
-   "obligationAmount": "Total monetary obligation amount funded by the federal government in USD.",
-   "awardDescription": "Executive summary statement of the contracted goods or defense services.",
-   "awardDate": "Action signing date in YYYY-MM-DD format.",
-   "contractId": "Unique federal procurement award ID (PIID or FAIN)."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "USAspending US Government Contracts - Federal Spending Data API",
-   "store_url": "https://apify.com/captainhandsome/usaspending-federal-awards"
-  }
- },
- {
-  "tool": "twitch_live_streams",
-  "title": "Twitch Real-Time Live Stream Intelligence and Viewership",
-  "actor": "captainhandsome/twitch-live-streams-scraper",
-  "summary": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch.",
-  "description": "Extract real-time live broadcasting streams, viewer counts, channel metadata, and game categories from Twitch.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/twitch-live-streams-scraper'.\n- Side Effects: Strictly read-only; queries active public Twitch broadcasts.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for live video broadcasting metrics, concurrent esports viewership tracking, influencer intelligence, and gaming category analysis.\n- When NOT to use: Do not use for recorded video-on-demand archives, YouTube channels, or employment job boards.\n- Named alternatives: Use 'glassdoor_jobs_search' for corporate hiring data, 'google_maps_search' for local retail directories, or 'airbnb_listings_search' for travel pricing.",
-  "args": {
-   "game_name": {
-    "type": "string",
-    "required": false,
-    "description": "Specific video game title or streaming category filter (e.g. 'Fortnite', 'Minecraft', or 'Just Chatting'). Leave empty for top streams across all categories.",
-    "default": ""
-   },
-   "language": {
-    "type": "string",
-    "required": false,
-    "description": "ISO 639-1 language code filter for the live broadcast (e.g. 'en' for English, 'es' for Spanish, 'fr' for French). Defaults to 'en'.",
-    "default": "en"
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of live stream channels to return. Integer between 1 and 100. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "channelName": "Twitch username or broadcaster channel handle.",
-   "streamTitle": "Broadcaster headline title for the active live session.",
-   "gameName": "Primary game title or stream category.",
-   "viewerCount": "Number of concurrent live spectators actively watching the stream.",
-   "language": "Language code of the broadcast.",
-   "streamUrl": "Canonical HTTPS stream link to the live broadcast channel."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Twitch Live Streams Scraper - Stream Search & Viewer Data API",
-   "store_url": "https://apify.com/captainhandsome/twitch-live-streams-scraper"
-  }
- },
- {
-  "tool": "airbnb_listings_search",
-  "title": "Airbnb Short-Term Rental Rates and Property Search",
-  "actor": "captainhandsome/airbnb-listings-search",
-  "summary": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb.",
-  "description": "Search vacation rental listings, nightly prices, occupancy ratings, and property classifications from Airbnb.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/airbnb-listings-search'.\n- Side Effects: Strictly read-only; queries public hospitality and vacation listings.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for short-term vacation rental market research, hospitality pricing comparisons, and regional accommodation rate benchmarking.\n- When NOT to use: Do not use for long-term residential apartment leases, MLS residential home sales, or commercial office leasing.\n- Named alternatives: Use 'google_maps_search' for hotel and lodging business contacts, 'glassdoor_jobs_search' for hospitality employment, or 'sec_edgar_filings' for public REIT financial filings.",
-  "args": {
-   "location": {
-    "type": "string",
-    "required": true,
-    "description": "Destination metropolitan city, tourist region, or geographic market (e.g. 'Austin, TX', 'Miami, FL', or 'Denver, CO').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of rental properties to retrieve. Integer between 1 and 100. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "listingName": "Headline property title or host description.",
-   "roomType": "Accommodation category (e.g. Entire home, Private room, Hotel room).",
-   "pricePerNight": "Nightly accommodation tariff rate in local currency.",
-   "rating": "Aggregate guest cleanliness and satisfaction score on a 1.0 to 5.0 scale.",
-   "reviewCount": "Total number of verified guest reviews posted for the property.",
-   "listingUrl": "Canonical HTTPS link to the Airbnb listing reservation page."
-  },
-  "pricing": {
-   "per_result_usd": 0.002,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Airbnb Scraper - Vacation & Short Term Rental Listings Data",
-   "store_url": "https://apify.com/captainhandsome/airbnb-listings-search"
-  }
- },
- {
-  "tool": "alabama_business_search",
-  "title": "Alabama Business Entity Registry Search",
-  "actor": "captainhandsome/al-business-entity-search",
-  "summary": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.",
-  "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Strictly read-only; queries the public Alabama Secretary of State registry.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Full or partial Alabama business name to search (e.g. 'SMITH' or 'Smith Services LLC').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of entity records to return and bill. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each result's detail page to add formation date, registered agent, and registered/principal addresses. Slower; leave off for a fast name-and-status lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "entity_id": "Alabama public entity identifier.",
-   "entity_name": "Business name displayed by the Alabama public registry.",
-   "entity_type": "Registry classification, such as LLC or corporation, when present.",
-   "status": "Current registry status when present (e.g. Exists, Dissolved, Revoked).",
-   "location": "Registry location text when present.",
-   "formation_date": "Date the entity was formed, from the detail record (requires include_details).",
-   "registered_agent": "Name of the entity's registered agent (requires include_details).",
-   "principal_address": "Principal place of business, where the state records one (requires include_details)."
-  },
-  "pricing": {
-   "per_result_usd": 0.0025,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "Alabama Business Entity Search - LLC & Corporation Lookup",
-   "store_url": "https://apify.com/captainhandsome/al-business-entity-search"
-  }
- },
- {
-  "tool": "california_contractor_license_search",
-  "title": "California CSLB Contractor License Search",
-  "actor": "captainhandsome/ca-contractor-license-search",
-  "summary": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.",
-  "description": "Search public California Contractors State License Board (CSLB) records by contractor or business name, returning license number, status, city, and name type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ca-contractor-license-search'.\n- Side Effects: Strictly read-only; queries the public CSLB license lookup.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for subcontractor vetting, contractor license verification, or lead building against California licensed contractors and businesses.\n- When NOT to use: Do not use for Oregon-only licence lookups (use 'us_contractor_license_search' with states=['oregon']), business entity/registry searches, or non-contractor trades.\n- Named alternatives: Use 'us_contractor_license_search' to search California and Oregon in one call, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Full or partial contractor or business name to search in California CSLB records (e.g. 'SMITH' or 'Smith Construction').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of licence records to return and bill. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each licence's CSLB detail page to add issue/expiration dates, business address and phone, classifications, bonding, and workers' comp status. Slower; leave off for a fast name-and-status lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "contractor_name": "Contractor or business name shown in the CSLB result.",
-   "license_number": "California CSLB contractor-license number.",
-   "name_type": "CSLB classification for the displayed name when present (e.g. print, previous).",
-   "city": "California city displayed for the license record.",
-   "status": "Current license status displayed by CSLB (e.g. Active, Expired).",
-   "business_entity": "Legal form CSLB holds for the licensee, from the licence detail page (requires include_details).",
-   "issue_date": "Date CSLB issued the licence (requires include_details).",
-   "expire_date": "Date the licence expires (requires include_details)."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "California Contractor License Lookup & Search API - CSLB",
-   "store_url": "https://apify.com/captainhandsome/ca-contractor-license-search"
-  }
- },
- {
-  "tool": "clinical_trials_search",
-  "title": "ClinicalTrials.gov Study Search",
-  "actor": "captainhandsome/clinical-trials-search",
-  "summary": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study.",
-  "description": "Search the official ClinicalTrials.gov registry for interventional and observational studies by condition, intervention, sponsor, or free-text keyword. Returns recruitment status, phase, enrollment, sponsor, and site location detail for each matching study.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/clinical-trials-search'.\n- Side Effects: Strictly read-only; queries the public ClinicalTrials.gov API v2, no login or write access.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for medical research surveillance, competitive drug-pipeline tracking, patient-recruitment intelligence, or sponsor and trial-portfolio analysis.\n- When NOT to use: Do not use for FDA drug/device approvals or adverse-event data, environmental compliance records, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'openfda_search' for FDA drug and device safety/approval data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political campaign funding, or 'french_company_search' for the French corporate registry.",
-  "args": {
-   "condition": {
-    "type": "string",
-    "required": true,
-    "description": "Keywords, condition, intervention, sponsor name, or other free-text search expression accepted by ClinicalTrials.gov (e.g. 'Alzheimer disease', 'semaglutide', 'Mayo Clinic').",
-    "default": null
-   },
-   "status": {
-    "type": "string",
-    "required": false,
-    "description": "Optional overall recruitment status filter. Omit to return studies in any status.",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of study records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "nct_id": "Unique ClinicalTrials.gov study identifier.",
-   "title": "Brief public title of the study.",
-   "status": "Current overall recruitment status, e.g. RECRUITING or COMPLETED.",
-   "phase": "Trial phase, e.g. PHASE1, PHASE2, PHASE3.",
-   "conditions": "Comma-separated medical conditions the study addresses.",
-   "sponsor": "Lead sponsor organization name.",
-   "enrollment": "Actual or estimated participant enrollment count.",
-   "url": "Canonical public ClinicalTrials.gov page for this study."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "Clinical Trials API - ClinicalTrials.gov Search & Data Export",
-   "store_url": "https://apify.com/captainhandsome/clinical-trials-search"
-  }
- },
- {
-  "tool": "epa_facility_search",
-  "title": "EPA ECHO Facility Compliance Search",
-  "actor": "captainhandsome/epa-echo-facility-search",
-  "summary": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).",
-  "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Strictly read-only; queries the public EPA ECHO service, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
-  "args": {
-   "state": {
-    "type": "string",
-    "required": true,
-    "description": "Two-letter US state code to search within (e.g. 'RI', 'CA').",
-    "default": null
-   },
-   "facility_name": {
-    "type": "string",
-    "required": false,
-    "description": "Substring to match against the facility name.",
-    "default": null
-   },
-   "naics_code": {
-    "type": "string",
-    "required": false,
-    "description": "Industry NAICS code to filter by, e.g. '327910'.",
-    "default": null
-   },
-   "program": {
-    "type": "string",
-    "required": false,
-    "description": "Environmental program to filter by: 'A' Clean Air Act, 'W' Clean Water Act, 'S' Safe Drinking Water Act, 'R' RCRA hazardous waste. Defaults to 'A' (Clean Air Act) when omitted.",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of facility records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "registry_id": "EPA Facility Registry Service ID, the stable key for this facility.",
-   "name": "Facility name as registered with EPA.",
-   "city": "Facility city.",
-   "state": "Two-letter state code.",
-   "naics_codes": "Space-separated NAICS industry codes for the facility.",
-   "compliance_status": "Overall current compliance status, e.g. 'Violation Identified'.",
-   "total_penalties": "Total dollar amount of penalties assessed against the facility.",
-   "url": "Direct link to the EPA ECHO detailed facility report."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "EPA Data API - ECHO Facility Violations & Compliance Scraper",
-   "store_url": "https://apify.com/captainhandsome/epa-echo-facility-search"
-  }
- },
- {
-  "tool": "fec_campaign_finance_search",
-  "title": "FEC Campaign Finance Search",
-  "actor": "captainhandsome/fec-campaign-finance-search",
-  "summary": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.",
-  "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Strictly read-only; queries the FEC's own public API, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
-  "args": {
-   "data_type": {
-    "type": "string",
-    "required": false,
-    "description": "Which register to search: federal candidates, committees and PACs, or individual contributions. Defaults to 'candidates'.",
-    "default": "candidates"
-   },
-   "name": {
-    "type": "string",
-    "required": false,
-    "description": "Candidate, committee, or contributor name to search for, depending on data_type.",
-    "default": null
-   },
-   "state": {
-    "type": "string",
-    "required": false,
-    "description": "Two-letter state code. For contributions this filters the contributor's state, not the recipient's.",
-    "default": null
-   },
-   "party": {
-    "type": "string",
-    "required": false,
-    "description": "Three-letter party code, e.g. 'DEM', 'REP', 'LIB'. Applies to candidates only.",
-    "default": null
-   },
-   "office": {
-    "type": "string",
-    "required": false,
-    "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only.",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "record_type": "Which search produced this row: candidate, committee, or contribution.",
-   "id": "FEC identifier for the row (candidate ID, committee ID, or transaction sub_id).",
-   "name": "Registered name of the candidate or committee. Null on contribution rows.",
-   "party": "Full party name as filed.",
-   "office": "Office sought, expanded to a readable label. Candidate rows only.",
-   "state": "Two-letter state code relevant to the record.",
-   "district": "Congressional district. House candidates only.",
-   "url": "Canonical FEC.gov URL for the record."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "FEC Campaign Finance API - Candidates, Donors & PAC Scraper",
-   "store_url": "https://apify.com/captainhandsome/fec-campaign-finance-search"
-  }
- },
- {
-  "tool": "florida_new_filings_search",
-  "title": "Florida Sunbiz Business Entity Search",
-  "actor": "captainhandsome/fl-sos-new-filings",
-  "summary": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.",
-  "description": "Search the Florida Division of Corporations (Sunbiz) business registry by company name, returning entity name, document number, status, and entity type.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sos-new-filings'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Florida LLC/corporation lookup by company name, due-diligence checks, or monitoring new Florida business filings.\n- When NOT to use: Do not use to search by a person's or officer's name (use 'florida_officer_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_officer_search' to find companies tied to a person or registered agent, 'us_business_entity_search' for a multi-state lookup that includes Florida, or 'alabama_business_search' for Alabama-only records.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Full or partial Florida business name to search on Sunbiz (e.g. 'SMITH' or 'Smith Services LLC').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of entity records to return and bill. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each result's Sunbiz detail page to add date filed, FEI/EIN, registered agent, principal/mailing addresses, officers, and annual-report history. Slower; leave off for a fast name-and-status lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "entity_name": "Legal entity name displayed in the Sunbiz result.",
-   "document_number": "Florida Division of Corporations document number.",
-   "status": "Entity status displayed in the Sunbiz result (e.g. Active, Inactive).",
-   "entity_type": "Florida registry classification, such as a domestic or foreign LLC or corporation.",
-   "date_filed": "Date the entity was filed with the Florida Division of Corporations (requires include_details).",
-   "fei_ein": "Federal employer identification number on file with the state, where recorded (requires include_details).",
-   "registered_agent": "Name of the entity's Florida registered agent (requires include_details).",
-   "principal_address": "Principal place of business on file with the state (requires include_details)."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Florida Sunbiz Business Entity Search - New LLC Filings",
-   "store_url": "https://apify.com/captainhandsome/fl-sos-new-filings"
-  }
- },
- {
-  "tool": "florida_officer_search",
-  "title": "Florida Sunbiz Officer and Registered Agent Search",
-  "actor": "captainhandsome/fl-sunbiz-officer-search",
-  "summary": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.",
-  "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sunbiz-officer-search'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled (one extra page load per matched company); timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use to find every Florida company associated with a specific person's name (officer, director, or registered agent), for background research or ownership mapping.\n- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Full or partial officer, director, or registered-agent person name to search on Sunbiz (e.g. 'SMITH' or 'Smith, John').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of officer-to-entity records to return and bill. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each matched company's Sunbiz detail page to add status, filing date, FEI/EIN, addresses, the full officer list, and annual-report history. Slower; leave off for a fast person-to-company lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "officer_name": "Officer or registered-agent name shown in Sunbiz.",
-   "entity_name": "Florida business entity linked to the officer or agent.",
-   "document_number": "Florida Division of Corporations document number.",
-   "detail_url": "Direct link to the company's Sunbiz detail page for audit against the state registry.",
-   "entity_type": "Registry classification, such as Florida LLC or Foreign Profit Corporation (requires include_details).",
-   "status": "Current Florida registration status, normally ACTIVE or INACTIVE (requires include_details).",
-   "date_filed": "Date the entity was first filed with the Florida Division of Corporations (requires include_details).",
-   "principal_address": "Principal place of business on file (requires include_details)."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "Florida Sunbiz Officers Search - Registered Agent Lookup",
-   "store_url": "https://apify.com/captainhandsome/fl-sunbiz-officer-search"
-  }
- },
- {
-  "tool": "french_company_search",
-  "title": "French Company Registry Search (SIRENE)",
-  "actor": "captainhandsome/french-company-search",
-  "summary": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.",
-  "description": "Search France's official company register (SIRENE/INSEE) by name, activity, department, or postal code, and export SIREN/SIRET identifiers, legal status, headquarters address, workforce, revenue, and officers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/french-company-search'.\n- Side Effects: Strictly read-only; queries the French public company-data API backed by the SIRENE register, no login or API key required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for French corporate due diligence, company/officer lookups, industry (NAF) or regional market surveys, or B2B vendor verification in France.\n- When NOT to use: Do not use for US environmental compliance, US campaign finance, clinical trials, or FDA drug/device data.\n- Named alternatives: Use 'fec_campaign_finance_search' for US political funding, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
-  "args": {
-   "query": {
-    "type": "string",
-    "required": true,
-    "description": "Company name, trade name, or keyword to search for (e.g. 'boulangerie', 'Airbus').",
-    "default": null
-   },
-   "department": {
-    "type": "string",
-    "required": false,
-    "description": "French department code to filter by, e.g. '75' or '13'.",
-    "default": null
-   },
-   "naf_code": {
-    "type": "string",
-    "required": false,
-    "description": "French NAF/APE economic activity code to filter by, e.g. '62.01Z'.",
-    "default": null
-   },
-   "active_only": {
-    "type": "boolean",
-    "required": false,
-    "description": "Return only companies currently marked active. Defaults to true.",
-    "default": true
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of company records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "siren": "9-digit SIREN company identifier.",
-   "name": "Organization or company name as published by the source.",
-   "legal_name": "Registered legal name of the company.",
-   "status": "Current company status, e.g. 'active'.",
-   "naf_code": "Main NAF/APE economic activity code.",
-   "hq_city": "Headquarters city.",
-   "employees": "Company-wide workforce size band.",
-   "revenue": "Most recently reported annual revenue."
-  },
-  "pricing": {
-   "per_result_usd": 0.002,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "French Business Registry Scraper - SIRENE, SIREN & SIRET API",
-   "store_url": "https://apify.com/captainhandsome/french-company-search"
-  }
- },
- {
-  "tool": "google_play_reviews_search",
-  "title": "Google Play App Reviews Search",
-  "actor": "captainhandsome/google-play-reviews-scraper",
-  "summary": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).",
-  "description": "Extract public Google Play Store reviews for one or more Android apps, including star rating, review text, reviewer name, developer replies, and app-level metadata (rating breakdown, installs, category, developer).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-play-reviews-scraper'.\n- Side Effects: Strictly read-only; does not modify any Google Play account, app listing, or review.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds per app; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for app-store sentiment research, competitor review monitoring, feature/complaint mining, or tracking developer response rates across one or more Android apps.\n- When NOT to use: Do not use for iOS App Store reviews, general web search, or employment/job data.\n- Named alternatives: Use 'linkedin_jobs_search' for hiring/job listings or 'youtube_video_search' for video content discovery; neither covers app-store review data.",
-  "args": {
-   "app_ids": {
-    "type": "array",
-    "required": true,
-    "description": "Android package IDs or full Google Play app URLs to pull reviews for, up to 25 (e.g. ['com.spotify.music', 'com.google.android.youtube']).",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of review records to return per app. Defaults to 25.",
-    "default": 25
-   },
-   "scores": {
-    "type": "array",
-    "required": false,
-    "description": "Optional star-rating filter (1-5). Keep only reviews matching any of these ratings, e.g. [1, 2] for negative reviews. Omit to return all ratings.",
-    "default": null
-   },
-   "keywords": {
-    "type": "array",
-    "required": false,
-    "description": "Optional list of words or phrases; keep only reviews whose text contains any of them (case-insensitive). Omit to skip this filter.",
-    "default": null
-   },
-   "recent_days": {
-    "type": "integer",
-    "required": false,
-    "description": "Optional recency filter: keep only reviews posted within this many days of now (e.g. 30). Omit to return reviews of any age.",
-    "default": null
-   }
-  },
-  "output_fields": {
-   "app_id": "Android package identifier for the reviewed app.",
-   "app_title": "Display name of the reviewed app on Google Play.",
-   "user_name": "Public reviewer display name.",
-   "score": "Integer star rating from one to five.",
-   "text": "Full public review body.",
-   "reviewed_at": "ISO 8601 timestamp when the review was posted.",
-   "thumbs_up": "Number of users who marked the review helpful.",
-   "developer_reply": "Public developer response text when present."
-  },
-  "pricing": {
-   "per_result_usd": 0.00015,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "Google Play Store Reviews Scraper - App Reviews Data Export",
-   "store_url": "https://apify.com/captainhandsome/google-play-reviews-scraper"
-  }
- },
- {
-  "tool": "linkedin_jobs_search",
-  "title": "LinkedIn Public Job Listings Search",
-  "actor": "captainhandsome/linkedin-public-jobs-search",
-  "summary": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.",
-  "description": "Search public LinkedIn job postings by keyword and location without logging in, returning role title, hiring company, location, posting date, and job URL.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/linkedin-public-jobs-search'.\n- Side Effects: Strictly read-only; does not log in, apply to jobs, or modify any LinkedIn account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-40 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for hiring-trend research, talent-market mapping, competitor headcount signals, or sourcing public job openings by role and location.\n- When NOT to use: Do not use for LinkedIn people/profile search, private candidate data, or submitting job applications.\n- Named alternatives: Use 'glassdoor_jobs_search' for Glassdoor's own listings and employer ratings, or 'google_play_reviews_search'/'youtube_video_search' for app-review or video data instead of hiring data.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Job title, skill, or keyword to search in public LinkedIn job listings (e.g. 'data engineer' or 'registered nurse').",
-    "default": null
-   },
-   "location": {
-    "type": "string",
-    "required": false,
-    "description": "City, region, or country used to localize results (e.g. 'Seattle, WA'). Defaults to all locations if empty.",
-    "default": ""
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of job listings to retrieve. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each job posting to add seniority level, employment type, job function, industries, applicant count, and full job description. Costs one extra request per job, so runs take noticeably longer. Defaults to false.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "title": "Job posting title.",
-   "company": "Hiring company name.",
-   "location": "Workplace location as displayed on the posting.",
-   "url": "Direct canonical URL to the job listing.",
-   "posted_at": "Source-provided job posting date.",
-   "posted_at_timestamp": "posted_at parsed into a UTC ISO 8601 timestamp, when recognizable.",
-   "job_id": "Numeric LinkedIn job posting ID, stable across runs.",
-   "company_url": "URL of the hiring organization's LinkedIn page."
-  },
-  "pricing": {
-   "per_result_usd": 0.001,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "LinkedIn Jobs Scraper - Public Job Listings Search API",
-   "store_url": "https://apify.com/captainhandsome/linkedin-public-jobs-search"
-  }
- },
- {
-  "tool": "openfda_search",
-  "title": "openFDA Drug and Device Search",
-  "actor": "captainhandsome/openfda-search",
-  "summary": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.",
-  "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/openfda-search'.\n- Side Effects: Strictly read-only; queries the public openFDA API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for drug/device safety surveillance, regulatory approval history, adverse-event monitoring, or recall tracking.\n- When NOT to use: Do not use for clinical trial recruitment data (use 'clinical_trials_search'), environmental compliance, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
-  "args": {
-   "dataset": {
-    "type": "string",
-    "required": false,
-    "description": "Which openFDA dataset to search. Defaults to 'drug_approval'.",
-    "default": "drug_approval"
-   },
-   "search": {
-    "type": "string",
-    "required": true,
-    "description": "openFDA query. A plain word works (e.g. 'semaglutide'), or target a field, e.g. 'openfda.manufacturer_name:\"Pfizer\"'.",
-    "default": null
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "Also look up each result's product NDC to add labeler, marketing category, and DEA schedule. Costs one extra request per 20 records. Defaults to false.",
-    "default": false
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "dataset": "Which openFDA dataset produced this row.",
-   "id": "Primary identifier for the row (SPL id, application number, safety report id, or recall number).",
-   "brand_name": "FDA-reported brand or proprietary name.",
-   "generic_name": "FDA-reported generic or nonproprietary name.",
-   "manufacturer": "FDA-reported manufacturer name.",
-   "substance": "Active substance names, comma separated.",
-   "route": "Route(s) of administration, comma separated.",
-   "application_number": "FDA application number (NDA, ANDA, or BLA) the product is marketed under."
-  },
-  "pricing": {
-   "per_result_usd": 0.002,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "FDA API Scraper - Drug Approvals, Recalls & Adverse Events",
-   "store_url": "https://apify.com/captainhandsome/openfda-search"
-  }
- },
- {
-  "tool": "us_business_entity_search",
-  "title": "US Multi-State Business Entity Search",
-  "actor": "captainhandsome/us-business-entity-search",
-  "summary": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.",
-  "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-business-entity-search'.\n- Side Effects: Strictly read-only; queries public state business registries.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when a company name lookup should span multiple states at once, or when the entity's state of registration is unknown among Florida, Alabama, Iowa, or Wisconsin.\n- When NOT to use: Do not use for a single known state where a dedicated tool exists and is faster (e.g. 'alabama_business_search' or 'florida_new_filings_search'), for states outside this coverage, for officer/person-name lookups (use 'florida_officer_search'), or for contractor licences.\n- Named alternatives: Use 'alabama_business_search' or 'florida_new_filings_search' for a single-state lookup, 'florida_officer_search' for a person-to-company search, or 'us_contractor_license_search'/'california_contractor_license_search' for licensed contractors rather than general business entities.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Full or partial business name to search across the selected state registries (e.g. 'SMITH' or 'Smith Services LLC').",
-    "default": null
-   },
-   "states": {
-    "type": "array",
-    "required": false,
-    "description": "State registries to search. Defaults to all four supported states; narrow this to speed up a run when the state is already known.",
-    "default": [
-     "florida",
-     "alabama",
-     "iowa",
-     "wisconsin"
-    ]
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of normalized entity records to return and bill across all selected states. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each result's detail page to add formation date, registered agent, officers, and both address blocks. Adds one request per record and per state; leave off for a fast lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "source": "State registry that produced the record (florida, alabama, iowa, or wisconsin).",
-   "entity_name": "Legal entity name displayed by the source registry.",
-   "entity_id": "Public document, filing, or entity identifier from the source registry.",
-   "status": "Registry status when available.",
-   "entity_type": "Registry entity classification when available.",
-   "location": "Registry location text when available.",
-   "date_filed": "Date the entity was filed, when the source registry records one.",
-   "registered_agent": "Name of the entity's registered agent, where recorded (requires include_details on most sources)."
-  },
-  "pricing": {
-   "per_result_usd": 0.0025,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "Secretary of State Business Entity Search - Registry Scraper",
-   "store_url": "https://apify.com/captainhandsome/us-business-entity-search"
-  }
- },
- {
-  "tool": "us_contractor_license_search",
-  "title": "US Multi-State Contractor License Search",
-  "actor": "captainhandsome/us-contractor-license-search",
-  "summary": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.",
-  "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-contractor-license-search'.\n- Side Effects: Strictly read-only; queries public state contractor-license boards.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for contractor vetting or lead building across California and Oregon in one call, or when it is not yet known which of the two states holds the licence.\n- When NOT to use: Do not use for a single known state where a dedicated tool is faster (e.g. 'california_contractor_license_search'), for states outside California/Oregon, or for general business-entity (non-licence) registry lookups.\n- Named alternatives: Use 'california_contractor_license_search' for a California-only lookup, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Business, qualifier, or person name to look up in the selected contractor-license registries (e.g. 'SMITH' or 'Smith Construction').",
-    "default": null
-   },
-   "states": {
-    "type": "array",
-    "required": false,
-    "description": "State licence sources to search. Defaults to both California and Oregon; narrow this to speed up a run when the state is already known.",
-    "default": [
-     "california",
-     "oregon"
-    ]
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of licence records to return and bill across all selected states. Defaults to 10.",
-    "default": 10
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "When true, opens each licence's detail page to add bonding, insurance, workers' compensation, classifications, disciplinary history, and issue/expiry dates. Adds one request per record; leave off for a fast lookup.",
-    "default": false
-   }
-  },
-  "output_fields": {
-   "source": "State licence registry that produced the record (california or oregon).",
-   "business_name": "Business name value returned by the upstream source.",
-   "contractor_name": "Contractor or business name shown in the result.",
-   "license_number": "Public registry license identifier.",
-   "status": "Current status reported by the source registry.",
-   "city": "City displayed for the license record.",
-   "name_type": "Structured name-type value returned by the upstream source.",
-   "business_entity": "Legal form held for the licensee, from the licence detail page (requires include_details)."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "US Contractor License Lookup & Search API - Multi-State",
-   "store_url": "https://apify.com/captainhandsome/us-contractor-license-search"
-  }
- },
- {
-  "tool": "youtube_video_search",
-  "title": "YouTube Video Search",
-  "actor": "captainhandsome/youtube-search-scraper",
-  "summary": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.",
-  "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/youtube-search-scraper'.\n- Side Effects: Strictly read-only; does not modify any YouTube account, subscription, or playlist.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for content research, competitor video monitoring, trend discovery, or building a list of videos on a topic.\n- When NOT to use: Do not use for retrieving a video's transcript/captions, channel analytics dashboards, or non-YouTube platforms.\n- Named alternatives: Use 'google_play_reviews_search' for app-store sentiment or 'linkedin_jobs_search' for job-market data; neither covers video content.",
-  "args": {
-   "search_query": {
-    "type": "string",
-    "required": true,
-    "description": "Keyword or phrase to search for on YouTube (e.g. 'small business marketing').",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of unique video records to return. Defaults to 25.",
-    "default": 25
-   }
-  },
-  "output_fields": {
-   "title": "Public title of the video.",
-   "video_url": "Canonical YouTube watch-page URL.",
-   "channel_name": "Public name of the channel that published the video.",
-   "channel_url": "Public YouTube channel URL when available.",
-   "views": "Human-readable view count displayed in search results.",
-   "view_count": "'views' parsed into a number, handling K/M/B suffixes and comma grouping.",
-   "published": "Relative publication age displayed in search results (e.g. '2 years ago').",
-   "duration": "Displayed video duration in clock format."
-  },
-  "pricing": {
-   "per_result_usd": 0.001,
-   "per_start_usd": 0.001,
-   "memory_mb": 2048,
-   "store_title": "YouTube Video Search API & Scraper - Export Results to CSV",
-   "store_url": "https://apify.com/captainhandsome/youtube-search-scraper"
-  }
- },
- {
-  "tool": "cms_healthcare_provider_search",
-  "title": "CMS Healthcare Provider Search",
-  "actor": "captainhandsome/cms-healthcare-provider-search",
-  "summary": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.",
-  "description": "Search official CMS Provider Data Catalog directories for Medicare-certified hospitals, nursing homes, home health agencies, hospices, dialysis facilities, long-term care hospitals, and inpatient rehab facilities. Returns normalized facility records (identity, ownership, capacity, and star ratings) across all seven provider types through one consistent row shape.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/cms-healthcare-provider-search'.\n- Side Effects: Strictly read-only; queries the public CMS Provider Data Catalog API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for healthcare facility due diligence, star-rating and quality comparisons, nursing-home staffing/inspection/fines research, or building a location-bounded list of Medicare-certified providers.\n- When NOT to use: Do not use for clinical trial recruitment data, environmental compliance, campaign finance, corporate registry lookups, or contractor licensing.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'us_business_entity_search' or 'us_contractor_license_search' for corporate/contractor registries, or 'europe_pmc_paper_search' for biomedical literature.",
-  "args": {
-   "provider_types": {
-    "type": "array",
-    "required": false,
-    "description": "One or more CMS provider-directory types to search, e.g. ['hospital'] or ['nursing_home', 'hospice']. Omit to search hospitals only, the Actor's own fallback.",
-    "default": null
-   },
-   "state": {
-    "type": "string",
-    "required": true,
-    "description": "Two-letter US state or territory abbreviation to search within, e.g. 'TX'.",
-    "default": null
-   },
-   "city": {
-    "type": "string",
-    "required": false,
-    "description": "City name to filter by, matched exactly (case-insensitive, not a substring), e.g. 'Houston'.",
-    "default": null
-   },
-   "zip": {
-    "type": "string",
-    "required": false,
-    "description": "Five-digit US ZIP code to filter by, e.g. '77030'.",
-    "default": null
-   },
-   "county": {
-    "type": "string",
-    "required": false,
-    "description": "County name to filter by, matched exactly (case-insensitive), e.g. 'Harris'.",
-    "default": null
-   },
-   "name_contains": {
-    "type": "string",
-    "required": false,
-    "description": "Case-insensitive substring to match against the provider or facility name, e.g. 'Memorial'.",
-    "default": null
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of provider records to retrieve and bill. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "provider_type": "Which CMS directory this row came from (hospital, nursing_home, home_health, hospice, dialysis, long_term_care_hospital, or inpatient_rehab).",
-   "ccn": "CMS Certification Number, the stable identifier for the provider (hospitals use their facility ID here).",
-   "name": "Facility or provider name as published by CMS.",
-   "address": "Public street address reported by CMS.",
-   "city": "City reported for the record.",
-   "state": "Two-letter US state or territory abbreviation.",
-   "zip": "Postal or ZIP code reported for the record.",
-   "county": "County reported for the record.",
-   "phone": "Public provider telephone number in CMS display format.",
-   "ownership": "Ownership or profit status as classified by CMS for this directory.",
-   "subtype": "Directory-specific subtype, e.g. hospital type for hospitals or provider type for nursing homes.",
-   "star_rating": "CMS overall one-to-five star rating for the provider, when the directory publishes one.",
-   "certification_date": "Date CMS certified the provider, in YYYY-MM-DD form where available.",
-   "beds": "Number of certified beds. Nursing homes and long-term care hospitals only.",
-   "chain": "Chain or corporate ownership group name, when CMS reports one. Nursing homes and dialysis facilities only.",
-   "emergency_services": "Whether the hospital reports emergency services ('Yes'/'No'). Hospitals only."
-  },
-  "pricing": {
-   "per_result_usd": 0.02,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "CMS Healthcare Provider Data - Hospital Compare & Nursing Home",
-   "store_url": "https://apify.com/captainhandsome/cms-healthcare-provider-search"
-  }
- },
- {
-  "tool": "europe_pmc_paper_search",
-  "title": "Europe PMC Research Paper Search",
-  "actor": "captainhandsome/europe-pmc-paper-search",
-  "summary": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.",
-  "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Strictly read-only; queries the official Europe PMC REST API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
-  "args": {
-   "query": {
-    "type": "string",
-    "required": true,
-    "description": "Keywords, topic, condition, intervention or Europe PMC search expression. Example: 'gut microbiome obesity'.",
-    "default": null
-   },
-   "author": {
-    "type": "string",
-    "required": false,
-    "description": "Filter to papers by this author's name. Example: 'Villapol S'.",
-    "default": null
-   },
-   "journal": {
-    "type": "string",
-    "required": false,
-    "description": "Filter to papers published in this journal. Example: 'Nature Medicine'.",
-    "default": null
-   },
-   "year_from": {
-    "type": "integer",
-    "required": false,
-    "description": "Return only papers published in this year or later. Example: 2022.",
-    "default": null
-   },
-   "year_to": {
-    "type": "integer",
-    "required": false,
-    "description": "Return only papers published in this year or earlier. Example: 2026.",
-    "default": null
-   },
-   "open_access_only": {
-    "type": "boolean",
-    "required": false,
-    "description": "Return only records Europe PMC marks as open access. Example: true.",
-    "default": null
-   },
-   "has_abstract_only": {
-    "type": "boolean",
-    "required": false,
-    "description": "Return only papers for which Europe PMC provides an abstract. Example: true.",
-    "default": null
-   },
-   "sort_by": {
-    "type": "string",
-    "required": false,
-    "description": "Order results by relevance, citation count, or newest publication date. Defaults to 'relevance'. Example: 'cited'.",
-    "default": "relevance"
-   },
-   "include_entities": {
-    "type": "boolean",
-    "required": false,
-    "description": "Add genes, diseases, organisms, chemicals, Gene Ontology terms, experimental methods and accession numbers mined from the full text. Adds roughly one extra request per 8 results. Defaults to false. Example: true.",
-    "default": false
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of papers to retrieve. Defaults to 10. Example: 25.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "id": "Structured id value returned by the official Europe PMC REST API.",
-   "source": "Source database the record came from, e.g. 'MED' for PubMed, 'PPR' for preprint, 'PAT' for patent.",
-   "pmid": "PubMed identifier for the publication.",
-   "pmcid": "PubMed Central identifier for full-text content.",
-   "doi": "Digital Object Identifier for the publication.",
-   "title": "Published title of the paper, study or source record.",
-   "authors": "Full author byline as one comma-separated string.",
-   "first_author": "First author in abbreviated form, e.g. 'Kara G'.",
-   "journal": "Journal title the paper was published in.",
-   "pub_year": "Year of publication.",
-   "publication_date": "First publication date of the record.",
-   "abstract": "Publication abstract supplied by Europe PMC.",
-   "keywords": "Author-supplied keywords, comma separated.",
-   "mesh_terms": "Medical Subject Headings assigned to the paper, comma separated.",
-   "cited_by_count": "Number of citing works recorded by Europe PMC.",
-   "is_open_access": "True when Europe PMC marks the record as open access.",
-   "full_text_availability": "Best access available across providers: 'Open access', 'Free', or 'Subscription required'.",
-   "pdf_url": "Direct link to the PDF, preferring an open-access or free copy.",
-   "url": "Canonical public URL for the source record on europepmc.org.",
-   "funders": "Agencies that funded the work, comma separated."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "PubMed API - Research Paper Scraper via Europe PMC Search",
-   "store_url": "https://apify.com/captainhandsome/europe-pmc-paper-search"
-  }
- },
- {
-  "tool": "gleif_lei_search",
-  "title": "GLEIF Legal Entity Identifier Search",
-  "actor": "captainhandsome/gleif-lei-search",
-  "summary": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.",
-  "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Strictly read-only; queries the free, public GLEIF API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
-  "args": {
-   "query": {
-    "type": "string",
-    "required": true,
-    "description": "Company name, an LEI code, or free text to search for, depending on search_mode. Example: 'Siemens'.",
-    "default": null
-   },
-   "search_mode": {
-    "type": "string",
-    "required": false,
-    "description": "How to interpret query. 'name' matches the registered legal name only, 'fulltext' matches the whole record including addresses and former names, 'lei' is an exact 20-character LEI lookup. Defaults to 'name'.",
-    "default": "name"
-   },
-   "country": {
-    "type": "string",
-    "required": false,
-    "description": "Two-letter ISO country code of the entity's legal address to filter on, e.g. 'DE' for Germany. Omit to search every country.",
-    "default": null
-   },
-   "jurisdiction": {
-    "type": "string",
-    "required": false,
-    "description": "Two-letter code of the registering jurisdiction to filter on, e.g. 'FR'. Can differ from country. Omit to search every jurisdiction.",
-    "default": null
-   },
-   "status": {
-    "type": "string",
-    "required": false,
-    "description": "Limit results to entities with this operating status, e.g. 'ACTIVE'. Omit to return both active and inactive entities.",
-    "default": null
-   },
-   "include_relationships": {
-    "type": "boolean",
-    "required": false,
-    "description": "Also fetch direct and ultimate parent, subsidiary count and names, and ISINs. Costs up to six extra requests per record and slows the run. Defaults to false.",
-    "default": false
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of LEI records to retrieve. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "lei": "Twenty-character Legal Entity Identifier, the ISO 17442 global key for this entity.",
-   "legal_name": "Registered legal name of the entity, in its own script.",
-   "status": "Whether the entity itself is still operating: ACTIVE or INACTIVE.",
-   "registration_status": "Lifecycle of the LEI registration itself: ISSUED, LAPSED, RETIRED, ANNULLED and so on.",
-   "jurisdiction": "Two-letter code of the legal jurisdiction the entity is formed in.",
-   "legal_form_name": "Legal form resolved to words, e.g. 'Private Limited Company'. Null when GLEIF has no free-text label for the code.",
-   "registered_as": "The company's number in its own national registry, the join key to Companies House, SIRENE, the Handelsregister and the rest.",
-   "registered_at_name": "Name of the national registration authority the entity is filed with, e.g. 'Companies House'.",
-   "legal_country": "ISO 3166-1 alpha-2 country code of the registered legal address.",
-   "legal_city": "City of the registered legal address.",
-   "corroboration_level": "How hard the data was verified: FULLY_CORROBORATED, PARTIALLY_CORROBORATED or ENTITY_SUPPLIED_ONLY.",
-   "next_renewal_date": "When the LEI must next be revalidated, ISO 8601. A date in the past means the record is lapsing.",
-   "gleif_profile_url": "Public GLEIF record page for this LEI, for verifying a row by hand."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "LEI Lookup API - GLEIF Legal Entity Identifier Search",
-   "store_url": "https://apify.com/captainhandsome/gleif-lei-search"
-  }
- },
- {
-  "tool": "tech_stack_detector",
-  "title": "Website Tech Stack & Ecommerce Scanner",
-  "actor": "captainhandsome/tech-stack-detector",
-  "summary": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.",
-  "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Strictly read-only; fetches each site's homepage (and, with include_details, its robots.txt and one contact/about page) as a normal browser would, no login or API key required on the target site.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
-  "args": {
-   "urls": {
-    "type": "array",
-    "required": true,
-    "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"].",
-    "default": null
-   },
-   "include_details": {
-    "type": "boolean",
-    "required": false,
-    "description": "Also fetch /robots.txt and a discovered contact or about page per site, adding the sitemap URL, crawl-rule count, and any extra emails/phones the homepage omits. Costs up to two extra requests per site. Defaults to false.",
-    "default": false
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Maximum number of site records to return. Defaults to 10.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "url": "Requested website URL, as normalized before the request.",
-   "final_url": "Final URL after HTTP redirects.",
-   "status": "HTTP response status code.",
-   "domain": "Registered host of the final URL with any leading www. removed.",
-   "is_https": "True when the final URL was served over HTTPS.",
-   "technologies": "Detected technology names, e.g. Fastly, Next.js.",
-   "count": "Number of detected technologies.",
-   "categories": "Distinct categories of detected technologies, e.g. cdn, framework.",
-   "cms": "Detected content management systems, comma separated.",
-   "ecommerce_platform": "Detected ecommerce platforms, comma separated.",
-   "framework": "Detected web application frameworks, comma separated.",
-   "analytics": "Detected analytics and tag-management tools, comma separated.",
-   "payments": "Detected payment providers, comma separated.",
-   "cdn": "Detected content delivery networks, comma separated.",
-   "hosting": "Detected hosting and deployment platforms, comma separated.",
-   "security_tech": "Detected bot-protection and CAPTCHA services, comma separated.",
-   "title": "Contents of the HTML title tag.",
-   "meta_description": "Meta description of the page.",
-   "emails": "Email addresses published on the page (mailto: links plus same-domain plain-text addresses), comma separated.",
-   "phones": "Phone numbers taken from tel: links, comma separated.",
-   "linkedin_url": "First LinkedIn company, school, or member URL linked from the page.",
-   "twitter_url": "First Twitter/X profile URL linked from the page.",
-   "github_url": "First GitHub organization or repository URL linked from the page.",
-   "contact_page_url": "Contact or about page found on the same host. Null unless include_details is on.",
-   "robots_txt_found": "True when /robots.txt returned a real robots file. Null unless include_details is on.",
-   "sitemap_url": "First sitemap URL declared in /robots.txt. Null unless include_details is on.",
-   "error": "Fetch or processing error for this site, or null on success."
-  },
-  "pricing": {
-   "per_result_usd": 0.003,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "Website Tech Stack Detector API - Ecommerce Technology Scanner",
-   "store_url": "https://apify.com/captainhandsome/tech-stack-detector"
-  }
- },
- {
-  "tool": "us_census_geocoder",
-  "title": "US Census Address Geocoder",
-  "actor": "captainhandsome/us-census-geocoder",
-  "summary": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.",
-  "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Strictly read-only; queries the public Census Bureau geocoder API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.",
-  "args": {
-   "addresses": {
-    "type": "array",
-    "required": true,
-    "description": "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not.",
-    "default": null
-   },
-   "benchmark": {
-    "type": "string",
-    "required": false,
-    "description": "Which Census address file to match against. Defaults to 'Public_AR_Current', the live, continuously updated file. Use 'Public_AR_Census2020' to reconcile against the address file as it stood at the 2020 Census.",
-    "default": "Public_AR_Current"
-   },
-   "vintage": {
-    "type": "string",
-    "required": false,
-    "description": "Which geography vintage to report tract, block and district boundaries from. Defaults to 'Current_Current'. Use 'Census2020_Current' when you need boundaries as drawn at the 2020 Census, e.g. before a later congressional redistricting.",
-    "default": "Current_Current"
-   },
-   "max_results": {
-    "type": "integer",
-    "required": false,
-    "description": "Ceiling on the number of address rows you are willing to pay for. Defaults to 10. This Actor emits exactly one row per address (matched or not) and does not truncate your address list to this number, so keep 'addresses' at or below max_results to control both output volume and cost.",
-    "default": 10
-   }
-  },
-  "output_fields": {
-   "input_address": "The address string exactly as supplied, so results can be joined back to the source list.",
-   "matched": "True when the Census geocoder returned at least one candidate for the address. False rows carry every other field as null rather than being dropped.",
-   "match_count": "How many candidate addresses Census returned. 1 is a clean hit; more than 1 means the address was ambiguous and the row describes only the first candidate. 0 on unmatched rows.",
-   "matched_address": "The address as Census standardised it: upper case, standardised street type, and the ZIP it actually resolved to. Null when matched is false.",
-   "latitude": "Latitude in decimal degrees, interpolated along the matched TIGER street segment (street frontage, not rooftop). Null when matched is false.",
-   "longitude": "Longitude in decimal degrees, same street-segment interpolation as latitude. Null when matched is false.",
-   "city": "Postal city of the matched address, upper case. Can differ from place_name, the legally incorporated place. Null when matched is false.",
-   "state": "Two-letter USPS state or territory code of the matched address. Null when matched is false.",
-   "zip": "Five-digit ZIP code Census resolved the address to, kept as a string so leading zeros survive export. Null when matched is false.",
-   "state_fips": "Two-digit state FIPS code, the first component of every Census GEOID. Null when matched is false.",
-   "county_fips": "Five-digit county GEOID (state FIPS plus county code), the county key used by ACS, BLS and most federal datasets. Null when matched is false.",
-   "county_name": "County or county-equivalent name (parish, borough, independent city). Null when matched is false.",
-   "place_name": "Name of the incorporated place (city, town, village) containing the address. Null in unincorporated territory and when matched is false.",
-   "place_geoid": "Seven-digit place GEOID, the join key to Census place-level tables since place names repeat across states. Null when matched is false.",
-   "tract_geoid": "Eleven-digit census tract GEOID, the join key for American Community Survey tract tables. Null when matched is false.",
-   "block_group_geoid": "Twelve-digit block group GEOID, the finest geography the American Community Survey publishes estimates for. Null when matched is false.",
-   "block_geoid": "Fifteen-digit census block GEOID, the finest geography the Bureau publishes and the join key to decennial block data. Null when matched is false.",
-   "zcta": "Five-digit ZIP Code Tabulation Area containing the point, the only ZIP-shaped geography the Bureau actually publishes data for. Can differ from zip. Null when matched is false.",
-   "urban_rural": "Census urban/rural classification of the containing block: U for urban, R for rural. Null when matched is false.",
-   "congressional_district_geoid": "Four-digit congressional district GEOID (state FIPS plus district), unique nationally and the join key to district-level Census tables. Null when matched is false.",
-   "cbsa_name": "Combined Statistical Area name, broader than the single metro area inside it (e.g. Washington joined with Baltimore). Null outside any CSA and when matched is false.",
-   "metro_area_name": "Name of the Core Based Statistical Area (the actual metro or micro area) containing the address. Null outside any CBSA and when matched is false.",
-   "school_district_name": "Name of the school district containing the address; a unified district where one exists, otherwise the elementary or secondary district per school_district_type. Null when matched is false.",
-   "benchmark_name": "The Census address benchmark that actually answered, echoed back by the API on every row.",
-   "vintage_name": "The geography vintage that actually answered, echoed back by the API on every row."
-  },
-  "pricing": {
-   "per_result_usd": 0.01,
-   "per_start_usd": 0.0005,
-   "memory_mb": 1024,
-   "store_title": "US Address Geocoder API - Census Tract, FIPS & Block Lookup",
-   "store_url": "https://apify.com/captainhandsome/us-census-geocoder"
-  }
- }
 ]

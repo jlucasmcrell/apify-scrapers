@@ -3,7 +3,7 @@
   "tool": {
     "name": "alabama_business_search",
     "title": "Alabama Business Entity Registry Search",
-    "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Strictly read-only; queries the public Alabama Secretary of State registry.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
+    "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -27,66 +27,74 @@
       },
       "required": [
         "search_query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of Alabama business-entity records matching the search query.",
           "items": {
             "type": "object",
             "properties": {
               "entity_id": {
-                "type": "string",
-                "description": "Alabama public entity identifier."
+                "title": "Entity ID",
+                "description": "Alabama public entity identifier.",
+                "type": "string"
               },
               "entity_name": {
-                "type": "string",
-                "description": "Business name displayed by the Alabama public registry."
+                "title": "Legal entity name",
+                "description": "Business name displayed by the Alabama public registry.",
+                "type": "string"
               },
               "entity_type": {
+                "title": "Entity type",
+                "description": "Registry classification, such as LLC or corporation, when present.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Registry classification, such as LLC or corporation, when present."
+                ]
               },
               "status": {
+                "title": "Entity status",
+                "description": "Current registry status when present.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Current registry status when present (e.g. Exists, Dissolved, Revoked)."
+                ]
               },
               "location": {
+                "title": "Location",
+                "description": "Registry location text when present.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Registry location text when present."
+                ]
               },
               "formation_date": {
+                "title": "Formation date",
+                "description": "Date the entity was formed, from the state's detail record.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Date the entity was formed, from the detail record (requires include_details)."
+                ]
               },
               "registered_agent": {
+                "title": "Registered agent",
+                "description": "Name of the entity's registered agent.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Name of the entity's registered agent (requires include_details)."
+                ]
               },
               "principal_address": {
+                "title": "Principal address",
+                "description": "Principal place of business, where the state records one.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Principal place of business, where the state records one (requires include_details)."
+                ]
               }
             },
             "required": [
@@ -94,16 +102,32 @@
               "entity_name"
             ]
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

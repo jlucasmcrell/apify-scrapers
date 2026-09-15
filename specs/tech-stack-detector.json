@@ -3,7 +3,7 @@
   "tool": {
     "name": "tech_stack_detector",
     "title": "Website Tech Stack & Ecommerce Scanner",
-    "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Strictly read-only; fetches each site's homepage (and, with include_details, its robots.txt and one contact/about page) as a normal browser would, no login or API key required on the target site.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
+    "description": "Scan a batch of public websites and detect the CMS, ecommerce platform, payment gateway, CDN, analytics, hosting, and 15 other technology categories from 75 signatures, alongside the infrastructure headers, page metadata, and contact/social links the same page response already carries.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/tech-stack-detector'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for a small batch; timeout capped at 120 seconds. Detection is signature-based HTML/header matching, not a headless browser, so it is evidence of presence, never proof of absence, and JavaScript-rendered technology is not executed or seen.\n\nUsage Guidelines:\n- When to use: Use for competitive technology research, B2B lead qualification and segmentation, ecommerce/payment-stack prospecting, or pulling the public contact and social links a company's own website exposes.\n- When NOT to use: Do not use for a company's legal registration or corporate-registry status (use 'us_business_entity_search' or 'gleif_lei_search'), hiring signals (use 'linkedin_jobs_search' or 'glassdoor_jobs_search'), app-store sentiment (use 'google_play_reviews_search'), or a business's physical location and reviews (use 'google_maps_search').\n- Named alternatives: Use 'us_business_entity_search' for state corporate registry records, 'gleif_lei_search' for global legal entity identifiers, 'linkedin_jobs_search' or 'glassdoor_jobs_search' for a company's open roles and employee sentiment, or 'google_maps_search' for a business's physical location and reviews.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -13,7 +13,8 @@
             "type": "string"
           },
           "minItems": 1,
-          "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"]."
+          "description": "Domains or URLs to analyze; one record is returned per site. A bare domain is normalized to https automatically. Example: [\"ghost.org\", \"webflow.com\"].",
+          "maxItems": 100
         },
         "include_details": {
           "type": "boolean",
@@ -30,146 +31,261 @@
       },
       "required": [
         "urls"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "One record per analyzed website.",
           "items": {
             "type": "object",
             "properties": {
               "url": {
-                "type": "string",
-                "description": "Requested website URL, as normalized before the request."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Url",
+                "description": "Requested website URL."
               },
               "final_url": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Final Url",
                 "description": "Final URL after HTTP redirects."
               },
               "status": {
-                "type": "integer",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Status",
                 "description": "HTTP response status code."
               },
               "domain": {
-                "type": "string",
-                "description": "Registered host of the final URL with any leading www. removed."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Domain",
+                "description": "Registered host of the final URL with any leading www. removed, for joining and de-duplicating lists."
               },
               "is_https": {
-                "type": "boolean",
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "title": "Is Https",
                 "description": "True when the final URL was served over HTTPS."
               },
               "technologies": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Detected technology names, e.g. Fastly, Next.js."
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "title": "Technologies",
+                "description": "Detected technology names."
               },
               "count": {
-                "type": "integer",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Count",
                 "description": "Number of detected technologies."
               },
               "categories": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "Distinct categories of detected technologies, e.g. cdn, framework."
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "title": "Categories",
+                "description": "Distinct categories of detected technologies."
               },
               "cms": {
-                "type": "string",
-                "description": "Detected content management systems, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Cms",
+                "description": "Detected content management systems, comma-separated."
               },
               "ecommerce_platform": {
-                "type": "string",
-                "description": "Detected ecommerce platforms, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Ecommerce Platform",
+                "description": "Detected ecommerce platforms, comma-separated."
               },
               "framework": {
-                "type": "string",
-                "description": "Detected web application frameworks, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Framework",
+                "description": "Detected web application frameworks, comma-separated."
               },
               "analytics": {
-                "type": "string",
-                "description": "Detected analytics and tag-management tools, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Analytics",
+                "description": "Detected analytics and tag-management tools, comma-separated."
               },
               "payments": {
-                "type": "string",
-                "description": "Detected payment providers, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Payments",
+                "description": "Detected payment providers, comma-separated."
               },
               "cdn": {
-                "type": "string",
-                "description": "Detected content delivery networks, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Cdn",
+                "description": "Detected content delivery networks, comma-separated."
               },
               "hosting": {
-                "type": "string",
-                "description": "Detected hosting and deployment platforms, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Hosting",
+                "description": "Detected hosting and deployment platforms, comma-separated."
               },
               "security_tech": {
-                "type": "string",
-                "description": "Detected bot-protection and CAPTCHA services, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Security Tech",
+                "description": "Detected bot-protection and CAPTCHA services, comma-separated."
               },
               "title": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Title",
                 "description": "Contents of the HTML title tag."
               },
               "meta_description": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Meta Description",
                 "description": "Meta description of the page."
               },
               "emails": {
-                "type": "string",
-                "description": "Email addresses published on the page (mailto: links plus same-domain plain-text addresses), comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Emails",
+                "description": "Email addresses published on the page: every mailto: target, plus plain-text addresses on the site's own domain. Includes the contact page when include_details is on."
               },
               "phones": {
-                "type": "string",
-                "description": "Phone numbers taken from tel: links, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Phones",
+                "description": "Phone numbers taken from tel: links, comma-separated."
               },
               "linkedin_url": {
-                "type": "string",
-                "description": "First LinkedIn company, school, or member URL linked from the page."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Linkedin Url",
+                "description": "First LinkedIn company, school or member URL linked from the page."
               },
               "twitter_url": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Twitter Url",
                 "description": "First Twitter/X profile URL linked from the page."
               },
               "github_url": {
-                "type": "string",
-                "description": "First GitHub organization or repository URL linked from the page."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Github Url",
+                "description": "First GitHub organisation or repository URL linked from the page."
               },
               "contact_page_url": {
-                "type": "string",
-                "description": "Contact or about page found on the same host. Null unless include_details is on."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Contact Page Url",
+                "description": "Contact or about page found on the same host and fetched for extra contact details. Null unless include_details is on."
               },
               "robots_txt_found": {
-                "type": "boolean",
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "title": "Robots Txt Found",
                 "description": "True when /robots.txt returned a real robots file. Null unless include_details is on."
               },
               "sitemap_url": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Sitemap Url",
                 "description": "First sitemap URL declared in /robots.txt. Null unless include_details is on."
               },
               "error": {
-                "type": "string",
-                "description": "Fetch or processing error for this site, or null on success."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Error",
+                "description": "Fetch or processing error, or null on success."
               }
-            },
-            "required": [
-              "url"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

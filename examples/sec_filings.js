@@ -28,13 +28,19 @@ async function main() {
     max_items: 15,
   });
 
+  if (!run || run.status !== 'SUCCEEDED') throw new Error('Actor run did not succeed');
   console.log(`Run finished with status: ${run.status}`);
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
+  const items = [];
+  for (let offset = 0; ; offset += 1000) {
+    const page = await client.dataset(run.defaultDatasetId).listItems({ offset, limit: 1000 });
+    items.push(...page.items);
+    if (page.items.length < 1000) break;
+  }
   
   console.log(`Retrieved ${items.length} SEC filings:`);
   items.slice(0, 5).forEach((filing, i) => {
-    console.log(`${i + 1}. [${filing.ticker}] ${filing.form} (${filing.filing_date}) - Doc: ${filing.primary_document_url}`);
+    console.log(`${i + 1}. [${filing.ticker}] ${filing.form} (${filing.filing_date}) - Doc: ${filing.filing_url}`);
   });
 }
 
-main().catch(console.error);
+main().catch((error) => { console.error(error.message); process.exitCode = 1; });

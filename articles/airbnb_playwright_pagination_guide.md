@@ -2,7 +2,7 @@
 title: How to Bypass Headless Pagination and Translation Modals on Airbnb with Playwright
 published: true
 tags: webscraping, python, playwright, automation
-canonical_url: https://github.com/jlucasmcrell/apify-scrapers
+canonical_url: https://apify.revenuesystemslabs.com/articles/airbnb_playwright_pagination_guide.html
 ---
 
 When scraping modern Single Page Applications (SPAs) like Airbnb, standard pagination strategies (`page.click('a[aria-label="Next"]')`) frequently collapse in headless Linux environments (Xvfb / Docker). 

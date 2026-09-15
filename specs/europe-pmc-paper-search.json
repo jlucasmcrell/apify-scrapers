@@ -3,7 +3,7 @@
   "tool": {
     "name": "europe_pmc_paper_search",
     "title": "Europe PMC Research Paper Search",
-    "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Strictly read-only; queries the official Europe PMC REST API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
+    "description": "Search Europe PMC and PubMed for research papers, preprints and patents by topic, author, journal, publication year and open-access status. Returns flat records with identifiers, abstracts, citation counts, MeSH indexing, funding and full-text links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/europe-pmc-paper-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds for the default 10 results; timeout capped at 120 seconds. Requesting a large max_results or enabling include_entities adds paginated and annotation-batch requests and increases duration.\n\nUsage Guidelines:\n- When to use: Use for biomedical and life-science literature search, systematic-review scoping, citation and impact tracking, funding/grant provenance research, open-access discovery, or mining gene/disease/organism entities from paper text.\n- When NOT to use: Do not use for clinical trial recruitment or study status (use 'clinical_trials_search'), drug/device safety data, approvals, adverse events or recalls (use 'openfda_search'), or general corporate/regulatory lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study records, or 'openfda_search' for FDA drug and device safety datasets.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -61,113 +61,205 @@
       },
       "required": [
         "query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of Europe PMC records matching the search.",
           "items": {
             "type": "object",
             "properties": {
               "id": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Id",
                 "description": "Structured id value returned by the official Europe PMC REST API."
               },
               "source": {
-                "type": "string",
-                "description": "Source database the record came from, e.g. 'MED' for PubMed, 'PPR' for preprint, 'PAT' for patent."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Source",
+                "description": "Structured source value returned by the official Europe PMC REST API."
               },
               "pmid": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "PubMed ID",
                 "description": "PubMed identifier for the publication."
               },
               "pmcid": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "PubMed Central ID",
                 "description": "PubMed Central identifier for full-text content."
               },
               "doi": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "DOI",
                 "description": "Digital Object Identifier for the publication."
               },
               "title": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Title",
                 "description": "Published title of the paper, study or source record."
               },
               "authors": {
-                "type": "string",
-                "description": "Full author byline as one comma-separated string."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Authors",
+                "description": "Structured authors value returned by the official Europe PMC REST API."
               },
               "first_author": {
-                "type": "string",
-                "description": "First author in abbreviated form, e.g. 'Kara G'."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "First Author",
+                "description": "Structured first author value returned by the official Europe PMC REST API."
               },
               "journal": {
-                "type": "string",
-                "description": "Journal title the paper was published in."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Journal",
+                "description": "Structured journal value returned by the official Europe PMC REST API."
               },
               "pub_year": {
-                "type": "string",
-                "description": "Year of publication."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Pub Year",
+                "description": "Structured pub year value returned by the official Europe PMC REST API."
               },
               "publication_date": {
-                "type": "string",
-                "description": "First publication date of the record."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Publication Date",
+                "description": "Structured publication date value returned by the official Europe PMC REST API."
               },
               "abstract": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Abstract",
                 "description": "Publication abstract supplied by Europe PMC."
               },
               "keywords": {
-                "type": "string",
-                "description": "Author-supplied keywords, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Keywords",
+                "description": "Structured keywords value returned by the official Europe PMC REST API."
               },
               "mesh_terms": {
-                "type": "string",
-                "description": "Medical Subject Headings assigned to the paper, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "MeSH terms",
+                "description": "Medical Subject Headings assigned to the paper, comma separated and capped at 30 terms."
               },
               "cited_by_count": {
-                "type": "integer",
-                "description": "Number of citing works recorded by Europe PMC."
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Cited By Count",
+                "description": "Structured cited by count value returned by the official Europe PMC REST API."
               },
               "is_open_access": {
-                "type": "boolean",
-                "description": "True when Europe PMC marks the record as open access."
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "title": "Is Open Access",
+                "description": "Structured is open access value returned by the official Europe PMC REST API."
               },
               "full_text_availability": {
-                "type": "string",
-                "description": "Best access available across providers: 'Open access', 'Free', or 'Subscription required'."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Full text availability",
+                "description": "Best access available across all providers: Open access, Free, or Subscription required."
               },
               "pdf_url": {
-                "type": "string",
-                "description": "Direct link to the PDF, preferring an open-access or free copy."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "PDF URL",
+                "description": "Direct link to the PDF, preferring an open-access or free copy over a paywalled one."
               },
               "url": {
-                "type": "string",
-                "description": "Canonical public URL for the source record on europepmc.org."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Source record URL",
+                "description": "Canonical public URL for the source record."
               },
               "funders": {
-                "type": "string",
-                "description": "Agencies that funded the work, comma separated."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Funding agencies",
+                "description": "Agencies that funded the work, comma separated. The strongest signal in the record for who is paying for a research area."
               }
-            },
-            "required": [
-              "id",
-              "title"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

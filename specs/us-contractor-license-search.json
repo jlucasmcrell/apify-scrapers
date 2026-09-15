@@ -3,7 +3,7 @@
   "tool": {
     "name": "us_contractor_license_search",
     "title": "US Multi-State Contractor License Search",
-    "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-contractor-license-search'.\n- Side Effects: Strictly read-only; queries public state contractor-license boards.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for contractor vetting or lead building across California and Oregon in one call, or when it is not yet known which of the two states holds the licence.\n- When NOT to use: Do not use for a single known state where a dedicated tool is faster (e.g. 'california_contractor_license_search'), for states outside California/Oregon, or for general business-entity (non-licence) registry lookups.\n- Named alternatives: Use 'california_contractor_license_search' for a California-only lookup, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
+    "description": "Search California CSLB and Oregon CCB contractor-license records from one call by business, qualifier, or person name, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-contractor-license-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for contractor vetting or lead building across California and Oregon in one call, or when it is not yet known which of the two states holds the licence.\n- When NOT to use: Do not use for a single known state where a dedicated tool is faster (e.g. 'california_contractor_license_search'), for states outside California/Oregon, or for general business-entity (non-licence) registry lookups.\n- Named alternatives: Use 'california_contractor_license_search' for a California-only lookup, or 'alabama_business_search'/'florida_new_filings_search'/'us_business_entity_search' for general business-entity registries rather than contractor licences.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -27,7 +27,8 @@
             "california",
             "oregon"
           ],
-          "description": "State licence sources to search. Defaults to both California and Oregon; narrow this to speed up a run when the state is already known."
+          "description": "State licence sources to search. Defaults to both California and Oregon; narrow this to speed up a run when the state is already known.",
+          "maxItems": 100
         },
         "max_results": {
           "type": "integer",
@@ -44,14 +45,14 @@
       },
       "required": [
         "search_query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of normalized, source-tagged contractor-license records matching the search query.",
           "items": {
             "type": "object",
             "properties": {
@@ -60,27 +61,31 @@
                   "string",
                   "null"
                 ],
-                "description": "State licence registry that produced the record (california or oregon)."
+                "title": "Source",
+                "description": "Structured source value returned by the upstream source."
               },
               "business_name": {
                 "type": [
                   "string",
                   "null"
                 ],
-                "description": "Business name value returned by the upstream source."
+                "title": "Business Name",
+                "description": "Structured business name value returned by the upstream source."
               },
               "contractor_name": {
+                "title": "Contractor name",
+                "description": "Contractor or business name shown in the CSLB result.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Contractor or business name shown in the result."
+                ]
               },
               "license_number": {
                 "type": [
                   "string",
                   "null"
                 ],
+                "title": "License number",
                 "description": "Public registry license identifier."
               },
               "status": {
@@ -88,44 +93,66 @@
                   "string",
                   "null"
                 ],
+                "title": "License status",
                 "description": "Current status reported by the source registry."
               },
               "city": {
+                "title": "City",
+                "description": "California city displayed for the license record.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "City displayed for the license record."
+                ]
               },
               "name_type": {
                 "type": [
                   "string",
                   "null"
                 ],
-                "description": "Structured name-type value returned by the upstream source."
+                "title": "Name Type",
+                "description": "Structured name type value returned by the upstream source."
               },
               "business_entity": {
+                "title": "Business entity type",
+                "description": "Legal form CSLB holds for the licensee, from the licence detail page.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Legal form held for the licensee, from the licence detail page (requires include_details)."
+                ]
               }
             },
             "required": [
-              "source"
+              "source",
+              "license_number",
+              "status"
             ]
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

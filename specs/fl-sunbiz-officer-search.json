@@ -3,7 +3,7 @@
   "tool": {
     "name": "florida_officer_search",
     "title": "Florida Sunbiz Officer and Registered Agent Search",
-    "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sunbiz-officer-search'.\n- Side Effects: Strictly read-only; queries the public Sunbiz search pages.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled (one extra page load per matched company); timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use to find every Florida company associated with a specific person's name (officer, director, or registered agent), for background research or ownership mapping.\n- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
+    "description": "Search the Florida Sunbiz registry by an officer, director, or registered-agent name and return every Florida company tied to that person, with entity name and document number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fl-sunbiz-officer-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled (one extra page load per matched company); timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use to find every Florida company associated with a specific person's name (officer, director, or registered agent), for background research or ownership mapping.\n- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' instead), for other states, or for contractor licences.\n- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -27,66 +27,74 @@
       },
       "required": [
         "search_query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of Florida officer/registered-agent-to-entity records matching the search query.",
           "items": {
             "type": "object",
             "properties": {
               "officer_name": {
-                "type": "string",
-                "description": "Officer or registered-agent name shown in Sunbiz."
+                "title": "Officer or agent name",
+                "description": "Officer or registered-agent name shown in Sunbiz.",
+                "type": "string"
               },
               "entity_name": {
-                "type": "string",
-                "description": "Florida business entity linked to the officer or agent."
+                "title": "Entity name",
+                "description": "Florida business entity linked to the officer or agent.",
+                "type": "string"
               },
               "document_number": {
+                "title": "Document number",
+                "description": "Florida Division of Corporations document number.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Florida Division of Corporations document number."
+                ]
               },
               "detail_url": {
+                "title": "Sunbiz record URL",
+                "description": "Direct link to the company's Sunbiz detail page, so any record can be audited against the state registry.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Direct link to the company's Sunbiz detail page for audit against the state registry."
+                ]
               },
               "entity_type": {
+                "title": "Entity type",
+                "description": "Registry classification, such as Florida Limited Liability Company or Foreign Profit Corporation.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Registry classification, such as Florida LLC or Foreign Profit Corporation (requires include_details)."
+                ]
               },
               "status": {
+                "title": "Entity status",
+                "description": "Current Florida registration status, normally ACTIVE or INACTIVE.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Current Florida registration status, normally ACTIVE or INACTIVE (requires include_details)."
+                ]
               },
               "date_filed": {
+                "title": "Date filed",
+                "description": "Date the entity was first filed with the Florida Division of Corporations, as MM/DD/YYYY.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Date the entity was first filed with the Florida Division of Corporations (requires include_details)."
+                ]
               },
               "principal_address": {
+                "title": "Principal address",
+                "description": "Principal place of business on file, street through ZIP as one line.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Principal place of business on file (requires include_details)."
+                ]
               }
             },
             "required": [
@@ -94,16 +102,32 @@
               "entity_name"
             ]
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

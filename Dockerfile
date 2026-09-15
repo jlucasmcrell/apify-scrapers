@@ -7,10 +7,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
 COPY mcp_server.py .
 COPY server.json .
+COPY manifest.json .
 
 ENTRYPOINT ["python", "mcp_server.py"]

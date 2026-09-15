@@ -3,16 +3,37 @@
   "tool": {
     "name": "google_news_search",
     "title": "Google News Search",
-    "description": "Search Google News for companies, people, products, brands, industries, and topics. Returns current headlines, publishers, timestamps, article links, source sites, and snippets.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-news-search'.\n- Side Effects: Strictly read-only; queries public Google News RSS results.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for company-news monitoring, brand mentions, market intelligence, current-event research, and source discovery.\n- When NOT to use: Do not use for full article text, historical news archives, or verified fact checking.\n- Named alternatives: Use 'sec_edgar_filings' for official company filings, 'federal_register_search' for US agency publications, or 'europe_pmc_paper_search' for biomedical literature.",
+    "description": "Search Google News for companies, people, products, brands, industries, and topics. Returns current headlines, publishers, timestamps, article links, source sites, and snippets.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/google-news-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-20 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for company-news monitoring, brand mentions, market intelligence, current-event research, and source discovery.\n- When NOT to use: Do not use for full article text, historical news archives, or verified fact checking.\n- Named alternatives: Use 'sec_edgar_filings' for official company filings, 'federal_register_search' for US agency publications, or 'europe_pmc_paper_search' for biomedical literature.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "query": {"type": "string", "description": "Company, person, product, topic, or quoted phrase to search."},
-        "language": {"type": "string", "default": "en", "description": "Two-letter Google News language code."},
-        "country": {"type": "string", "default": "US", "description": "Two-letter Google News country edition."},
-        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum news records to return."}
+        "query": {
+          "type": "string",
+          "description": "Company, person, product, topic, or quoted phrase to search.",
+          "minLength": 1
+        },
+        "language": {
+          "type": "string",
+          "default": "en",
+          "description": "Two-letter Google News language code."
+        },
+        "country": {
+          "type": "string",
+          "default": "US",
+          "description": "Two-letter Google News country edition."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum news records to return."
+        }
       },
-      "required": ["query"]
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
@@ -22,28 +43,121 @@
           "items": {
             "type": "object",
             "properties": {
-              "title": {"type": "string", "description": "News headline."},
-              "source_name": {"type": "string", "description": "Publisher name."},
-              "source_url": {"type": "string", "description": "Publisher website."},
-              "published_at": {"type": "string", "description": "Publication timestamp normalized to UTC."},
-              "article_url": {"type": "string", "description": "Google News result link."},
-              "snippet": {"type": "string", "description": "Plain-text result snippet."},
-              "query": {"type": "string", "description": "Search query used."}
+              "title": {
+                "title": "Headline",
+                "description": "Headline supplied by Google News.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_name": {
+                "title": "Publisher",
+                "description": "Publisher or source name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_url": {
+                "title": "Publisher URL",
+                "description": "Publisher website URL supplied by the feed.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "published_at": {
+                "title": "Published At",
+                "description": "Publication timestamp normalized to UTC when parseable.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "article_url": {
+                "title": "Article URL",
+                "description": "Google News result link for the article.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "snippet": {
+                "title": "Snippet",
+                "description": "Plain-text result summary derived from the RSS description.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "query": {
+                "title": "Query",
+                "description": "Search query that produced the news result.",
+                "type": "string"
+              }
             }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
-      "required": ["results"]
+      "required": [
+        "results",
+        "status"
+      ]
     },
-    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
   },
   "payload_mapping": {
-    "query": {"key": "query", "transform": "str", "required": true},
-    "language": {"key": "language", "transform": "str", "default": "en"},
-    "country": {"key": "country", "transform": "str", "default": "US"},
-    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+    "query": {
+      "key": "query",
+      "transform": "str",
+      "required": true
+    },
+    "language": {
+      "key": "language",
+      "transform": "str",
+      "default": "en"
+    },
+    "country": {
+      "key": "country",
+      "transform": "str",
+      "default": "US"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
   },
   "fixed_payload": {},
-  "example_call": {"query": "quantum computing", "max_results": 3},
-  "verification": {"run_id": "n6lBmEOQIPQL7SItQ", "items": 3, "token": "quantum", "relevant": true}
+  "example_call": {
+    "query": "quantum computing",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "n6lBmEOQIPQL7SItQ",
+    "items": 3,
+    "token": "quantum",
+    "relevant": true
+  }
 }

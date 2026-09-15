@@ -3,20 +3,64 @@
   "tool": {
     "name": "ted_eu_tender_search",
     "title": "TED European Tender Search",
-    "description": "Search official Tenders Electronic Daily notices by keywords, contracting authority, country, CPV code and publication date. Returns buyers, deadlines, estimated values, classifications and direct TED documents.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ted-eu-tender-search'.\n- Side Effects: Strictly read-only; queries the official EU TED Search API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-45 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for European public-procurement discovery, bid monitoring, buyer research and CPV market analysis.\n- When NOT to use: Do not use for US grants (use 'grants_gov_opportunity_search') or completed US federal awards (use 'usaspending_contracts').\n- Named alternatives: Use 'grants_gov_opportunity_search' for US funding opportunities or 'usaspending_contracts' for awarded US contracts.",
+    "description": "Search official Tenders Electronic Daily notices by keywords, contracting authority, country, CPV code and publication date. Returns buyers, deadlines, estimated values, classifications and direct TED documents.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ted-eu-tender-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-45 seconds; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for European public-procurement discovery, bid monitoring, buyer research and CPV market analysis.\n- When NOT to use: Do not use for US grants (use 'grants_gov_opportunity_search') or completed US federal awards (use 'usaspending_contracts').\n- Named alternatives: Use 'grants_gov_opportunity_search' for US funding opportunities or 'usaspending_contracts' for awarded US contracts.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "keywords": {"type": "string", "minLength": 2, "description": "Words or phrase to match in TED notice titles."},
-        "buyer_name": {"type": "string", "description": "Text to match in contracting authority names."},
-        "buyer_country": {"type": "string", "pattern": "^[A-Za-z]{3}$", "description": "ISO alpha-3 buyer country code, for example DEU or FRA."},
-        "cpv_code": {"type": "string", "pattern": "^\\d{8}$", "description": "Eight-digit Common Procurement Vocabulary code."},
-        "publication_date_from": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "Earliest publication date, YYYY-MM-DD."},
-        "publication_date_to": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "Latest publication date, YYYY-MM-DD."},
-        "language": {"type": "string", "default": "eng", "minLength": 3, "maxLength": 3, "description": "Three-letter TED language code."},
-        "sort_direction": {"type": "string", "enum": ["desc", "asc"], "default": "desc", "description": "Newest or oldest publication date first."},
-        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum tender notices to return."}
-      }
+        "keywords": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Words or phrase to match in TED notice titles."
+        },
+        "buyer_name": {
+          "type": "string",
+          "description": "Text to match in contracting authority names."
+        },
+        "buyer_country": {
+          "type": "string",
+          "pattern": "^[A-Za-z]{3}$",
+          "description": "ISO alpha-3 buyer country code, for example DEU or FRA."
+        },
+        "cpv_code": {
+          "type": "string",
+          "pattern": "^\\d{8}$",
+          "description": "Eight-digit Common Procurement Vocabulary code."
+        },
+        "publication_date_from": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Earliest publication date, YYYY-MM-DD."
+        },
+        "publication_date_to": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Latest publication date, YYYY-MM-DD."
+        },
+        "language": {
+          "type": "string",
+          "default": "eng",
+          "minLength": 3,
+          "maxLength": 3,
+          "description": "Three-letter TED language code."
+        },
+        "sort_direction": {
+          "type": "string",
+          "enum": [
+            "desc",
+            "asc"
+          ],
+          "default": "desc",
+          "description": "Newest or oldest publication date first."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum tender notices to return."
+        }
+      },
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
@@ -26,38 +70,183 @@
           "items": {
             "type": "object",
             "properties": {
-              "publication_number": {"type": "string", "description": "Official TED notice publication number."},
-              "title": {"type": "string", "description": "Notice title."},
-              "description": {"type": "string", "description": "Lot descriptions."},
-              "buyer_names": {"type": "string", "description": "Contracting authority names."},
-              "buyer_countries": {"type": "string", "description": "Buyer country codes."},
-              "publication_date": {"type": "string", "description": "TED publication date."},
-              "deadlines": {"type": "string", "description": "Tender receipt deadlines."},
-              "cpv_codes": {"type": "string", "description": "Main CPV codes."},
-              "estimated_value": {"type": "number", "description": "Estimated procedure value."},
-              "currency": {"type": "string", "description": "Estimated-value currency."},
-              "notice_url": {"type": "string", "description": "Canonical TED notice page."},
-              "pdf_url": {"type": "string", "description": "Direct preferred-language PDF."}
+              "publication_number": {
+                "title": "Publication Number",
+                "description": "Official TED notice publication number.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "title": {
+                "title": "Notice Title",
+                "description": "Notice title in the preferred available language.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": {
+                "title": "Description",
+                "description": "Pipe-separated lot descriptions in the preferred available language.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "buyer_names": {
+                "title": "Buyer Names",
+                "description": "Pipe-separated contracting authority names.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "buyer_countries": {
+                "title": "Buyer Countries",
+                "description": "Pipe-separated ISO alpha-3 buyer country codes.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "publication_date": {
+                "title": "Publication Date",
+                "description": "TED publication date normalized to YYYY-MM-DD.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "deadlines": {
+                "title": "Deadlines",
+                "description": "Pipe-separated tender receipt deadline dates.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cpv_codes": {
+                "title": "CPV Codes",
+                "description": "Pipe-separated main Common Procurement Vocabulary codes.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "estimated_value": {
+                "title": "Estimated Value",
+                "description": "Estimated procedure value as a number when supplied.",
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "currency": {
+                "title": "Currency",
+                "description": "Currency code for the estimated procedure value.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "notice_url": {
+                "title": "Notice URL",
+                "description": "Canonical TED notice detail URL.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "pdf_url": {
+                "title": "PDF URL",
+                "description": "Direct preferred-language TED PDF URL.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
             }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
-      "required": ["results"]
+      "required": [
+        "results",
+        "status"
+      ]
     },
-    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
   },
   "payload_mapping": {
-    "keywords": {"key": "keywords", "transform": "identity"},
-    "buyer_name": {"key": "buyer_name", "transform": "identity"},
-    "buyer_country": {"key": "buyer_country", "transform": "identity"},
-    "cpv_code": {"key": "cpv_code", "transform": "identity"},
-    "publication_date_from": {"key": "publication_date_from", "transform": "identity"},
-    "publication_date_to": {"key": "publication_date_to", "transform": "identity"},
-    "language": {"key": "language", "transform": "identity", "default": "eng"},
-    "sort_direction": {"key": "sort_direction", "transform": "identity", "default": "desc"},
-    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+    "keywords": {
+      "key": "keywords",
+      "transform": "identity"
+    },
+    "buyer_name": {
+      "key": "buyer_name",
+      "transform": "identity"
+    },
+    "buyer_country": {
+      "key": "buyer_country",
+      "transform": "identity"
+    },
+    "cpv_code": {
+      "key": "cpv_code",
+      "transform": "identity"
+    },
+    "publication_date_from": {
+      "key": "publication_date_from",
+      "transform": "identity"
+    },
+    "publication_date_to": {
+      "key": "publication_date_to",
+      "transform": "identity"
+    },
+    "language": {
+      "key": "language",
+      "transform": "identity",
+      "default": "eng"
+    },
+    "sort_direction": {
+      "key": "sort_direction",
+      "transform": "identity",
+      "default": "desc"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
   },
   "fixed_payload": {},
-  "example_call": {"keywords": "cybersecurity", "max_results": 3},
-  "verification": {"run_id": "nUm55DNcdHLbYE5rP", "items": 3, "token": "cybersecurity", "relevant": true}
+  "example_call": {
+    "keywords": "cybersecurity",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "nUm55DNcdHLbYE5rP",
+    "items": 3,
+    "token": "cybersecurity",
+    "relevant": true
+  }
 }

@@ -17,7 +17,7 @@ What it emits, and why in this exact shape:
     inputSchema there; scripts/build_smithery_bundle.py enriches at pack time).
   - Version bump in setup.py, package.json, server.json (x2), manifest.json.
 
-Idempotent: a spec whose tool name already exists in TOOLS_DEFINITION is skipped.
+Existing schemas must match their specs; drift blocks integration instead of being skipped.
 usage: python scripts/integrate_mcp_specs.py [--spec-dir DIR] [--version 1.0.8] [--dry-run]
 """
 from __future__ import annotations
@@ -28,6 +28,7 @@ import re
 import sys
 from collections import OrderedDict
 from pathlib import Path
+from audit_public_coverage import store_items
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SPEC_DIR = ROOT / "specs"
@@ -132,13 +133,13 @@ def handler_branch(spec: dict, actor_key: str) -> str:
         if not req and k != "max_items":
             lines.append(f'                    if {v} is not None: _payload["{k}"] = {e}')
     lines.append(f'                    data = run_actor_sync(ACTORS["{actor_key}"], _payload)')
-    return "\n".join(lines) + "\n"
+    return "\n".join(line[4:] for line in lines) + "\n"
 
 
 def main() -> int:
     args = sys.argv[1:]
     spec_dir = Path(args[args.index("--spec-dir") + 1]) if "--spec-dir" in args else DEFAULT_SPEC_DIR
-    version = args[args.index("--version") + 1] if "--version" in args else "1.0.8"
+    version = args[args.index("--version") + 1] if "--version" in args else None
     dry = "--dry-run" in args
     specs = []
     for p in sorted(spec_dir.glob("*.json")):
@@ -160,13 +161,21 @@ def main() -> int:
     # Parse, don't regex: the generated entries are single-quoted repr() dicts,
     # which a "name": "..." pattern misses - the 1.0.10 dry run offered to re-add
     # every one of them.
-    existing = {t["name"] for t in ast.literal_eval(src.split("TOOLS_DEFINITION = ", 1)[1].split("\n]\n", 1)[0] + "\n]")}
+    definitions = ast.literal_eval(src.split("TOOLS_DEFINITION = ", 1)[1].split("\n]\n", 1)[0] + "\n]")
+    existing = {t["name"]: t for t in definitions}
+    public = {item['name'] for item in store_items('captainhandsome', agentic_only=True)}
     added = []
     actors_block, tools_block, handler_block = [], [], []
     for s in specs:
         name = s["tool"]["name"]
         if name in existing:
+            if s['tool'] != existing[name]:
+                raise SystemExit(f'{name}: existing schema differs from spec; reconcile and test before integrating')
             print(f"  skip {name} (already defined)"); continue
+        if s['actor'] not in public:
+            print(f'  hold {name}: Actor is not public and agentic-eligible'); continue
+        if 'status' not in s['tool'].get('outputSchema', {}).get('required', []):
+            raise SystemExit(f'{name}: spec needs the structured results/status contract before integration')
         key = name.rsplit("_search", 1)[0] if name.endswith("_search") else name
         actors_block.append(f'    "{key}": "captainhandsome/{s["actor"]}",')
         tools_block.append("    " + py_literal(s["tool"]).replace("\n", "\n    ") + ",")
@@ -174,6 +183,8 @@ def main() -> int:
         added.append(name)
     if not added:
         print("nothing to add"); return 0
+    if version is None:
+        raise SystemExit('--version is required when adding tools')
 
     # 1. ACTORS dict: insert before its closing brace
     src = re.sub(r"(ACTORS = \{\n(?:.*\n)*?)(\})", lambda m: m.group(1) + "\n".join(actors_block) + "\n" + m.group(2), src, count=1)
@@ -184,7 +195,7 @@ def main() -> int:
         body = body.rstrip() + ","          # last existing entry has no trailing comma
     src = head + "TOOLS_DEFINITION = " + body + "\n" + "\n".join(tools_block) + "\n]\n" + tail
     # 3. handler: insert the new branches after the last existing elif that calls run_actor_sync
-    anchor = re.search(r'(                elif tool_name == "airbnb_listings_search":\n(?:.*\n)*?                    data = run_actor_sync\(ACTORS\["airbnb"\][^\n]*\n)', src)
+    anchor = re.search(r'(            elif tool_name == "airbnb_listings_search":\n(?:.*\n)*?                data = run_actor_sync\(ACTORS\["airbnb"\][^\n]*\n)', src)
     if not anchor:
         raise SystemExit("could not find the airbnb handler branch to anchor on")
     src = src[:anchor.end()] + "".join(handler_block) + src[anchor.end():]
@@ -193,7 +204,7 @@ def main() -> int:
     manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"), object_pairs_hook=OrderedDict)
     have = {t["name"] for t in manifest.get("tools", [])}
     for s in specs:
-        if s["tool"]["name"] not in have:
+        if s["tool"]["name"] in added:
             manifest.setdefault("tools", []).append(OrderedDict([("name", s["tool"]["name"]),
                                                                    ("description", s["tool"]["description"].split("\n")[0][:300])]))
     old_ver = manifest.get("version")
@@ -208,6 +219,16 @@ def main() -> int:
         "standard-library Python with no third-party dependencies."
     )
     (ROOT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    catalog_path = ROOT / 'mcp.json'
+    catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+    catalog['tools'] = definitions + [s['tool'] for s in specs if s['tool']['name'] in added]
+    catalog['version'] = version
+    catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+    plugin_path = ROOT / 'lhm.plugin.json'
+    plugin = json.loads(plugin_path.read_text(encoding='utf-8'))
+    plugin['tools'] = catalog['tools']
+    plugin['version'] = version
+    plugin_path.write_text(json.dumps(plugin, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
     for f, rx in (("setup.py", r'version="' + re.escape(old_ver) + '"'),
                   ("package.json", r'"version": "' + re.escape(old_ver) + '"'),
                   ("server.json", r'"version": "' + re.escape(old_ver) + '"')):

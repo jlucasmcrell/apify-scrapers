@@ -3,7 +3,7 @@
   "tool": {
     "name": "youtube_video_search",
     "title": "YouTube Video Search",
-    "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/youtube-search-scraper'.\n- Side Effects: Strictly read-only; does not modify any YouTube account, subscription, or playlist.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for content research, competitor video monitoring, trend discovery, or building a list of videos on a topic.\n- When NOT to use: Do not use for retrieving a video's transcript/captions, channel analytics dashboards, or non-YouTube platforms.\n- Named alternatives: Use 'google_play_reviews_search' for app-store sentiment or 'linkedin_jobs_search' for job-market data; neither covers video content.",
+    "description": "Search public YouTube videos by keyword, returning title, channel, canonical video URL, view count, duration, and publish date - no YouTube Data API quota required.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/youtube-search-scraper'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for content research, competitor video monitoring, trend discovery, or building a list of videos on a topic.\n- When NOT to use: Do not use for retrieving a video's transcript/captions, channel analytics dashboards, or non-YouTube platforms.\n- Named alternatives: Use 'google_play_reviews_search' for app-store sentiment or 'linkedin_jobs_search' for job-market data; neither covers video content.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -22,89 +22,109 @@
       },
       "required": [
         "search_query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of YouTube video search result records.",
           "items": {
             "type": "object",
             "properties": {
               "title": {
+                "title": "Video title",
+                "description": "Public title of the YouTube video.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Public title of the video."
+                ]
               },
               "video_url": {
+                "title": "Video URL",
+                "description": "Canonical YouTube watch-page URL.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Canonical YouTube watch-page URL."
+                ]
               },
               "channel_name": {
+                "title": "Channel name",
+                "description": "Public name of the channel that published the video.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Public name of the channel that published the video."
+                ]
               },
               "channel_url": {
+                "title": "Channel URL",
+                "description": "Public YouTube channel URL when available.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Public YouTube channel URL when available."
+                ]
               },
               "views": {
+                "title": "Displayed view count",
+                "description": "Human-readable view count displayed in search results.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Human-readable view count displayed in search results."
+                ]
               },
               "view_count": {
+                "title": "View count",
+                "description": "'views' parsed into a number, handling K/M/B suffixes and comma grouping. Null if unparseable.",
                 "type": [
                   "integer",
                   "null"
-                ],
-                "description": "'views' parsed into a number, handling K/M/B suffixes and comma grouping."
+                ]
               },
               "published": {
+                "title": "Displayed publication age",
+                "description": "Relative publication time displayed in search results.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Relative publication age displayed in search results (e.g. '2 years ago')."
+                ]
               },
               "duration": {
+                "title": "Video duration",
+                "description": "Displayed video duration in clock format.",
                 "type": [
                   "string",
                   "null"
-                ],
-                "description": "Displayed video duration in clock format."
+                ]
               }
-            },
-            "required": [
-              "title",
-              "video_url"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

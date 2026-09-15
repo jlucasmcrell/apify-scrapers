@@ -10,8 +10,9 @@
 # Preconditions: version already bumped in setup.py/package.json/server.json/manifest.json
 # (scripts/integrate_mcp_specs.py does this), tests green, changes committed.
 # Order matters: the registry validates that the PyPI package/version exists (step 2 before 3).
+# Requires release-only dependencies: build, twine, httpx, jsonschema.
 # usage: bash scripts/release.sh <version>
-set -u
+set -euo pipefail
 V="${1:?version required, e.g. 1.0.8}"
 REPO="G:/apify-scrapers"; ENV="G:/apify-fleet/.env"
 MP="$REPO/bin/mcp-publisher.exe"   # from github.com/modelcontextprotocol/registry releases; bin/ is gitignored
@@ -23,12 +24,16 @@ grep -q "version=\"$V\"" setup.py || { echo "ABORT: setup.py is not at $V"; exit
 echo "=== 0. public availability gate ==="
 python scripts/audit_public_coverage.py --require-release-ready || exit 2
 
+python -m unittest discover -s tests -q
+python scripts/site/lint_pages.py
+python scripts/audit_live_contracts.py --env-file "$ENV"
+
 echo "=== 1. build $V ==="
-rm -rf dist && python -m build --sdist --wheel -q 2>&1 | tail -1
+python -m build --sdist --wheel -q --outdir "dist/$V"
 ls dist/ | sed 's/^/   /'
 
 echo; echo "=== 2. PyPI upload + verify ==="
-TWINE_USERNAME=__token__ TWINE_PASSWORD="$PYPI" python -m twine upload --non-interactive dist/*"$V"* 2>&1 | mask | grep -E "View at|error|Error"
+TWINE_USERNAME=__token__ TWINE_PASSWORD="$PYPI" python -m twine upload --non-interactive "dist/$V/"* 2>&1 | mask | cat
 python - "$V" <<'PY'
 import sys, time, httpx
 v=sys.argv[1]
@@ -54,13 +59,13 @@ PY
 
 echo; echo "=== 4. Smithery bundle + publish + verify ==="
 python scripts/build_smithery_bundle.py dist/apify-scrapers.mcpb | sed 's/^/   /'
-SMITHERY_API_KEY="$SM" npx -y @smithery/cli mcp publish dist/apify-scrapers.mcpb -n jlucasmcrell/apify-scrapers --json 2>&1 | grep -vE '^npm (warn|notice)|Assertion failed' | mask | tail -2
+SMITHERY_API_KEY="$SM" npx -y @smithery/cli mcp publish dist/apify-scrapers.mcpb -n jlucasmcrell/apify-scrapers --json 2>&1 | mask | tail -2
 TOOL_COUNT="$(python -c 'import json; print(len(json.load(open("manifest.json", encoding="utf-8"))["tools"]))')"
 SMITHERY_API_KEY="$SM" python - "$TOOL_COUNT" <<'PY'
 import os, sys, httpx
 count = int(sys.argv[1])
 description = (f"MCP server exposing {count} read-only Apify public-data tools: leads, news, SEO, "
-               "CVEs, jobs, SEC filings, procurement, health, registries, and more.")
+               "jobs, SEC filings, procurement, health, registries, and more.")
 r = httpx.patch(
     "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers",
     headers={"Authorization": f"Bearer {os.environ['SMITHERY_API_KEY']}"},
@@ -68,7 +73,8 @@ r = httpx.patch(
 r.raise_for_status()
 print(f"   Smithery description: {count} tools")
 PY
-curl -s "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers" -H "Authorization: Bearer $SM" | mask | python -c "import sys,json
+curl --fail --silent --show-error "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers" -H "Authorization: Bearer $SM" | mask | python -c "import sys,json
 j=json.loads(sys.stdin.read()); t=j.get('tools') or []; c=(j.get('connections') or [{}])[0]
-print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))"
+print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))
+sys.exit(0 if len(t)==int(sys.argv[1]) else 5)" "$TOOL_COUNT"
 echo; echo "=== done: $V on PyPI, MCP registry, Smithery ==="

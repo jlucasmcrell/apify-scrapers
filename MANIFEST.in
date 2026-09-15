@@ -1,0 +1,3 @@
+include mcp.json manifest.json lhm.plugin.json server.json package.json
+recursive-include specs *.json
+recursive-include tests *.py

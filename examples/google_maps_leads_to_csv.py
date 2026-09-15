@@ -51,8 +51,8 @@ def extract_google_maps_leads(query: str, location: str, max_items: int = 50, ou
     df = pd.DataFrame(items)
     # Reorder display columns if present
     preferred_cols = [
-        "name", "category", "phone", "website", "rating", "review_count",
-        "full_address", "city", "state", "postal_code", "latitude", "longitude", "url"
+        "name", "category", "phone", "website", "rating", "reviews_count",
+        "address", "city", "state", "postal_code", "latitude", "longitude", "url"
     ]
     existing_cols = [c for c in preferred_cols if c in df.columns]
     remaining_cols = [c for c in df.columns if c not in preferred_cols]

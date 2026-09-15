@@ -3,7 +3,7 @@
   "tool": {
     "name": "gleif_lei_search",
     "title": "GLEIF Legal Entity Identifier Search",
-    "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Strictly read-only; queries the free, public GLEIF API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
+    "description": "Search the official GLEIF register for Legal Entity Identifiers by company name, exact LEI, or free text, and return normalized records carrying registration status, jurisdiction, legal and headquarters addresses, and the company's own national registration number.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/gleif-lei-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds for a flat lookup; enabling include_relationships adds up to six extra requests per record and can push a large run past a minute; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for counterparty due diligence, KYC/AML onboarding checks, entity resolution across jurisdictions, or confirming a company's registration status, legal form, and own national registry number via its Legal Entity Identifier.\n- When NOT to use: Do not use for SEC financial filings (use 'sec_edgar_filings'), for a US state's own corporate registry record (use 'us_business_entity_search'), or for French Sirene registry detail (use 'french_company_search'); GLEIF coverage is limited to entities that hold an LEI.\n- Named alternatives: Use 'sec_edgar_filings' for US public company filings, 'us_business_entity_search' for US state-level business entity lookups, or 'french_company_search' for the French national company registry.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -57,85 +57,149 @@
       },
       "required": [
         "query"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of GLEIF LEI records matching the search.",
           "items": {
             "type": "object",
             "properties": {
               "lei": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "LEI",
                 "description": "Twenty-character Legal Entity Identifier, the ISO 17442 global key for this entity."
               },
               "legal_name": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Legal name",
                 "description": "Registered legal name of the entity, in its own script."
               },
               "status": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Entity status",
                 "description": "Whether the entity itself is still operating: ACTIVE or INACTIVE."
               },
               "registration_status": {
-                "type": "string",
-                "description": "Lifecycle of the LEI registration itself: ISSUED, LAPSED, RETIRED, ANNULLED and so on."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Registration status",
+                "description": "Lifecycle of the LEI registration itself: ISSUED, LAPSED, RETIRED, ANNULLED and so on. Distinct from entity status."
               },
               "jurisdiction": {
-                "type": "string",
-                "description": "Two-letter code of the legal jurisdiction the entity is formed in."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Jurisdiction",
+                "description": "Two-letter code of the legal jurisdiction the entity is formed in. Can differ from the address country."
               },
               "legal_form_name": {
-                "type": "string",
-                "description": "Legal form resolved to words, e.g. 'Private Limited Company'. Null when GLEIF has no free-text label for the code."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Legal form name",
+                "description": "The ELF code resolved to words through GLEIF's entity-legal-forms table, English where published."
               },
               "registered_as": {
-                "type": "string",
-                "description": "The company's number in its own national registry, the join key to Companies House, SIRENE, the Handelsregister and the rest."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Registered as",
+                "description": "The company's number in its OWN national registry - the join key to Companies House, SIRENE, the Handelsregister and the rest."
               },
               "registered_at_name": {
-                "type": "string",
-                "description": "Name of the national registration authority the entity is filed with, e.g. 'Companies House'."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Registration authority name",
+                "description": "The RA code resolved to the registry's name through GLEIF's registration-authorities table."
               },
               "legal_country": {
-                "type": "string",
-                "description": "ISO 3166-1 alpha-2 country code of the registered legal address."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Legal country code",
+                "description": "ISO 3166-1 alpha-2 country code of the legal address."
               },
               "legal_city": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Legal city",
                 "description": "City of the registered legal address."
               },
               "corroboration_level": {
-                "type": "string",
-                "description": "How hard the data was verified: FULLY_CORROBORATED, PARTIALLY_CORROBORATED or ENTITY_SUPPLIED_ONLY."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Corroboration level",
+                "description": "How hard the data was verified: FULLY_CORROBORATED, PARTIALLY_CORROBORATED or ENTITY_SUPPLIED_ONLY. The quality flag to filter on."
               },
               "next_renewal_date": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Next renewal date",
                 "description": "When the LEI must next be revalidated, ISO 8601. A date in the past means the record is lapsing."
               },
               "gleif_profile_url": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "GLEIF profile URL",
                 "description": "Public GLEIF record page for this LEI, for verifying a row by hand."
               }
-            },
-            "required": [
-              "lei",
-              "legal_name"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

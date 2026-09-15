@@ -6,7 +6,7 @@ permalink: /mcp/google-maps/
 ---
 # MCP server for Google Maps data and business leads
 
-This MCP server for Google Maps data and business leads gives an AI agent one tool, `google_maps_search`, for pulling local commercial listings straight out of Google Maps. An agent can hand it a trade category and a city and get back a structured list of businesses with phone numbers, websites, addresses, and review data, ready to drop into a spreadsheet or a CRM import. Every tool in the toolset runs as an Apify Actor on your own Apify account, so nothing routes through a shared quota, and the free plan works fine for testing and light use. This page is one of 33 tools exposed by [Apify Public Data MCP](/), a single MCP server that also covers business registries, contractor licenses, job boards, SEC filings, and more.
+This MCP server for Google Maps data and business leads gives an AI agent one tool, `google_maps_search`, for pulling local commercial listings straight out of Google Maps. An agent can hand it a trade category and a city and get back a structured list of businesses with phone numbers, websites, addresses, and review data, ready to drop into a spreadsheet or a CRM import. Every tool in the toolset runs as an Apify Actor on your own Apify account, so nothing routes through a shared quota, and the free plan works fine for testing and light use. This page is one of 30 tools exposed by [Apify Public Data MCP](/), a single MCP server that also covers business registries, contractor licenses, job boards, SEC filings, and more.
 
 Want the complete workflow? Follow the [contractor lead-generation tutorial](/tutorials/contractor-lead-generation/) from search through licence verification and CSV export.
 
@@ -31,7 +31,7 @@ This tool extracts verified commercial business listings from Google Maps, inclu
 | search_query | Yes | Geographic search query combining target trade category and municipal market location (e.g. 'HVAC contractors in Phoenix, AZ' or 'Commercial Electricians Dallas TX'). |
 | max_results | No | Maximum count of business lead records to extract and return. default: 10 |
 
-Returns: title, phone, website, address, totalScore, reviewsCount, categoryName, url
+Returns: name, place_url, place_id, category, address, street, city, state, postal_code, phone, phone_unformatted, website, rating, reviews_count, reviews_5_star, reviews_4_star, reviews_3_star, reviews_2_star, reviews_1_star, open_state, opening_hours_today, opening_hours, description, booking_url, image_url, located_in, plus_code, latitude, longitude, search_url
 
 Price: $0.0025 per result plus $0.001 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 

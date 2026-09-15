@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.0.13",
-  "description": "33 public-data MCP tools for leads, news, jobs, SEC filings, procurement, sanctions, recalls, registries, health, and research.",
-  "long_description": "Thirty-three read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "version": "1.1.0",
+  "description": "30 public-data MCP tools for leads, news, jobs, SEC filings, procurement, recalls, registries, health, and research.",
+  "long_description": "30 tools backed by public Apify Actors. Runs execute on the caller account and are billed to it. Standard-library Python with validated inputs, structured results, cancellation, and bounded runs.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -159,14 +159,6 @@
       "description": "Search official US vehicle-safety recalls by year, make and model or by NHTSA campaign number. Returns defect summaries, safety consequences, remedies, affected-unit counts and urgent park warnings."
     },
     {
-      "name": "ofac_sanctions_search",
-      "description": "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers."
-    },
-    {
-      "name": "sec_form_4_insider_transactions",
-      "description": "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership."
-    },
-    {
       "name": "ted_eu_tender_search",
       "description": "Search official Tenders Electronic Daily notices by keywords, contracting authority, country, CPV code and publication date. Returns buyers, deadlines, estimated values, classifications and direct TED documents."
     },
@@ -177,10 +169,6 @@
     {
       "name": "google_news_search",
       "description": "Search Google News for companies, people, products, brands, industries, and topics. Returns current headlines, publishers, timestamps, article links, source sites, and snippets."
-    },
-    {
-      "name": "cve_vulnerability_intelligence",
-      "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references."
     }
   ],
   "compatibility": {

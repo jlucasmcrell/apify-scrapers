@@ -2,7 +2,7 @@
 title: How to Scrape Normalized Job Posting Dates from Glassdoor in Python
 published: true
 tags: webscraping, python, jobs, dataengineering
-canonical_url: https://github.com/jlucasmcrell/apify-scrapers
+canonical_url: https://apify.revenuesystemslabs.com/articles/glassdoor_posting_dates_guide.html
 ---
 
 One of the biggest headaches when building automated job aggregators or market compensation trackers is **posting age**.

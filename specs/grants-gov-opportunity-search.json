@@ -3,18 +3,59 @@
   "tool": {
     "name": "grants_gov_opportunity_search",
     "title": "Grants.gov Funding Opportunity Search",
-    "description": "Search official US federal funding opportunities from Grants.gov by keyword, agency, status, opportunity number or Assistance Listing. Returns deadlines, award ranges, eligibility, contacts and canonical source links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/grants-gov-opportunity-search'.\n- Side Effects: Strictly read-only; queries the official Grants.gov API.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-60 seconds; include_details adds one detail request per result.\n\nUsage Guidelines:\n- When to use: Use for grant prospecting, research-funding discovery and federal opportunity monitoring.\n- When NOT to use: Do not use for awarded federal contracts (use 'usaspending_contracts') or European procurement (use 'ted_eu_tender_search').\n- Named alternatives: Use 'usaspending_contracts' for historical US awards or 'ted_eu_tender_search' for European tender notices.",
+    "description": "Search official US federal funding opportunities from Grants.gov by keyword, agency, status, opportunity number or Assistance Listing. Returns deadlines, award ranges, eligibility, contacts and canonical source links.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/grants-gov-opportunity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-60 seconds; include_details adds one detail request per result.\n\nUsage Guidelines:\n- When to use: Use for grant prospecting, research-funding discovery and federal opportunity monitoring.\n- When NOT to use: Do not use for awarded federal contracts (use 'usaspending_contracts') or European procurement (use 'ted_eu_tender_search').\n- Named alternatives: Use 'usaspending_contracts' for historical US awards or 'ted_eu_tender_search' for European tender notices.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "keyword": {"type": "string", "minLength": 2, "description": "Keywords to search in opportunity titles and descriptions."},
-        "opportunity_number": {"type": "string", "description": "Exact or partial funding opportunity number."},
-        "agency_codes": {"type": "array", "items": {"type": "string"}, "description": "Federal agency codes such as NSF or HHS."},
-        "statuses": {"type": "array", "items": {"type": "string", "enum": ["forecasted", "posted", "closed", "archived"]}, "description": "Opportunity statuses to include."},
-        "assistance_listing": {"type": "string", "description": "Assistance Listing number, formerly CFDA, such as 47.070."},
-        "include_details": {"type": "boolean", "default": true, "description": "Fetch award, eligibility, synopsis and contact details."},
-        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum opportunities to return."}
-      }
+        "keyword": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Keywords to search in opportunity titles and descriptions."
+        },
+        "opportunity_number": {
+          "type": "string",
+          "description": "Exact or partial funding opportunity number."
+        },
+        "agency_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Federal agency codes such as NSF or HHS.",
+          "maxItems": 100
+        },
+        "statuses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "forecasted",
+              "posted",
+              "closed",
+              "archived"
+            ]
+          },
+          "description": "Opportunity statuses to include.",
+          "maxItems": 100
+        },
+        "assistance_listing": {
+          "type": "string",
+          "description": "Assistance Listing number, formerly CFDA, such as 47.070."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": true,
+          "description": "Fetch award, eligibility, synopsis and contact details."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum opportunities to return."
+        }
+      },
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
@@ -24,36 +65,174 @@
           "items": {
             "type": "object",
             "properties": {
-              "opportunity_number": {"type": "string", "description": "Official funding opportunity number."},
-              "title": {"type": "string", "description": "Official opportunity title."},
-              "status": {"type": "string", "description": "Current Grants.gov status."},
-              "agency_name": {"type": "string", "description": "Owning federal agency."},
-              "open_date": {"type": "string", "description": "Opportunity opening date."},
-              "close_date": {"type": "string", "description": "Application deadline."},
-              "estimated_funding": {"type": "number", "description": "Estimated total program funding."},
-              "award_ceiling": {"type": "number", "description": "Maximum award amount."},
-              "award_floor": {"type": "number", "description": "Minimum award amount."},
-              "eligibility": {"type": "string", "description": "Applicant eligibility description."},
-              "contact_email": {"type": "string", "description": "Agency contact email."},
-              "grants_gov_url": {"type": "string", "description": "Canonical Grants.gov opportunity page."}
+              "opportunity_number": {
+                "title": "Opportunity Number",
+                "description": "Official funding opportunity number.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "title": {
+                "title": "Title",
+                "description": "Official funding opportunity title.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "title": "Status",
+                "description": "Current Grants.gov opportunity status.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "agency_name": {
+                "title": "Agency Name",
+                "description": "Owning federal agency name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "open_date": {
+                "title": "Open Date",
+                "description": "Opportunity opening date in YYYY-MM-DD form.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "close_date": {
+                "title": "Close Date",
+                "description": "Opportunity closing date in YYYY-MM-DD form.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "estimated_funding": {
+                "title": "Estimated Funding",
+                "description": "Estimated total program funding in US dollars when supplied.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "award_ceiling": {
+                "title": "Award Ceiling",
+                "description": "Maximum award amount in US dollars when supplied.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "award_floor": {
+                "title": "Award Floor",
+                "description": "Minimum award amount in US dollars when supplied.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "eligibility": {
+                "title": "Eligibility",
+                "description": "Plain-text applicant eligibility description.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "contact_email": {
+                "title": "Contact Email",
+                "description": "Agency contact email address.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "grants_gov_url": {
+                "title": "Grants.gov URL",
+                "description": "Canonical Grants.gov opportunity page.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
             }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
-      "required": ["results"]
+      "required": [
+        "results",
+        "status"
+      ]
     },
-    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
   },
   "payload_mapping": {
-    "keyword": {"key": "keyword", "transform": "identity"},
-    "opportunity_number": {"key": "opportunity_number", "transform": "identity"},
-    "agency_codes": {"key": "agency_codes", "transform": "strlist"},
-    "statuses": {"key": "statuses", "transform": "strlist"},
-    "assistance_listing": {"key": "assistance_listing", "transform": "identity"},
-    "include_details": {"key": "include_details", "transform": "identity", "default": true},
-    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+    "keyword": {
+      "key": "keyword",
+      "transform": "identity"
+    },
+    "opportunity_number": {
+      "key": "opportunity_number",
+      "transform": "identity"
+    },
+    "agency_codes": {
+      "key": "agency_codes",
+      "transform": "strlist"
+    },
+    "statuses": {
+      "key": "statuses",
+      "transform": "strlist"
+    },
+    "assistance_listing": {
+      "key": "assistance_listing",
+      "transform": "identity"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity",
+      "default": true
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
   },
   "fixed_payload": {},
-  "example_call": {"keyword": "quantum", "max_results": 3},
-  "verification": {"run_id": "RACCOqZrasgNb1Xc3", "items": 3, "token": "quantum", "relevant": true}
+  "example_call": {
+    "keyword": "quantum",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "RACCOqZrasgNb1Xc3",
+    "items": 3,
+    "token": "quantum",
+    "relevant": true
+  }
 }

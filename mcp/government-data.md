@@ -6,7 +6,7 @@ permalink: /mcp/government-data/
 ---
 # MCP server for US government data: USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov
 
-This is an MCP server for US government data: it exposes tools so an AI agent can query USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov, SEC EDGAR, Grants.gov, OFAC, and NHTSA records. Every tool runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 33 tools total.
+This is an MCP server for US government data: it exposes tools so an AI agent can query USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov, SEC EDGAR, Grants.gov, and NHTSA records. Every tool runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 30 tools total.
 
 ## What an agent can ask
 
@@ -30,7 +30,7 @@ Searches USAspending for federal contracts and defense awards by recipient name.
 |recipient_name|Yes|Contractor or recipient name.|
 |max_results|No|Records to retrieve. default: 10|
 
-Returns: recipientName, awardingAgency, obligationAmount, awardDescription, awardDate, contractId
+Returns: award_family, award_id, recipient_name, award_type, amount, total_outlays, subsidy_cost, awarding_agency, awarding_sub_agency, start_date, end_date, pop_state, pop_city, pop_zip, naics_code, naics_description, psc_code, psc_description, cfda_number, description, url, recipient_uei, recipient_profile_url, recipient_address, recipient_city, recipient_state, recipient_country, awarding_agency_code, awarding_sub_agency_code, funding_agency, funding_agency_code, funding_sub_agency, funding_sub_agency_code, pop_country, pop_country_code, issued_date, last_date_to_order, base_obligation_date, last_modified_date, cfda_program_title, assistance_listings, def_codes, covid19_obligations, covid19_outlays, infrastructure_obligations, infrastructure_outlays, award_type_code, date_signed, potential_end_date, base_exercised_options, base_and_all_options, subaward_count, total_subaward_amount, parent_award_id, parent_award_type, parent_recipient_name, parent_recipient_uei, recipient_business_categories, recipient_county, recipient_congressional_district, pop_county, pop_congressional_district, awarding_office, funding_office, naics_sector_code, naics_sector_description, psc_category_code, psc_category_description, set_aside_type, extent_competed, other_than_full_and_open, number_of_offers_received, contract_pricing_type, solicitation_id, solicitation_procedures, executive_compensation, top_executive_name, top_executive_compensation, funding_opportunity_number, non_federal_funding, total_funding
 
 Price: $0.003 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -90,7 +90,7 @@ Geocodes US addresses into Census FIPS codes, tract/block GEOIDs, district, plac
 |vintage|No|Geography vintage. default: Current_Current|
 |max_results|No|Address rows to bill for. default: 10|
 
-Returns: input_address, matched, matched_address, latitude, longitude, county_fips, tract_geoid, block_geoid, congressional_district_geoid, school_district_name
+Returns: input_address, matched, match_count, matched_address, latitude, longitude, city, state, zip, state_fips, county_fips, county_name, place_name, place_geoid, tract_geoid, block_group_geoid, block_geoid, zcta, urban_rural, congressional_district_geoid, cbsa_name, metro_area_name, school_district_name, benchmark_name, vintage_name
 
 Price: $0.01 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -112,7 +112,7 @@ Searches CMS directories for hospitals, nursing homes, and five other facility t
 |name_contains|No|Substring match on provider name.|
 |max_results|No|Records to retrieve. default: 10|
 
-Returns: provider_type, ccn, name, address, city, state, zip, county, phone, ownership
+Returns: provider_type, ccn, name, address, city, state, zip, county, phone, ownership, subtype, star_rating, certification_date, beds, chain, emergency_services
 
 Price: $0.02 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -167,7 +167,7 @@ Retrieves SEC EDGAR 10-K, 10-Q, or 8-K filings by ticker or company name.
 |form_type|No|Filing type: 10-K, 10-Q, 8-K, or ALL. default: 10-K|
 |max_results|No|Records to retrieve. default: 5|
 
-Returns: formType, filingDate, accessionNumber, companyName, cik, documentUrl
+Returns: cik, company_name, tickers, exchanges, sic, sic_description, state_of_incorporation, fiscal_year_end, form, is_amendment, filing_date, report_date, acceptance_datetime, accession_number, act, file_number, film_number, items, size_bytes, is_xbrl, is_inline_xbrl, primary_document, primary_document_description, filing_url, filing_url, company_submissions_url, ticker, exchange, entity_type, filer_category, owner_org, ein, phone, state_of_incorporation_description, business_address, business_address_street1, business_address_street2, business_address_city, business_address_state, business_address_state_description, business_address_zip, business_address_country, business_address_is_foreign, mailing_address, mailing_address_street1, mailing_address_street2, mailing_address_city, mailing_address_state, mailing_address_zip, mailing_address_country, former_names, current_name_since, has_insider_transactions_as_owner, has_insider_transactions_as_issuer, filing_directory_url, filing_txt_url, company_filings_url, document_count, document_types, exhibit_count, item_descriptions, filer_names, filer_ciks, reporting_owner_names, reporting_owner_ciks, issuer_name, issuer_cik, subject_company_name, subject_company_cik, group_members, filing_date_changed
 
 Price: $0.002 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 

@@ -3,7 +3,7 @@
   "tool": {
     "name": "openfda_search",
     "title": "openFDA Drug and Device Search",
-    "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/openfda-search'.\n- Side Effects: Strictly read-only; queries the public openFDA API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for drug/device safety surveillance, regulatory approval history, adverse-event monitoring, or recall tracking.\n- When NOT to use: Do not use for clinical trial recruitment data (use 'clinical_trials_search'), environmental compliance, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+    "description": "Search official openFDA datasets for drug labels, drug approvals (Drugs@FDA), adverse events (FAERS), and drug, device, or food recalls. Returns normalized, flat records through one consistent interface.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/openfda-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for drug/device safety surveillance, regulatory approval history, adverse-event monitoring, or recall tracking.\n- When NOT to use: Do not use for clinical trial recruitment data (use 'clinical_trials_search'), environmental compliance, campaign finance, or corporate registry lookups.\n- Named alternatives: Use 'clinical_trials_search' for ClinicalTrials.gov study data, 'epa_facility_search' for environmental compliance, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -40,65 +40,109 @@
       },
       "required": [
         "search"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of openFDA records matching the search.",
           "items": {
             "type": "object",
             "properties": {
               "dataset": {
-                "type": "string",
-                "description": "Which openFDA dataset produced this row."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Dataset",
+                "description": "Selected openFDA dataset that produced this row."
               },
               "id": {
-                "type": "string",
-                "description": "Primary identifier for the row (SPL id, application number, safety report id, or recall number)."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Record ID",
+                "description": "Primary identifier for the row: SPL id for labels, application number for approvals, safety report id for adverse events, recall number for recalls."
               },
               "brand_name": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Brand name",
                 "description": "FDA-reported brand or proprietary name."
               },
               "generic_name": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Generic name",
                 "description": "FDA-reported generic or nonproprietary name."
               },
               "manufacturer": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Manufacturer",
                 "description": "FDA-reported manufacturer name."
               },
               "substance": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Substance",
                 "description": "Active substance names, comma separated."
               },
               "route": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Route",
                 "description": "Route(s) of administration, comma separated."
               },
               "application_number": {
-                "type": "string",
-                "description": "FDA application number (NDA, ANDA, or BLA) the product is marketed under."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Application number",
+                "description": "FDA application number (NDA, ANDA or BLA) the product is marketed under."
               }
-            },
-            "required": [
-              "dataset",
-              "id"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

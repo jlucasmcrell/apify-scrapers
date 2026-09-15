@@ -3,20 +3,63 @@
   "tool": {
     "name": "ofac_sanctions_search",
     "title": "OFAC Sanctions Search",
-    "description": "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ofac-sanctions-search'.\n- Side Effects: Strictly read-only; downloads and filters official OFAC Sanctions List Service data.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-40 seconds; results are exact source matches, not fuzzy compliance screening scores.\n\nUsage Guidelines:\n- When to use: Use for research, list reconciliation, sanctions-data enrichment and exact/substring name discovery.\n- When NOT to use: Do not treat a name match as a legal compliance determination; do not use for corporate filings (use 'sec_edgar_filings') or entity-registration verification (use 'us_business_entity_search').\n- Named alternatives: Use 'sec_edgar_filings' for US public-company filings, 'gleif_lei_search' for legal-entity identifiers, or 'us_business_entity_search' for state registrations.",
+    "description": "Search official US Treasury OFAC SDN and consolidated non-SDN data by primary name, alias, program, country and entity type. Returns sanctions programs, aliases, addresses and source identifiers.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/ofac-sanctions-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-40 seconds; results are exact source matches, not fuzzy compliance screening scores.\n\nUsage Guidelines:\n- When to use: Use for research, list reconciliation, sanctions-data enrichment and exact/substring name discovery.\n- When NOT to use: Do not treat a name match as a legal compliance determination; do not use for corporate filings (use 'sec_edgar_filings') or entity-registration verification (use 'us_business_entity_search').\n- Named alternatives: Use 'sec_edgar_filings' for US public-company filings, 'gleif_lei_search' for legal-entity identifiers, or 'us_business_entity_search' for state registrations.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "name": {"type": "string", "minLength": 2, "description": "Case-insensitive primary name or alias to search."},
-        "match_mode": {"type": "string", "enum": ["contains", "exact"], "default": "contains", "description": "Substring discovery or exact normalized matching."},
-        "program": {"type": "string", "description": "Optional OFAC sanctions program code."},
-        "country": {"type": "string", "description": "Optional country filter across addresses and vessel flag."},
-        "entity_type": {"type": "string", "description": "Optional party type such as individual, entity, vessel or aircraft."},
-        "list_scope": {"type": "string", "enum": ["all", "sdn", "non_sdn"], "default": "all", "description": "Search SDN, consolidated non-SDN, or both."},
-        "include_aliases": {"type": "boolean", "default": true, "description": "Match the query against alternate names as well as primary names."},
-        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum sanctions records to return."}
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "description": "Case-insensitive primary name or alias to search."
+        },
+        "match_mode": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "exact"
+          ],
+          "default": "contains",
+          "description": "Substring discovery or exact normalized matching."
+        },
+        "program": {
+          "type": "string",
+          "description": "Optional OFAC sanctions program code."
+        },
+        "country": {
+          "type": "string",
+          "description": "Optional country filter across addresses and vessel flag."
+        },
+        "entity_type": {
+          "type": "string",
+          "description": "Optional party type such as individual, entity, vessel or aircraft."
+        },
+        "list_scope": {
+          "type": "string",
+          "enum": [
+            "all",
+            "sdn",
+            "non_sdn"
+          ],
+          "default": "all",
+          "description": "Search SDN, consolidated non-SDN, or both."
+        },
+        "include_aliases": {
+          "type": "boolean",
+          "default": true,
+          "description": "Match the query against alternate names as well as primary names."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum sanctions records to return."
+        }
       },
-      "required": ["name"]
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
@@ -26,37 +69,182 @@
           "items": {
             "type": "object",
             "properties": {
-              "list_type": {"type": "string", "description": "Source OFAC list."},
-              "uid": {"type": "string", "description": "OFAC unique record identifier."},
-              "primary_name": {"type": "string", "description": "Primary sanctioned-party name."},
-              "entity_type": {"type": "string", "description": "OFAC party type."},
-              "programs": {"type": "string", "description": "Sanctions program codes."},
-              "aliases": {"type": "string", "description": "Alternate names."},
-              "addresses": {"type": "string", "description": "Street addresses."},
-              "countries": {"type": "string", "description": "Address countries."},
-              "matched_name": {"type": "string", "description": "Primary or alias name that matched."},
-              "match_basis": {"type": "string", "description": "Whether the match was on a primary name or alias."},
-              "source_url": {"type": "string", "description": "Official OFAC source page."},
-              "downloaded_at": {"type": "string", "description": "UTC source retrieval time."}
+              "list_type": {
+                "title": "OFAC List",
+                "description": "Source OFAC sanctions list.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "uid": {
+                "title": "OFAC UID",
+                "description": "OFAC unique record identifier.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "primary_name": {
+                "title": "Primary Name",
+                "description": "Primary sanctioned party name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "entity_type": {
+                "title": "Entity Type",
+                "description": "OFAC party type.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "programs": {
+                "title": "Programs",
+                "description": "Pipe-separated OFAC sanctions program codes.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "aliases": {
+                "title": "Aliases",
+                "description": "Pipe-separated alternate names.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "addresses": {
+                "title": "Addresses",
+                "description": "Pipe-separated street address values.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "countries": {
+                "title": "Countries",
+                "description": "Pipe-separated address countries.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "matched_name": {
+                "title": "Matched Name",
+                "description": "Primary or alias name that satisfied the query.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "match_basis": {
+                "title": "Match Basis",
+                "description": "Whether the name query matched a primary name or alias.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_url": {
+                "title": "Official Source",
+                "description": "Official OFAC Sanctions List Service page.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "downloaded_at": {
+                "title": "Downloaded At",
+                "description": "UTC timestamp when the official list files were retrieved.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
             }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
-      "required": ["results"]
+      "required": [
+        "results",
+        "status"
+      ]
     },
-    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
   },
   "payload_mapping": {
-    "name": {"key": "name", "transform": "identity", "required": true},
-    "match_mode": {"key": "match_mode", "transform": "identity", "default": "contains"},
-    "program": {"key": "program", "transform": "identity"},
-    "country": {"key": "country", "transform": "identity"},
-    "entity_type": {"key": "entity_type", "transform": "identity"},
-    "list_scope": {"key": "list_scope", "transform": "identity", "default": "all"},
-    "include_aliases": {"key": "include_aliases", "transform": "identity", "default": true},
-    "max_results": {"key": "max_items", "transform": "int", "default": 10}
+    "name": {
+      "key": "name",
+      "transform": "identity",
+      "required": true
+    },
+    "match_mode": {
+      "key": "match_mode",
+      "transform": "identity",
+      "default": "contains"
+    },
+    "program": {
+      "key": "program",
+      "transform": "identity"
+    },
+    "country": {
+      "key": "country",
+      "transform": "identity"
+    },
+    "entity_type": {
+      "key": "entity_type",
+      "transform": "identity"
+    },
+    "list_scope": {
+      "key": "list_scope",
+      "transform": "identity",
+      "default": "all"
+    },
+    "include_aliases": {
+      "key": "include_aliases",
+      "transform": "identity",
+      "default": true
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int",
+      "default": 10
+    }
   },
   "fixed_payload": {},
-  "example_call": {"name": "AERO-CARIBBEAN", "match_mode": "exact", "max_results": 3},
-  "verification": {"run_id": "QhcqZyvziIB3RD4Cu", "items": 1, "token": "aero-caribbean", "relevant": true}
+  "example_call": {
+    "name": "AERO-CARIBBEAN",
+    "match_mode": "exact",
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "QhcqZyvziIB3RD4Cu",
+    "items": 1,
+    "token": "aero-caribbean",
+    "relevant": true
+  }
 }

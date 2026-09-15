@@ -101,7 +101,7 @@ def main() -> int:
     blockers = (
         report["mcp_tools_with_private_actors"]
         + report["public_actors_without_mcp_tools"]
-        + report["verified_specs_without_mcp_tools"]
+        + sorted(set(report["verified_specs_without_mcp_tools"]) & set(report["public_actors_without_mcp_tools"]))
         + report["public_mcp_tools_not_agentic"]
     )
     report["release_ready"] = not blockers

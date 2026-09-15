@@ -3,7 +3,7 @@
   "tool": {
     "name": "us_census_geocoder",
     "title": "US Census Address Geocoder",
-    "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Strictly read-only; queries the public Census Bureau geocoder API, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.",
+    "description": "Geocode US street addresses into full Census Bureau geography, not just a pin: state and county FIPS, census tract and block GEOIDs, congressional district, incorporated place, school district and metro area (CBSA). Built on the official, public-domain Census Bureau geocoder.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-census-geocoder'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Requests run five addresses at a time against the Census Bureau's geocoder with a 60-second timeout each; typical run duration is 10-60 seconds depending on list size, timeout capped at 120 seconds. Returns exactly one row per address, matched or not - output volume is set by the length of 'addresses', not by 'max_results'.\n\nUsage Guidelines:\n- When to use: Use to append census tract, block, county FIPS, congressional district or school district GEOIDs to US street addresses for demographic joins, site selection, fair-lending/CRA reporting, or district-based targeting.\n- When NOT to use: Do not use for interactive place search, driving directions or points of interest; do not use for business entity or contractor license lookups (use 'us_business_entity_search' or 'us_contractor_license_search'). Addresses outside the United States are not supported.\n- Named alternatives: Use 'us_business_entity_search' or 'us_contractor_license_search' for entity and licensing lookups instead of an address. No other tool in this toolset performs US address geocoding.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -13,7 +13,8 @@
             "type": "string"
           },
           "minItems": 1,
-          "description": "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not."
+          "description": "One or more one-line US addresses to geocode, e.g. ['1600 Amphitheatre Pkwy, Mountain View, CA 94043']. The Census parser is tolerant of punctuation but wants at least a street, a city and a state. Each address returns exactly one result row, matched or not.",
+          "maxItems": 100
         },
         "benchmark": {
           "type": "string",
@@ -43,134 +44,245 @@
       },
       "required": [
         "addresses"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "One geocoded row per input address, in input order, including addresses that failed to match.",
           "items": {
             "type": "object",
             "properties": {
               "input_address": {
-                "type": "string",
-                "description": "The address string exactly as supplied, so results can be joined back to the source list."
+                "title": "Input address",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The address string exactly as you supplied it, so results can be joined straight back to your source list. Rows come back in input order, one per address, including the ones that did not match."
               },
               "matched": {
-                "type": "boolean",
-                "description": "True when the Census geocoder returned at least one candidate for the address. False rows carry every other field as null rather than being dropped."
+                "title": "Match found",
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "description": "True when the Census geocoder returned at least one candidate for the address. False rows are still written to the dataset, with every other field null, so a bad address is visibly different from a lost one."
               },
               "match_count": {
-                "type": "integer",
-                "description": "How many candidate addresses Census returned. 1 is a clean hit; more than 1 means the address was ambiguous and the row describes only the first candidate. 0 on unmatched rows."
+                "title": "Number of candidate matches",
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "How many candidate addresses Census returned for this input. 1 is a clean hit. Anything above 1 means the address was ambiguous and the row describes only the first candidate - '1 Main St, Springfield, MA' returns 3. 0 on rows that did not match. Use it to quarantine addresses a human should re-check."
               },
               "matched_address": {
-                "type": "string",
-                "description": "The address as Census standardised it: upper case, standardised street type, and the ZIP it actually resolved to. Null when matched is false."
+                "title": "Standardised address",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The address as Census normalised it: upper case, standardised street type, and the ZIP it actually resolved to. Use this rather than your input when de-duplicating. Null when matched is false."
               },
               "latitude": {
-                "type": "number",
-                "description": "Latitude in decimal degrees, interpolated along the matched TIGER street segment (street frontage, not rooftop). Null when matched is false."
+                "title": "Latitude",
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "description": "Latitude in decimal degrees. Census interpolates the point along the matched TIGER street segment, so it lands on the street frontage rather than on the rooftop or the parcel centroid. Null when matched is false."
               },
               "longitude": {
-                "type": "number",
-                "description": "Longitude in decimal degrees, same street-segment interpolation as latitude. Null when matched is false."
+                "title": "Longitude",
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "description": "Longitude in decimal degrees, negative across the United States. Same street-segment interpolation as latitude. Null when matched is false."
               },
               "city": {
-                "type": "string",
-                "description": "Postal city of the matched address, upper case. Can differ from place_name, the legally incorporated place. Null when matched is false."
+                "title": "City",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Postal city of the matched address, upper case. This is the mailing city and can differ from place_name, which is the legally incorporated place. Null when matched is false."
               },
               "state": {
-                "type": "string",
+                "title": "State",
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "description": "Two-letter USPS state or territory code of the matched address. Null when matched is false."
               },
               "zip": {
-                "type": "string",
-                "description": "Five-digit ZIP code Census resolved the address to, kept as a string so leading zeros survive export. Null when matched is false."
+                "title": "ZIP code",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Five-digit ZIP code Census resolved the address to, which is not always the ZIP you submitted. Kept as a string so leading zeros survive export to CSV or Excel. Null when matched is false."
               },
               "state_fips": {
-                "type": "string",
-                "description": "Two-digit state FIPS code, the first component of every Census GEOID. Null when matched is false."
+                "title": "State FIPS code",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Two-digit state FIPS code, 11 for the District of Columbia and 36 for New York. It is the first component of every Census GEOID and the join key to state-level Census tables. Null when matched is false."
               },
               "county_fips": {
-                "type": "string",
-                "description": "Five-digit county GEOID (state FIPS plus county code), the county key used by ACS, BLS and most federal datasets. Null when matched is false."
+                "title": "County FIPS code (GEOID)",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Five-digit county GEOID: the two-digit state FIPS followed by the three-digit county code. This is the county key used by the American Community Survey, BLS and most other federal datasets. Null when matched is false."
               },
               "county_name": {
-                "type": "string",
-                "description": "County or county-equivalent name (parish, borough, independent city). Null when matched is false."
+                "title": "County name",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "County or county-equivalent name (parish, borough, independent city), without the trailing word County. Null when matched is false."
               },
               "place_name": {
-                "type": "string",
-                "description": "Name of the incorporated place (city, town, village) containing the address. Null in unincorporated territory and when matched is false."
+                "title": "Incorporated place",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the incorporated place (city, town, village) containing the address, from the Census Places layer. It can differ from the postal city, and it is null for addresses in unincorporated territory. Null when matched is false."
               },
               "place_geoid": {
-                "type": "string",
-                "description": "Seven-digit place GEOID, the join key to Census place-level tables since place names repeat across states. Null when matched is false."
+                "title": "Incorporated place GEOID",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Seven-digit place GEOID: state (2) plus place (5). Join key to Census place-level tables. Place names repeat across states, so join on this rather than place_name. Null in unincorporated territory and when matched is false."
               },
               "tract_geoid": {
-                "type": "string",
-                "description": "Eleven-digit census tract GEOID, the join key for American Community Survey tract tables. Null when matched is false."
+                "title": "Census tract GEOID",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Eleven-digit tract GEOID: state (2) plus county (3) plus tract (6). This is the join key for American Community Survey tract tables and for almost every tract-level demographic product. Null when matched is false."
               },
               "block_group_geoid": {
-                "type": "string",
-                "description": "Twelve-digit block group GEOID, the finest geography the American Community Survey publishes estimates for. Null when matched is false."
+                "title": "Block group GEOID",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Twelve-digit block group GEOID: state (2) plus county (3) plus tract (6) plus block group (1). This is the finest geography the American Community Survey publishes estimates for - the block below it only carries decennial counts - so for income, housing or commute data this is the join key you actually want. Null when matched is false."
               },
               "block_geoid": {
-                "type": "string",
-                "description": "Fifteen-digit census block GEOID, the finest geography the Bureau publishes and the join key to decennial block data. Null when matched is false."
+                "title": "Census block GEOID",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Fifteen-digit block GEOID: state (2) plus county (3) plus tract (6) plus block (4). The block is the finest geography the Bureau publishes and the join key to decennial block data. Null when matched is false."
               },
               "zcta": {
-                "type": "string",
-                "description": "Five-digit ZIP Code Tabulation Area containing the point, the only ZIP-shaped geography the Bureau actually publishes data for. Can differ from zip. Null when matched is false."
+                "title": "ZIP Code Tabulation Area",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Five-digit ZCTA containing the point. A ZCTA is the Census areal approximation of a ZIP code and is the only ZIP-shaped geography the Bureau publishes data for; it often differs from the mailing zip, as the White House shows with ZIP 20500 inside ZCTA 20006. Join demographic data on this, mail on zip. Null when matched is false."
               },
               "urban_rural": {
-                "type": "string",
-                "description": "Census urban/rural classification of the containing block: U for urban, R for rural. Null when matched is false."
+                "title": "Urban or rural",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Census urban/rural classification of the containing block: U for urban, R for rural. This is the Bureau's own definition, not a population guess, and it is the standard filter for rural-eligibility programmes such as USDA lending. Null when matched is false."
               },
               "congressional_district_geoid": {
-                "type": "string",
-                "description": "Four-digit congressional district GEOID (state FIPS plus district), unique nationally and the join key to district-level Census tables. Null when matched is false."
+                "title": "Congressional district GEOID",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Four-digit congressional district GEOID: state FIPS (2) plus district (2). Unlike congressional_district, which is a bare number repeated in every state, this is unique nationally and is the join key to district-level Census tables. Null when matched is false."
               },
               "cbsa_name": {
-                "type": "string",
-                "description": "Combined Statistical Area name, broader than the single metro area inside it (e.g. Washington joined with Baltimore). Null outside any CSA and when matched is false."
+                "title": "Combined statistical area",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the Combined Statistical Area containing the address. Despite the field name this is the Combined Statistical Areas layer, which is broader than the single CBSA metro area inside it, so Washington comes back joined with Baltimore. Null for addresses outside any CSA. Null when matched is false."
               },
               "metro_area_name": {
-                "type": "string",
-                "description": "Name of the Core Based Statistical Area (the actual metro or micro area) containing the address. Null outside any CBSA and when matched is false."
+                "title": "Metro or micro area (CBSA)",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the Core Based Statistical Area containing the address - the actual metro area, distinct from the broader cbsa_name column, which despite its name carries the Combined Statistical Area that can bundle several metros together. Rural addresses return their micropolitan area here instead. Null outside any CBSA and when matched is false."
               },
               "school_district_name": {
-                "type": "string",
-                "description": "Name of the school district containing the address; a unified district where one exists, otherwise the elementary or secondary district per school_district_type. Null when matched is false."
+                "title": "School district",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Name of the school district containing the address. Unified districts are reported where they exist; in states that split schooling, the elementary district is reported and school_district_type says which. The single strongest predictor in US residential property pricing, and normally only obtainable one state at a time. Null when matched is false."
               },
               "benchmark_name": {
-                "type": "string",
-                "description": "The Census address benchmark that actually answered, echoed back by the API on every row."
+                "title": "Benchmark used",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The Census address benchmark that actually answered, echoed back by the API. Recorded per row so exports made weeks apart stay comparable after the Bureau rolls the benchmark forward."
               },
               "vintage_name": {
-                "type": "string",
-                "description": "The geography vintage that actually answered, echoed back by the API on every row."
+                "title": "Geography vintage used",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The geography vintage that actually answered, echoed back by the API. Tract and block boundaries are redrawn between vintages, so two rows with the same tract_geoid only describe the same ground when this column agrees."
               }
-            },
-            "required": [
-              "input_address",
-              "matched",
-              "match_count"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

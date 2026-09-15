@@ -18,9 +18,13 @@ import os
 import subprocess
 import sys
 import time
+import queue
+import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from mcp_server import validate_value
 
 # tool -> (arguments, lowercase token expected somewhere in the result JSON)
 CASES: dict[str, tuple[dict, str]] = {
@@ -79,32 +83,50 @@ class Server:
         if not os.environ.get("APIFY_TOKEN"):
             raise SystemExit("APIFY_TOKEN not set")
         self.p = subprocess.Popen([sys.executable, str(ROOT / "mcp_server.py")], cwd=str(ROOT),
-                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                   text=True, encoding="utf-8", bufsize=1)
         self.n = 0
+        self.responses = queue.Queue()
+        def read():
+            try:
+                for line in self.p.stdout:
+                    self.responses.put(line)
+            finally:
+                self.responses.put(None)
+        threading.Thread(target=read, daemon=True).start()
 
     def call(self, method: str, params: dict | None = None, timeout: int = 200) -> dict:
         self.n += 1
         req = {"jsonrpc": "2.0", "id": self.n, "method": method, "params": params or {}}
         self.p.stdin.write(json.dumps(req) + "\n"); self.p.stdin.flush()
-        deadline = time.time() + timeout
-        while time.time() < deadline:
-            line = self.p.stdout.readline()
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            try:
+                line = self.responses.get(timeout=max(.01, deadline - time.monotonic()))
+            except queue.Empty:
+                break
             if not line:
-                raise RuntimeError(f"server closed stdout (stderr: {self.p.stderr.read()[-400:]})")
+                raise RuntimeError("server closed stdout")
             try:
                 msg = json.loads(line)
             except json.JSONDecodeError:
                 continue
             if msg.get("id") == self.n:
                 return msg
-        raise TimeoutError(f"{method} timed out after {timeout}s")
+        self.p.stdin.write(json.dumps({'jsonrpc': '2.0', 'method': 'notifications/cancelled', 'params': {'requestId': self.n}}) + '\n')
+        self.p.stdin.flush()
+        raise TimeoutError(f"{method} timed out after {timeout}s; cancellation requested")
 
     def close(self):
         try:
-            self.p.stdin.close(); self.p.terminate()
+            self.p.stdin.close()
+            self.p.wait(timeout=35)
+        except subprocess.TimeoutExpired:
+            self.p.kill(); self.p.wait()
         except Exception:
             pass
+        finally:
+            self.p.stdout.close()
 
 
 def main() -> int:
@@ -116,11 +138,14 @@ def main() -> int:
         listed = srv.call("tools/list")
         names = [t["name"] for t in listed["result"]["tools"]]
         print(f"tools/list -> {len(names)} tools")
-        missing = [n for n in CASES if n not in names]
+        definitions = {t['name']: t for t in listed['result']['tools']}
+        missing = [n for n in names if n not in CASES] + [n for n in only if n not in names]
         if missing:
-            print("NOT LISTED:", missing)
+            print("Missing test case or unavailable requested tool:", missing)
         results = []
         for name, (args, token) in CASES.items():
+            if name not in names:
+                continue
             if only and name not in only:
                 continue
             t0 = time.time()
@@ -132,7 +157,14 @@ def main() -> int:
             if "error" in resp:
                 results.append((name, "FAIL", f"rpc error: {json.dumps(resp['error'])[:160]}")); print(f"FAIL {name} ({secs}s): {json.dumps(resp['error'])[:160]}"); continue
             res = resp.get("result") or {}
-            blob = json.dumps(res).lower()
+            structured = res.get('structuredContent')
+            schema_error = None
+            try:
+                validate_value(structured, definitions[name]['outputSchema'], code='OUTPUT_SCHEMA_MISMATCH')
+                assert json.loads(res['content'][0]['text']) == structured
+            except Exception as exc:
+                schema_error = type(exc).__name__
+            blob = json.dumps((structured or {}).get('results', [])).lower()
             # A two-letter token ("ri", "ca") is a substring of almost any JSON;
             # require a whole-word match for short tokens so the relevance check
             # cannot pass on noise.
@@ -148,8 +180,8 @@ def main() -> int:
                     except Exception:
                         pass
             n = len(rows) if isinstance(rows, list) else None
-            ok = (not is_err) and (n or 0) > 0 and token_ok
-            why = "" if ok else ("isError" if is_err else "no rows" if not n else f"token {token!r} absent")
+            ok = not schema_error and (not is_err) and (n or 0) > 0 and token_ok
+            why = "" if ok else ("schema/structured-content mismatch" if schema_error else "isError" if is_err else "no rows" if not n else f"token {token!r} absent")
             results.append((name, "OK" if ok else "FAIL", f"{n} rows {secs}s {why}"))
             print(f"{'OK  ' if ok else 'FAIL'} {name:38} rows={n} {secs}s {why}")
         good = sum(1 for r in results if r[1] == "OK")

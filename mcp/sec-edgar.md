@@ -6,7 +6,7 @@ permalink: /mcp/sec-edgar/
 ---
 # MCP server for SEC EDGAR filings
 
-This is an MCP server for SEC EDGAR filings: it exposes the `sec_edgar_filings` and `sec_form_4_insider_transactions` tools so an AI agent can retrieve periodic filings and structured insider transactions directly from the SEC's own EDGAR system. Every tool, including these, runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 33 tools in total.
+This is an MCP server for SEC EDGAR filings: it exposes the `sec_edgar_filings` and `sec_form_4_insider_transactions` tools so an AI agent can retrieve periodic filings and structured insider transactions directly from the SEC's own EDGAR system. Every tool, including these, runs as an Apify Actor on your own Apify account. This page is one of several use-case pages built on [Apify Public Data MCP](/), which exposes 30 tools in total.
 
 Want alerts instead of one-off lookups? Follow the [SEC filing-monitor tutorial](/tutorials/monitor-sec-filings/) to create a scheduled, deduplicated workflow.
 
@@ -31,7 +31,7 @@ Retrieves official United States Securities and Exchange Commission filings, inc
 | form_type | No | SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing. default: 10-K |
 | max_results | No | Maximum count of chronological filing records to retrieve. default: 5 |
 
-Returns: formType, filingDate, accessionNumber, companyName, cik, documentUrl
+Returns: cik, company_name, tickers, exchanges, sic, sic_description, state_of_incorporation, fiscal_year_end, form, is_amendment, filing_date, report_date, acceptance_datetime, accession_number, act, file_number, film_number, items, size_bytes, is_xbrl, is_inline_xbrl, primary_document, primary_document_description, filing_url, primary_document_url, company_submissions_url, ticker, exchange, entity_type, filer_category, owner_org, ein, phone, state_of_incorporation_description, business_address, business_address_street1, business_address_street2, business_address_city, business_address_state, business_address_state_description, business_address_zip, business_address_country, business_address_is_foreign, mailing_address, mailing_address_street1, mailing_address_street2, mailing_address_city, mailing_address_state, mailing_address_zip, mailing_address_country, former_names, current_name_since, has_insider_transactions_as_owner, has_insider_transactions_as_issuer, filing_directory_url, filing_txt_url, company_filings_url, document_count, document_types, exhibit_count, item_descriptions, filer_names, filer_ciks, reporting_owner_names, reporting_owner_ciks, issuer_name, issuer_cik, subject_company_name, subject_company_cik, group_members, filing_date_changed
 
 Price: $0.002 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 

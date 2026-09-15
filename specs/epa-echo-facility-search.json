@@ -3,7 +3,7 @@
   "tool": {
     "name": "epa_facility_search",
     "title": "EPA ECHO Facility Compliance Search",
-    "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Strictly read-only; queries the public EPA ECHO service, no API key or login required.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+    "description": "Search the official EPA ECHO service for US regulated facilities by state, city, ZIP, facility name, or NAICS code, and export compliance status, inspection, and penalty data. By default only facilities currently showing a violation are returned (the Actor's violations_only filter defaults to true).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -41,65 +41,109 @@
       },
       "required": [
         "state"
-      ]
+      ],
+      "additionalProperties": false
     },
     "outputSchema": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
-          "description": "Collection of EPA-regulated facility records with compliance detail.",
           "items": {
             "type": "object",
             "properties": {
               "registry_id": {
-                "type": "string",
-                "description": "EPA Facility Registry Service ID, the stable key for this facility."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Registry ID",
+                "description": "EPA Facility Registry Service ID. The stable key for this facility across every EPA system."
               },
               "name": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Facility name",
                 "description": "Facility name as registered with EPA."
               },
               "city": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "City",
                 "description": "Facility city."
               },
               "state": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "State",
                 "description": "Two-letter state code."
               },
               "naics_codes": {
-                "type": "string",
-                "description": "Space-separated NAICS industry codes for the facility."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "NAICS codes",
+                "description": "North American Industry Classification System codes reported for the facility."
               },
               "compliance_status": {
-                "type": "string",
-                "description": "Overall current compliance status, e.g. 'Violation Identified'."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Compliance status",
+                "description": "Overall current compliance status across all programs."
               },
               "total_penalties": {
-                "type": "number",
-                "description": "Total dollar amount of penalties assessed against the facility."
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Total penalties (USD)",
+                "description": "Total penalties assessed across all programs in the last five years, in US dollars."
               },
               "url": {
-                "type": "string",
-                "description": "Direct link to the EPA ECHO detailed facility report."
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Report URL",
+                "description": "Link to the full EPA detailed facility report for this facility."
               }
-            },
-            "required": [
-              "registry_id",
-              "name"
-            ]
+            }
           }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
         }
       },
       "required": [
-        "results"
+        "results",
+        "status"
       ]
     },
     "annotations": {
       "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": true,
+      "idempotentHint": false,
       "openWorldHint": true
     }
   },

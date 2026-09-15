@@ -15,9 +15,17 @@ S = Path(__file__).resolve().parent
 PAGES = Path(__file__).resolve().parents[2] / "mcp"
 SLUGS = ["sec-edgar", "google-maps", "public-records", "job-search", "government-data"]
 digest = {d["tool"]: d for d in json.loads((S / "tools_digest.json").read_text(encoding="utf-8"))}
+catalog = {t['name']: t for t in json.loads((S.parents[1] / 'mcp.json').read_text(encoding='utf-8'))['tools']}
 install = re.sub(r"\s+", " ", (S / "install_snippet.md").read_text(encoding="utf-8")).strip()
 
 problems: list[str] = []
+if not set(digest) <= set(catalog):
+    problems.append('Guide digest advertises a tool absent from the public MCP catalog')
+for name in set(digest) & set(catalog):
+    if set(digest[name]['args']) != set(catalog[name]['inputSchema']['properties']):
+        problems.append(f'{name}: digest arguments differ from the catalog')
+    if set(digest[name]['output_fields']) != set(catalog[name]['outputSchema']['properties']['results']['items']['properties']):
+        problems.append(f'{name}: digest output fields differ from the catalog')
 
 
 def check(slug: str) -> None:
@@ -65,7 +73,7 @@ def check(slug: str) -> None:
             problems.append(f"{slug}: {tool} store url missing")
         ret = re.search(r"Returns:\**\s*(.+)", section)
         if ret:
-            # output fields are camelCase on the six hand-written tools (jobUrl, accessionNumber)
+            # Field names must be native dataset keys, never invented aliases.
             for f in re.findall(r"`?([A-Za-z_][A-Za-z0-9_]*)`?", ret.group(1)):
                 if f and f not in d["output_fields"] and f not in ("and", "or", "Returns"):
                     problems.append(f"{slug}: {tool} Returns field {f} not in output schema")

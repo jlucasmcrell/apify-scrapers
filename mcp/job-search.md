@@ -7,7 +7,7 @@ permalink: /mcp/job-search/
 
 # MCP server for job search: LinkedIn and Glassdoor listings
 
-[Apify Public Data MCP](/) is a 33-tool MCP server, and two of those tools make it an MCP server for job search: linkedin_jobs_search and glassdoor_jobs_search. Each one runs as its own Apify Actor on your own Apify account. Together they let an agent pull public job postings, hiring companies, and Glassdoor's estimated salary and rating data without any scraping code of your own.
+[Apify Public Data MCP](/) is a 30-tool MCP server, and two of those tools make it an MCP server for job search: linkedin_jobs_search and glassdoor_jobs_search. Each one runs as its own Apify Actor on your own Apify account. Together they let an agent pull public job postings, hiring companies, and Glassdoor's estimated salary and rating data without any scraping code of your own.
 
 ## What an agent can ask
 
@@ -57,7 +57,7 @@ Searches active employment vacancies, hiring employers, estimated compensation b
 | location | No | Geographic municipality, metropolitan area, or 'Remote' filter (e.g. 'Austin, TX' or 'New York, NY'). Defaults to all locations if empty. default: "" |
 | max_results | No | Maximum number of active job listings to retrieve. Integer between 1 and 100. default: 10 |
 
-Returns: jobTitle, companyName, location, salaryEstimate, rating, jobUrl
+Returns: job_title, job_url, job_id, employer, rating, location, salary, posting_age, posting_date_estimated, posting_date_precision, scraped_at, employer_id, employer_name_full, employer_logo_url, normalized_job_title, job_description_snippet, job_skills, job_attributes, easy_apply, is_sponsored, age_in_days, posting_date_exact, pay_period, pay_currency, salary_source, salary_min, salary_median, salary_max, location_id, location_type
 
 Price: $0.0004 per result plus $0.001 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 

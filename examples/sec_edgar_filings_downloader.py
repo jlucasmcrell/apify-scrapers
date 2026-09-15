@@ -35,7 +35,7 @@ def fetch_sec_filings(companies: list[str], forms: list[str], max_items: int = 5
     })
     
     if not run or run.get("status") != "SUCCEEDED":
-        print(f"[!] Run ended with status: {run.get('status')}")
+        print(f"[!] Run ended with status: {(run or {}).get('status')}")
         return None
 
     dataset_id = run["defaultDatasetId"]
@@ -48,7 +48,7 @@ def fetch_sec_filings(companies: list[str], forms: list[str], max_items: int = 5
     df.to_csv(output_csv, index=False, encoding="utf-8")
     print(f"[+] Exported {len(df)} filings to {output_csv}")
     
-    summary_cols = [c for c in ["company_name", "ticker", "form", "filing_date", "primary_document_url"] if c in df.columns]
+    summary_cols = [c for c in ["company_name", "ticker", "form", "filing_date", "filing_url"] if c in df.columns]
     print(df[summary_cols].head())
     return df
 

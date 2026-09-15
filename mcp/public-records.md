@@ -6,7 +6,7 @@ permalink: /mcp/public-records/
 ---
 # MCP server for public records: business registries, licences and providers
 
-This MCP server for public records gives an AI agent these tools: `us_business_entity_search`, `alabama_business_search`, `florida_new_filings_search`, `florida_officer_search`, `california_contractor_license_search`, `us_contractor_license_search`, `gleif_lei_search`, `french_company_search`, and `cms_healthcare_provider_search`. Each runs as an Apify Actor on the reader's own account, so a free plan works. These are part of [Apify Public Data MCP](/), which exposes 33 tools in total.
+This MCP server for public records gives an AI agent these tools: `us_business_entity_search`, `alabama_business_search`, `florida_new_filings_search`, `florida_officer_search`, `california_contractor_license_search`, `us_contractor_license_search`, `gleif_lei_search`, `french_company_search`, and `cms_healthcare_provider_search`. Each runs as an Apify Actor on the reader's own account, so a free plan works. These are part of [Apify Public Data MCP](/), which exposes 30 tools in total.
 
 For a repeatable watchlist rather than a one-off lookup, follow the [CMS healthcare-provider change-monitoring tutorial](/tutorials/monitor-healthcare-provider-changes/).
 
@@ -31,7 +31,7 @@ Searches Florida, Alabama, Iowa, and Wisconsin registries in one call.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds formation date, agent; default: false. |
 
-Returns: source, entity_name, status, entity_type, location, registered_agent
+Returns: source, entity_name, entity_id, status, entity_type, location, date_filed, registered_agent
 
 Price: $0.0025 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -49,7 +49,7 @@ Searches Alabama business-entity records by name.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds formation date, agent; default: false. |
 
-Returns: entity_id, entity_name, entity_type, status, location, registered_agent
+Returns: entity_id, entity_name, entity_type, status, location, formation_date, registered_agent, principal_address
 
 Price: $0.0025 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -67,7 +67,7 @@ Searches Florida Sunbiz by company name.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds date filed, EIN, agent; default: false. |
 
-Returns: entity_name, document_number, status, entity_type, date_filed, registered_agent
+Returns: entity_name, document_number, status, entity_type, date_filed, fei_ein, registered_agent, principal_address
 
 Price: $0.003 per result plus $0.001 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -85,7 +85,7 @@ Searches Florida Sunbiz by officer or agent name.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds status, filing date; default: false. |
 
-Returns: officer_name, entity_name, document_number, detail_url, entity_type, status
+Returns: officer_name, entity_name, document_number, detail_url, entity_type, status, date_filed, principal_address
 
 Price: $0.003 per result plus $0.001 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -103,7 +103,7 @@ Searches California CSLB records by name.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds dates, classifications; default: false. |
 
-Returns: contractor_name, license_number, city, status, business_entity, issue_date
+Returns: contractor_name, license_number, name_type, city, status, business_entity, issue_date, expire_date
 
 Price: $0.003 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -122,7 +122,7 @@ Searches CA CSLB and OR CCB records in one call.
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds bonding, insurance; default: false. |
 
-Returns: source, business_name, contractor_name, license_number, status, city
+Returns: source, business_name, contractor_name, license_number, status, city, name_type, business_entity
 
 Price: $0.003 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -144,7 +144,7 @@ Searches GLEIF for Legal Entity Identifiers.
 | include_relationships | No | Adds parent/subsidiary data; default: false. |
 | max_results | No | Records to retrieve; default: 10. |
 
-Returns: lei, legal_name, status, jurisdiction, legal_form_name, registered_as
+Returns: lei, legal_name, status, registration_status, jurisdiction, legal_form_name, registered_as, registered_at_name, legal_country, legal_city, corroboration_level, next_renewal_date, gleif_profile_url
 
 Price: $0.003 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -164,7 +164,7 @@ Searches France's SIRENE company register.
 | active_only | No | Active companies only; default: true. |
 | max_results | No | Records to retrieve; default: 10. |
 
-Returns: siren, name, legal_name, status, hq_city, employees
+Returns: siren, name, legal_name, status, naf_code, hq_city, employees, revenue
 
 Price: $0.002 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -186,7 +186,7 @@ Searches CMS directories for Medicare-certified facilities.
 | name_contains | No | Substring of provider name. |
 | max_results | No | Records to bill; default: 10. |
 
-Returns: provider_type, ccn, name, city, state, star_rating
+Returns: provider_type, ccn, name, address, city, state, zip, county, phone, ownership, subtype, star_rating, certification_date, beds, chain, emergency_services
 
 Price: $0.02 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
@@ -229,7 +229,7 @@ The server is a Python stdio MCP server published on PyPI as `apify-data-scraper
 - [/mcp/google-maps/](/mcp/google-maps/)
 - [/mcp/job-search/](/mcp/job-search/)
 - [/mcp/government-data/](/mcp/government-data/)
-- [/](/) - home page, all 33 tools
+- [/](/) - home page, all 30 tools
 
 ## FAQ
 
