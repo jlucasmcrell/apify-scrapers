@@ -1,0 +1,28 @@
+# apify.revenuesystemslabs.com - everything here is public documentation.
+# Search and AI crawlers are welcome; there is no submission mechanism for any
+# of the answer engines, so being crawlable IS the mechanism.
+User-agent: *
+Allow: /
+
+# Named explicitly because their operators document these tokens separately:
+# OpenAI (GPTBot training, OAI-SearchBot ChatGPT search), Anthropic (ClaudeBot,
+# Claude-SearchBot), Perplexity (PerplexityBot), Google (Google-Extended).
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://apify.revenuesystemslabs.com/sitemap.xml

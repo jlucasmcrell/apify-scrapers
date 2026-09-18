@@ -39,3 +39,39 @@ that also disabled the off state.
 {%- else -%}
 <!-- analytics: disabled (set analytics.provider and analytics.id in _config.yml) -->
 {%- endif -%}
+
+{%- comment -%}
+SoftwareApplication + BreadcrumbList are the two structured-data types Google's
+current gallery still supports for this content (FAQPage and HowTo were both
+deprecated in 2023-2026, so they are deliberately absent).
+{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": {{ site.title | jsonify }},
+  "description": {{ site.description | jsonify }},
+  "url": {{ site.url | jsonify }},
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Windows, macOS, Linux",
+  "softwareVersion": "1.3.0",
+  "license": "https://opensource.org/licenses/MIT",
+  "author": { "@type": "Person", "name": "Joseph McRell", "url": "https://github.com/jlucasmcrell" },
+  "codeRepository": "https://github.com/jlucasmcrell/apify-scrapers",
+  "downloadUrl": "https://pypi.org/project/apify-data-scrapers/",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD",
+              "description": "The server is free; each tool run is billed by Apify to the caller's own account." }
+}
+</script>
+{%- if page.url != "/" %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Apify Public Data MCP", "item": {{ site.url | jsonify }} },
+    { "@type": "ListItem", "position": 2, "name": {{ page.title | default: page.name | jsonify }}, "item": {{ page.url | absolute_url | jsonify }} }
+  ]
+}
+</script>
+{%- endif %}

@@ -1,0 +1,21 @@
+# Apify Public Data MCP
+
+> One MCP server exposing 39 public-data extraction tools. Each tool runs an Apify Actor on the
+> caller's own Apify account and returns JSON rows: business leads, jobs, corporate and government
+> records, research and health data, and media. Install with `uvx apify-data-scrapers`; set
+> `APIFY_TOKEN`. MIT licensed.
+
+## Use-case guides
+
+- [SEC EDGAR filings](https://apify.revenuesystemslabs.com/mcp/sec-edgar/): filings by ticker or company, with forms and document URLs.
+- [Google Maps data and business leads](https://apify.revenuesystemslabs.com/mcp/google-maps/): businesses with phone, website, rating and address.
+- [Public records](https://apify.revenuesystemslabs.com/mcp/public-records/): state business registries, contractor licences, healthcare providers, GLEIF, French SIRENE.
+- [Job search](https://apify.revenuesystemslabs.com/mcp/job-search/): LinkedIn and Glassdoor public postings.
+- [US government data](https://apify.revenuesystemslabs.com/mcp/government-data/): USAspending, FEC, EPA, Census geocoding, CMS, openFDA, ClinicalTrials.gov.
+
+## Optional
+
+- [Home and install instructions](https://apify.revenuesystemslabs.com/)
+- [Source repository](https://github.com/jlucasmcrell/apify-scrapers)
+- [PyPI package](https://pypi.org/project/apify-data-scrapers/)
+- [Apify Store listings](https://apify.com/captainhandsome)
