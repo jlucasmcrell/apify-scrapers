@@ -25,6 +25,7 @@ The MCP executable is Python; Node.js files are direct Actor API examples, not a
 
 ## Quick Navigation
 
+- [Make.com templates](#makecom-templates)
 - [Use-case guides](#use-case-guides)
 - [Available Extractors & Store Listings](#available-extractors--store-listings)
 - [Python Quickstart](#python-quickstart)
@@ -57,6 +58,21 @@ Version 1.2.0 adds the optional `APIFY_TOOL_PROFILE` environment variable: `all`
 No separate subscription to this MCP package is required. Actor runs are billed through your Apify account at the displayed Store price. Start with a small run and inspect its output before scheduling recurring work; public-source data can be delayed, incomplete, or temporarily unavailable.
 
 ---
+
+## Make.com templates
+
+Eight published Make scenarios, one click to copy into your own Make account. Each asks for your Apify token and your destination (Google Sheets or Slack) in the setup wizard.
+
+| Template | Actor it runs |
+|---|---|
+| [Google Maps Leads to Google Sheets](https://www.make.com/en/integration/19727?templatePublicId=19727) | [`google-maps-business-search`](https://apify.com/captainhandsome/google-maps-business-search) |
+| [Glassdoor Jobs to Google Sheets](https://www.make.com/en/integration/19728?templatePublicId=19728) | [`glassdoor-jobs-scraper`](https://apify.com/captainhandsome/glassdoor-jobs-scraper) |
+| [California Contractor Licenses to Google Sheets](https://www.make.com/en/integration/19729?templatePublicId=19729) | [`ca-contractor-license-search`](https://apify.com/captainhandsome/ca-contractor-license-search) |
+| [SEC EDGAR Filing Alerts to Slack](https://www.make.com/en/integration/19730?templatePublicId=19730) | [`sec-edgar-filings-search`](https://apify.com/captainhandsome/sec-edgar-filings-search) |
+| [Export Google News Results to Google Sheets](https://www.make.com/en/integration/19731?templatePublicId=19731) | [`google-news-search`](https://apify.com/captainhandsome/google-news-search) |
+| [Export Grants.gov Opportunities to Google Sheets](https://www.make.com/en/integration/19732?templatePublicId=19732) | [`grants-gov-opportunity-search`](https://apify.com/captainhandsome/grants-gov-opportunity-search) |
+| [Export TED EU Tenders to Google Sheets](https://www.make.com/en/integration/19733?templatePublicId=19733) | [`ted-eu-tender-search`](https://apify.com/captainhandsome/ted-eu-tender-search) |
+| [Export NHTSA Vehicle Recalls to Google Sheets](https://www.make.com/en/integration/19734?templatePublicId=19734) | [`nhtsa-vehicle-recall-search`](https://apify.com/captainhandsome/nhtsa-vehicle-recall-search) |
 
 ## Use-case guides
 
