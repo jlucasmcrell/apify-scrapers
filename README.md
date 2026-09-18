@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data MCP: 39 Production Data Tools & Public Records
+# Apify Public Data MCP: 40 Production Data Tools & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
@@ -9,7 +9,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/jlucasmcrell/apify-scrapers)
-One MCP server gives an AI agent **39 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
+One MCP server gives an AI agent **40 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch and Google Play - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
@@ -126,6 +126,7 @@ Also available: [Cross-border company registry search](https://apify.com/captain
 | **LinkedIn Public Jobs** | [`captainhandsome/linkedin-public-jobs-search`](https://apify.com/captainhandsome/linkedin-public-jobs-search) | Job title, employer, location, direct apply URL, posting age | Recruitment, tech talent monitoring |
 | **Airbnb Vacation Rentals** | [`captainhandsome/airbnb-listings-search`](https://apify.com/captainhandsome/airbnb-listings-search) | Title, room type, nightly price, rating, reviews count, listing URL | Real estate research, market rate tracking |
 | **Google Play App Reviews** | [`captainhandsome/google-play-reviews-scraper`](https://apify.com/captainhandsome/google-play-reviews-scraper) | Review text, star score, thumbs up, date, reviewer name | App store sentiment, competitor feedback |
+| **Apple App Store Reviews** | [`captainhandsome/app-store-reviews-search`](https://apify.com/captainhandsome/app-store-reviews-search) | app_name, review_rating, review_body, review_version, app_average_rating | iOS review mining, ASO research and cross-platform sentiment |
 | **YouTube Video Search** | [`captainhandsome/youtube-search-scraper`](https://apify.com/captainhandsome/youtube-search-scraper) | Title, video URL, channel, views count, duration, publish date | Content tracking, creator outreach |
 | **Twitch Live Streams** | [`captainhandsome/twitch-live-streams-scraper`](https://apify.com/captainhandsome/twitch-live-streams-scraper) | Streamer username, title, viewer count, language, category | Esports analytics, live stream monitoring |
 

@@ -1,7 +1,7 @@
 {
   "name": "apify-data-scrapers",
-  "version": "1.3.1",
-  "description": "MCP server exposing 39 Apify public-data scrapers as tools: business leads, jobs, news, SEO, SEC filings, procurement, health, registries, and more.",
+  "version": "1.4.0",
+  "description": "MCP server exposing 40 Apify public-data scrapers as tools: business leads, jobs, news, SEO, SEC filings, procurement, health, registries, and more.",
   "main": "examples/google_maps_leads.js",
   "type": "module",
   "scripts": {

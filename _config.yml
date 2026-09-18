@@ -1,7 +1,7 @@
 # GitHub Pages (Jekyll) metadata for https://apify.revenuesystemslabs.com/ - the README is the site.
 title: Apify Public Data MCP
-tagline: 39 public-data tools for AI agents
-description: Run 39 public-data tools for leads, jobs, SEC filings, procurement, recalls, health, registries, and media through one MCP server.
+tagline: 40 public-data tools for AI agents
+description: Run 40 public-data tools for leads, jobs, SEC filings, procurement, recalls, health, registries, and media through one MCP server.
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap

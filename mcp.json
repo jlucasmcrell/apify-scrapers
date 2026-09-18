@@ -1,6 +1,6 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "homepage": "https://apify.revenuesystemslabs.com/",
   "repository": {
@@ -8077,6 +8077,187 @@
         "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "app_store_reviews_search",
+      "title": "Apple App Store Reviews and App Metadata",
+      "description": "Search the Apple App Store and return customer reviews with star ratings, review text, the app version each review was written against, and full app metadata - across any storefront.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/app-store-reviews-search'.\n- Side Effects: Strictly read-only; reads Apple's public search, lookup and review endpoints.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 5-30 seconds; Apple caps the public review feed at 500 reviews per app per storefront; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for iOS app reviews and ratings, App Store metadata, release-version sentiment, ASO and competitor research, or to pair with Android data for a cross-platform view.\n- When NOT to use: Do not use for Android reviews (use 'google_play_reviews_search'), for employer reviews, for app download estimates, or for Mac-only titles.\n- Named alternatives: Use 'google_play_reviews_search' for the Android half of the same product, 'google_maps_search' for business reviews, or 'youtube_video_search' for video sentiment.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Find apps by name or keyword, as you would in App Store search (e.g. 'language learning'). Omit when app_ids is given."
+          },
+          "app_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Specific apps as numeric track IDs ('570060128'), bundle IDs ('com.duolingo.DuolingoMobile') or App Store URLs. Overrides search_query."
+          },
+          "countries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "us"
+            ],
+            "description": "Two-letter App Store storefronts to collect from, e.g. ['us','gb']. Reviews differ per storefront. Defaults to ['us']."
+          },
+          "include_reviews": {
+            "type": "boolean",
+            "default": true,
+            "description": "Collect reviews as well as app metadata. Set false for a fast metadata-only survey of a category."
+          },
+          "max_reviews_per_app": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500,
+            "default": 100,
+            "description": "Upper bound on reviews per app per storefront. Apple's public feed caps at 500. Defaults to 100."
+          },
+          "min_rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Keep only reviews at or above this star rating, e.g. 4 for positive quotes."
+          },
+          "max_rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Keep only reviews at or below this star rating, e.g. 2 for complaint mining."
+          },
+          "recent_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650,
+            "description": "Keep only reviews posted within this many days, e.g. 30 for the last month."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 25,
+            "description": "Maximum rows to return and bill across every app and storefront. Defaults to 25."
+          }
+        },
+        "required": []
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "description": "App Store reviews, or app-metadata rows when include_reviews is false.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "record_type": {
+                  "type": "string",
+                  "description": "review or app."
+                },
+                "app_id": {
+                  "type": "string",
+                  "description": "Apple's numeric track ID."
+                },
+                "app_name": {
+                  "type": "string",
+                  "description": "Store title of the app."
+                },
+                "app_url": {
+                  "type": "string",
+                  "description": "Canonical App Store listing URL."
+                },
+                "country": {
+                  "type": "string",
+                  "description": "Storefront the row came from."
+                },
+                "developer": {
+                  "type": "string",
+                  "description": "Seller name."
+                },
+                "primary_genre": {
+                  "type": "string",
+                  "description": "Main App Store category."
+                },
+                "app_average_rating": {
+                  "type": "number",
+                  "description": "Lifetime average star rating."
+                },
+                "app_rating_count": {
+                  "type": "integer",
+                  "description": "Number of ratings behind that average."
+                },
+                "app_version": {
+                  "type": "string",
+                  "description": "Current version on the store."
+                },
+                "app_updated": {
+                  "type": "string",
+                  "description": "ISO timestamp the current version shipped."
+                },
+                "review_id": {
+                  "type": "string",
+                  "description": "Apple's review identifier, unique per storefront."
+                },
+                "review_title": {
+                  "type": "string",
+                  "description": "Reviewer's headline."
+                },
+                "review_body": {
+                  "type": "string",
+                  "description": "Full review text."
+                },
+                "review_rating": {
+                  "type": "integer",
+                  "description": "Star rating, 1 to 5."
+                },
+                "review_author": {
+                  "type": "string",
+                  "description": "Reviewer nickname."
+                },
+                "review_version": {
+                  "type": "string",
+                  "description": "App version the review was written against."
+                },
+                "review_updated": {
+                  "type": "string",
+                  "description": "ISO timestamp the review was posted or edited."
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty_unverified",
+              "partial",
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object"
+          },
+          "run": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "status"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
         "openWorldHint": true
       }
     }
