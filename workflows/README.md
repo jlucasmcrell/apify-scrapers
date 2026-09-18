@@ -1,6 +1,7 @@
 ---
 layout: default
 title: "n8n workflow templates"
+permalink: /workflows/
 description: "Six importable n8n workflows that run Apify public-data Actors on a schedule and write rows to Sheets or Slack."
 ---
 
