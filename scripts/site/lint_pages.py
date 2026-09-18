@@ -48,9 +48,17 @@ def check(slug: str) -> None:
     if not 120 <= len(desc) <= 170:
         problems.append(f"{slug}: description length {len(desc)}")
     body = text[m.end():]
+    # The <title> tag and the on-page H1 do different jobs: jekyll-seo-tag appends
+    # " | Apify Public Data MCP" (23 chars) to the front-matter title, so it has to
+    # stay short enough to survive a SERP, while the H1 can be as descriptive as the
+    # page needs. Bing's site scan flagged 9 pages when these were kept identical.
     h1 = re.search(r"^# (.+)$", body, re.M)
-    if not h1 or h1.group(1).strip() != fm.get("title", "").strip().strip('"'):
-        problems.append(f"{slug}: H1 != title")
+    if not h1 or not h1.group(1).strip():
+        problems.append(f"{slug}: no H1")
+    title = fm.get("title", "").strip().strip('"')
+    rendered = len(title) + len(" | Apify Public Data MCP")
+    if rendered > 70:
+        problems.append(f"{slug}: rendered <title> is {rendered} chars (>70)")
     # tool names: every snake_case token that looks like a tool must exist
     for name in set(re.findall(r"\b([a-z]+(?:_[a-z]+){1,4})\b", body)):
         if name.endswith(("_search", "_filings", "_contracts", "_streams", "_detector", "_geocoder")) and name not in digest:
