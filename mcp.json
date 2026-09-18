@@ -1,6 +1,6 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "homepage": "https://apify.revenuesystemslabs.com/",
   "repository": {
@@ -2360,7 +2360,7 @@
     {
       "name": "alabama_business_search",
       "title": "Alabama Business Entity Registry Search",
-      "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Iowa/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
+      "description": "Search official Alabama Secretary of State business-entity records by company name, returning entity ID, legal name, entity type, registry status, and location.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/al-business-entity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds without detail pages, longer with include_details enabled; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when verifying an Alabama-registered LLC or corporation, checking entity status, or building a lead list of Alabama businesses by name.\n- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, for contractor licensing, or for company officers/registered-agent name searches.\n- Named alternatives: Use 'us_business_entity_search' for a combined Florida/Alabama/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or 'california_contractor_license_search'/'us_contractor_license_search' for contractor licences.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3908,7 +3908,7 @@
     {
       "name": "us_business_entity_search",
       "title": "US Multi-State Business Entity Search",
-      "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-business-entity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when a company name lookup should span multiple states at once, or when the entity's state of registration is unknown among Florida, Alabama, Iowa, or Wisconsin.\n- When NOT to use: Do not use for a single known state where a dedicated tool exists and is faster (e.g. 'alabama_business_search' or 'florida_new_filings_search'), for states outside this coverage, for officer/person-name lookups (use 'florida_officer_search'), or for contractor licences.\n- Named alternatives: Use 'alabama_business_search' or 'florida_new_filings_search' for a single-state lookup, 'florida_officer_search' for a person-to-company search, or 'us_contractor_license_search'/'california_contractor_license_search' for licensed contractors rather than general business entities.",
+      "description": "Search public Secretary of State business registries across Florida, Alabama, and Wisconsin in one call, returning a normalized, source-tagged record per state match.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-business-entity-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 15-45 seconds without detail pages, longer with include_details enabled and with more states selected; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use when a company name lookup should span multiple states at once, or when the entity's state of registration is unknown among Florida, Alabama, or Wisconsin.\n- When NOT to use: Do not use for a single known state where a dedicated tool exists and is faster (e.g. 'alabama_business_search' or 'florida_new_filings_search'), for states outside this coverage, for officer/person-name lookups (use 'florida_officer_search'), or for contractor licences.\n- Named alternatives: Use 'alabama_business_search' or 'florida_new_filings_search' for a single-state lookup, 'florida_officer_search' for a person-to-company search, or 'us_contractor_license_search'/'california_contractor_license_search' for licensed contractors rather than general business entities.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3924,7 +3924,6 @@
               "enum": [
                 "florida",
                 "alabama",
-                "iowa",
                 "wisconsin"
               ]
             },
@@ -3933,7 +3932,6 @@
             "default": [
               "florida",
               "alabama",
-              "iowa",
               "wisconsin"
             ],
             "description": "State registries to search. Defaults to all four supported states; narrow this to speed up a run when the state is already known.",
@@ -6428,7 +6426,7 @@
     {
       "name": "company_registry_search",
       "title": "UK, France and Global Company Registry Search",
-      "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/company-registry-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries official public company registers.\n- Authentication: Requires APIFY_TOKEN; no registry credential is required for normal bounded searches.\n- Latency & Limits: Typical runs take 10-60 seconds; detail enrichment is slower; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for cross-border company lookup, entity resolution, status verification, LEI matching, and company enrichment across the UK, France, and GLEIF.\n- When NOT to use: Do not use for US Secretary of State records, contractor licences, sanctions screening, or investment advice.\n- Named alternatives: Use 'us_business_entity_search' for Florida, Alabama, Iowa, and Wisconsin; 'gleif_lei_search' for a focused LEI lookup; or 'french_company_search' for France-only searches.",
+      "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/company-registry-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries official public company registers.\n- Authentication: Requires APIFY_TOKEN; no registry credential is required for normal bounded searches.\n- Latency & Limits: Typical runs take 10-60 seconds; detail enrichment is slower; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for cross-border company lookup, entity resolution, status verification, LEI matching, and company enrichment across the UK, France, and GLEIF.\n- When NOT to use: Do not use for US Secretary of State records, contractor licences, sanctions screening, or investment advice.\n- Named alternatives: Use 'us_business_entity_search' for Florida, Alabama, and Wisconsin; 'gleif_lei_search' for a focused LEI lookup; or 'french_company_search' for France-only searches.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -7378,6 +7376,680 @@
                   ]
                 }
               }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty_unverified",
+              "partial",
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object"
+          },
+          "run": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "status"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "federal_register_search",
+      "title": "US Federal Register Rule and Notice Search",
+      "description": "Search official US Federal Register rules, proposed rules, notices, and presidential documents. Returns agencies, publication and effective dates, abstracts, citations, CFR references, dockets, comment links, and source documents.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/federal-register-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries the official Federal Register API.\n- Authentication: Requires APIFY_TOKEN; no Federal Register key is required.\n- Latency & Limits: Typical runs take 5-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for rulemaking monitoring, regulatory research, agency-action tracking, comment-period discovery, and government-affairs workflows.\n- When NOT to use: Do not use as legal advice or assume a proposed rule is in force.\n- Named alternatives: Use 'courtlistener_case_search' for judicial decisions and dockets, 'sec_edgar_filings' for SEC company filings, or 'grants_gov_opportunity_search' for funding opportunities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Free text across titles, abstracts, and indexed document content."
+          },
+          "document_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "RULE",
+                "PRORULE",
+                "NOTICE",
+                "PRESDOCU"
+              ]
+            },
+            "uniqueItems": true,
+            "default": [
+              "RULE",
+              "PRORULE"
+            ],
+            "description": "Federal Register document types to include."
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "oldest",
+              "relevance"
+            ],
+            "default": "newest",
+            "description": "Result ordering."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum documents returned and billed."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "document_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Official Federal Register document number."
+                },
+                "title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Document title."
+                },
+                "type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Document type."
+                },
+                "agencies": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Issuing agencies."
+                },
+                "publication_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Publication date."
+                },
+                "effective_on": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Effective date when supplied."
+                },
+                "comments_close_on": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public-comment deadline when supplied."
+                },
+                "abstract": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Official abstract."
+                },
+                "citation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Federal Register citation."
+                },
+                "cfr_references": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Code of Federal Regulations references."
+                },
+                "docket_ids": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Associated docket identifiers."
+                },
+                "comment_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public-comment URL where available."
+                },
+                "html_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Canonical document page."
+                },
+                "pdf_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Official document PDF."
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty_unverified",
+              "partial",
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object"
+          },
+          "run": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "status"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "oregon_contractor_license_search",
+      "title": "Oregon CCB Contractor License Search",
+      "description": "Search official Oregon Construction Contractors Board licence records by contractor or business name. Returns licence status and address, with optional endorsement, insurance, bond, associated-person, complaint, discipline, and unpaid-claim detail.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/or-contractor-license-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries the public Oregon CCB registry.\n- Authentication: Requires APIFY_TOKEN.\n- Latency & Limits: Typical runs take 10-30 seconds without details and longer with detail enrichment; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Oregon contractor vetting, licence verification, trade lead generation, and public complaint or bond research.\n- When NOT to use: Do not use for California-only searches, general company registration, or a final legal or insurance determination.\n- Named alternatives: Use 'us_contractor_license_search' for California and Oregon together, 'california_contractor_license_search' for CSLB, or 'us_business_entity_search' for general entities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial Oregon contractor or business name."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "Add endorsement, insurance, bond, associated-person, complaint, discipline, and unpaid-debt data."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum licence records returned and billed."
+          }
+        },
+        "required": [
+          "search_query"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "license_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Oregon CCB licence number."
+                },
+                "business_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registered business or DBA name."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Board licence status."
+                },
+                "address": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Published mailing address."
+                },
+                "legal_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Legal licensee name from detail data."
+                },
+                "expiration_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current licence-period expiration date."
+                },
+                "endorsement_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Work permitted by the licence endorsement."
+                },
+                "phone": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Published business phone."
+                },
+                "liability_insurer": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current liability carrier."
+                },
+                "liability_amount": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current liability coverage amount."
+                },
+                "complaint_history": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Whether complaints appear in the public ten-year history."
+                },
+                "disciplinary_history": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Whether discipline appears in the public ten-year history."
+                },
+                "unpaid_claims": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public unpaid-claim amount."
+                }
+              },
+              "required": [
+                "license_number",
+                "business_name"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty_unverified",
+              "partial",
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object"
+          },
+          "run": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "status"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "us_nonprofit_search",
+      "title": "US Nonprofit and IRS Form 990 Search",
+      "description": "Search US nonprofit and charity records from ProPublica Nonprofit Explorer. Returns organization identity, EIN, location, classification, and reported revenue, with optional IRS Business Master File and Form 990 financial detail.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/us-nonprofit-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries public nonprofit and IRS-derived records.\n- Authentication: Requires APIFY_TOKEN.\n- Latency & Limits: Typical runs take 10-30 seconds without details and longer with Form 990 enrichment; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for nonprofit discovery, EIN lookup, charity research, grant-market analysis, and public Form 990 financial screening.\n- When NOT to use: Do not use as a tax-exemption determination, charity recommendation, or substitute for the latest IRS record.\n- Named alternatives: Use 'grants_gov_opportunity_search' for funding opportunities, 'us_business_entity_search' for state-registered businesses, or 'company_registry_search' for UK, French, and LEI entities.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Organization name or nonprofit keyword."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "Add IRS Business Master File fields and latest machine-readable Form 990 financials."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum nonprofit records returned and billed."
+          }
+        },
+        "required": [
+          "search_query"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Organization name."
+                },
+                "ein": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Nine-digit IRS EIN."
+                },
+                "city": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Organization city."
+                },
+                "state": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "State code."
+                },
+                "ntee_classification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Human-readable nonprofit activity classification."
+                },
+                "revenue_amount": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Latest displayed revenue normalized to dollars."
+                },
+                "revenue_year": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Fiscal year for displayed revenue."
+                },
+                "profile_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Public Nonprofit Explorer profile."
+                },
+                "ruling_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "IRS exemption ruling date; detail mode."
+                },
+                "latest_filing_year": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Newest annual filing year; detail mode."
+                },
+                "latest_filing_pdf_url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Newest Form 990 PDF link; detail mode."
+                },
+                "total_revenue": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Machine-readable Form 990 total revenue; detail mode."
+                },
+                "total_expenses": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Machine-readable Form 990 total expenses; detail mode."
+                },
+                "total_assets": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "description": "Machine-readable Form 990 year-end assets; detail mode."
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "empty_unverified",
+              "partial",
+              "error"
+            ]
+          },
+          "error": {
+            "type": "object"
+          },
+          "run": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "status"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "wisconsin_business_search",
+      "title": "Wisconsin Business Entity Registry Search",
+      "description": "Search the official Wisconsin DFI corporate registry by company name. Returns entity ID, legal name, entity type, registration date, and status, with optional agent, office, annual-report, former-name, and foreign-organization detail.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/wi-business-entity-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries the public Wisconsin DFI registry.\n- Authentication: Requires APIFY_TOKEN.\n- Latency & Limits: Typical runs take 10-30 seconds without details and longer with detail pages; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for Wisconsin entity verification, status checks, registered-agent research, former-name discovery, and business lead enrichment.\n- When NOT to use: Do not use for other states, contractor licences, or a legal good-standing determination.\n- Named alternatives: Use 'us_business_entity_search' for a multi-state lookup, 'us_contractor_license_search' for licensed contractors.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_query": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Full or partial Wisconsin business name."
+          },
+          "include_details": {
+            "type": "boolean",
+            "default": false,
+            "description": "Add registered agent, office addresses, annual-report year, former name, and foreign-entity details."
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Maximum records returned and billed."
+          }
+        },
+        "required": [
+          "search_query"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entity_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Wisconsin DFI entity identifier."
+                },
+                "entity_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registered business name."
+                },
+                "entity_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Wisconsin registration class."
+                },
+                "registered_date": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registration effective date."
+                },
+                "status": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Current registry status."
+                },
+                "registered_agent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registered-agent name; detail mode."
+                },
+                "registered_office": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Registered office; detail mode."
+                },
+                "principal_office": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Principal office; detail mode."
+                },
+                "last_annual_report_year": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Newest annual report year; detail mode."
+                },
+                "previous_name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Previous entity name; detail mode."
+                },
+                "foreign_state": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Home jurisdiction for a foreign entity; detail mode."
+                }
+              },
+              "required": [
+                "entity_id",
+                "entity_name"
+              ]
             }
           },
           "status": {

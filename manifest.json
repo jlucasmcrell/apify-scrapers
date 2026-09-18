@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
-  "long_description": "35 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "long_description": "39 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -197,6 +197,22 @@
     {
       "name": "sec_form_4_insider_transactions",
       "description": "Export structured insider buys, sales, grants, exercises and derivative transactions from official SEC Form 4 and 4/A XML by ticker or CIK. Returns reporting-owner roles, security details, share counts, prices and post-transaction ownership."
+    },
+    {
+      "name": "federal_register_search",
+      "description": "Search official US Federal Register rules, proposed rules, notices, and presidential documents. Returns agencies, publication and effective dates, abstracts, citations, CFR references, dockets, comment links, and source documents."
+    },
+    {
+      "name": "oregon_contractor_license_search",
+      "description": "Search official Oregon Construction Contractors Board licence records by contractor or business name. Returns licence status and address, with optional endorsement, insurance, bond, associated-person, complaint, discipline, and unpaid-claim detail."
+    },
+    {
+      "name": "us_nonprofit_search",
+      "description": "Search US nonprofit and charity records from ProPublica Nonprofit Explorer. Returns organization identity, EIN, location, classification, and reported revenue, with optional IRS Business Master File and Form 990 financial detail."
+    },
+    {
+      "name": "wisconsin_business_search",
+      "description": "Search the official Wisconsin DFI corporate registry by company name. Returns entity ID, legal name, entity type, registration date, and status, with optional agent, office, annual-report, former-name, and foreign-organization detail."
     }
   ],
   "compatibility": {
