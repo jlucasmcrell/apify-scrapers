@@ -19,6 +19,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead qualification, market intelligence, research, and machine learning pipelines.
 
 - **Source Actor:** [captainhandsome/usaspending-federal-awards](https://apify.com/captainhandsome/usaspending-federal-awards)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/us_federal_defense_ai_awards/README.html)
 - **Preconfigured Run Task:** [captainhandsome/defense-prime-contracts](https://apify.com/captainhandsome/defense-prime-contracts)
 - **Records in Sample:** 10
 - **Formats Included:** CSV (`us_federal_defense_ai_awards.csv`) and JSON (`us_federal_defense_ai_awards.json`)

@@ -19,6 +19,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead qualification, market intelligence, research, and machine learning pipelines.
 
 - **Source Actor:** [captainhandsome/linkedin-public-jobs-search](https://apify.com/captainhandsome/linkedin-public-jobs-search)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/us_remote_ai_ml_job_postings/README.html)
 - **Preconfigured Run Task:** [captainhandsome/sf-ai-engineer-openings](https://apify.com/captainhandsome/sf-ai-engineer-openings)
 - **Records in Sample:** 10
 - **Formats Included:** CSV (`us_remote_ai_ml_job_postings.csv`) and JSON (`us_remote_ai_ml_job_postings.json`)

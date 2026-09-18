@@ -23,6 +23,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead generation, labor market intelligence, and compliance verification.
 
 - **Source Actor:** [captainhandsome/google-maps-business-search](https://apify.com/captainhandsome/google-maps-business-search)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/phoenix_hvac_leads/README.html)
 - **Preconfigured Run Task:** [captainhandsome/phoenix-hvac-company-leads](https://apify.com/captainhandsome/phoenix-hvac-company-leads)
 - **Records in Sample:** 10
 - **Formats Included:** CSV (`phoenix_hvac_leads.csv`) and JSON (`phoenix_hvac_leads.json`)

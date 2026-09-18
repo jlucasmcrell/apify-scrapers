@@ -19,6 +19,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead qualification, market intelligence, research, and machine learning pipelines.
 
 - **Source Actor:** [captainhandsome/sec-edgar-filings-search](https://apify.com/captainhandsome/sec-edgar-filings-search)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/sp500_sec_edgar_filings/README.html)
 - **Preconfigured Run Task:** [captainhandsome/apple-microsoft-10k-filings](https://apify.com/captainhandsome/apple-microsoft-10k-filings)
 - **Records in Sample:** 5
 - **Formats Included:** CSV (`sp500_sec_edgar_filings.csv`) and JSON (`sp500_sec_edgar_filings.json`)

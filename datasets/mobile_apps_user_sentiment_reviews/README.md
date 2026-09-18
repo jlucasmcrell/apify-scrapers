@@ -19,6 +19,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead qualification, market intelligence, research, and machine learning pipelines.
 
 - **Source Actor:** [captainhandsome/google-play-reviews-scraper](https://apify.com/captainhandsome/google-play-reviews-scraper)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/mobile_apps_user_sentiment_reviews/README.html)
 - **Preconfigured Run Task:** [captainhandsome/instagram-1star-reviews](https://apify.com/captainhandsome/instagram-1star-reviews)
 - **Records in Sample:** 10
 - **Formats Included:** CSV (`mobile_apps_user_sentiment_reviews.csv`) and JSON (`mobile_apps_user_sentiment_reviews.json`)

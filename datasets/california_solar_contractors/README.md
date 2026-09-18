@@ -23,6 +23,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead generation, labor market intelligence, and compliance verification.
 
 - **Source Actor:** [captainhandsome/ca-contractor-license-search](https://apify.com/captainhandsome/ca-contractor-license-search)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/california_solar_contractors/README.html)
 - **Preconfigured Run Task:** [captainhandsome/california-contractor-smith](https://apify.com/captainhandsome/california-contractor-smith)
 - **Records in Sample:** 50
 - **Formats Included:** CSV (`california_licensed_contractors.csv`) and JSON (`california_licensed_contractors.json`)

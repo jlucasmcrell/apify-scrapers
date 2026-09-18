@@ -23,6 +23,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead generation, labor market intelligence, and compliance verification.
 
 - **Source Actor:** [captainhandsome/glassdoor-jobs-scraper](https://apify.com/captainhandsome/glassdoor-jobs-scraper)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/austin_software_jobs/README.html)
 - **Preconfigured Run Task:** [captainhandsome/austin-software-engineer-jobs](https://apify.com/captainhandsome/austin-software-engineer-jobs)
 - **Records in Sample:** 30
 - **Formats Included:** CSV (`austin_software_jobs.csv`) and JSON (`austin_software_jobs.json`)

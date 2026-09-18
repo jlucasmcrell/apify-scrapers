@@ -19,6 +19,7 @@ This dataset contains clean, structured public data exported directly from produ
 It serves as a benchmark and sample for lead qualification, market intelligence, research, and machine learning pipelines.
 
 - **Source Actor:** [captainhandsome/twitch-live-streams-scraper](https://apify.com/captainhandsome/twitch-live-streams-scraper)
+- **Dataset Page:** [Public sample and schema](https://apify.revenuesystemslabs.com/datasets/twitch_top_live_streams_metadata/README.html)
 - **Preconfigured Run Task:** [captainhandsome/twitch-live-fortnite-streams](https://apify.com/captainhandsome/twitch-live-fortnite-streams)
 - **Records in Sample:** 10
 - **Formats Included:** CSV (`twitch_top_live_streams_metadata.csv`) and JSON (`twitch_top_live_streams_metadata.json`)
