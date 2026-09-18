@@ -1,0 +1,32 @@
+{%- comment -%}
+Traffic measurement. OFF unless _config.yml sets analytics.provider.
+
+Why this file exists: the site had no analytics of any kind (checked live
+2026-09-18 - no GA, Plausible, Umami, PostHog, Matomo, Fathom, Cloudflare or
+Segment). The only observable was Apify-side run counts, which is the right
+outcome metric and a useless diagnostic one: a visit from the n8n template
+gallery, a Hugging Face dataset card or a Google result looked exactly like
+nobody arriving at all. Nothing is collected until a provider and id are set.
+
+All three supported options are cookie-less and store no personal data, so no
+consent banner is required. Pick one and set both keys; no other change needed.
+
+  goatcounter : free for personal/non-commercial use. id = your subdomain.
+                https://www.goatcounter.com
+  plausible   : paid hosted (or self-hosted). id = the domain, e.g.
+                apify.revenuesystemslabs.com. https://plausible.io
+  umami       : free tier hosted. id = the website UUID. https://umami.is
+{%- endcomment -%}
+{%- assign a = site.analytics -%}
+{%- if a and a.provider and a.id -%}
+{%- case a.provider -%}
+{%- when "goatcounter" -%}
+<script data-goatcounter="https://{{ a.id }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+{%- when "plausible" -%}
+<script defer data-domain="{{ a.id }}" src="https://plausible.io/js/script.js"></script>
+{%- when "umami" -%}
+<script defer src="https://cloud.umami.is/script.js" data-website-id="{{ a.id }}"></script>
+{%- endcase -%}
+{%- else -%}
+<!-- analytics: disabled (set analytics.provider and analytics.id in _config.yml) -->
+{%- endif -%}
