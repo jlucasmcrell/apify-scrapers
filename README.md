@@ -59,6 +59,10 @@ No separate subscription to this MCP package is required. Actor runs are billed 
 
 ---
 
+## Privacy Policy
+
+The MCP server collects nothing. It runs on your machine, reads `APIFY_TOKEN` from your environment, and its only outbound calls are to the Apify API to run the Actor you asked for — on your own Apify account. No telemetry, no logs, no data sent to us. Full policy: [apify.revenuesystemslabs.com/privacy](https://apify.revenuesystemslabs.com/privacy/).
+
 ## Make.com templates
 
 Eight published Make scenarios, one click to copy into your own Make account. Each asks for your Apify token and your destination (Google Sheets or Slack) in the setup wizard.
