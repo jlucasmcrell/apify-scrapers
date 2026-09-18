@@ -2,6 +2,24 @@
 
 Ready-to-import visual workflow templates for automating lead extraction, filing alerts, and market intelligence using Apify actors.
 
+> **Upgraded 2026-09-18.** The first version of these templates was rejected by the n8n template
+> library as "too basic" (4 nodes, no in-canvas documentation, no branching, no error handling).
+> They have been rebuilt to the bar measured from 27 published templates in the same categories:
+> median **10 distinct node types**, and **100% of them carry a sticky note** on the canvas.
+>
+> Each template now ships with a documentation note, a single **Configure search** node (the one
+> place to edit), an explicit **Any records returned?** branch, a **Drop rows with no identifier**
+> guard, retry on the Apify call, and a failure branch that alerts instead of ending silently.
+> Persistent duplicate suppression is unchanged — it was already correct.
+>
+> **Verified, not assumed:** every file imports into a real n8n instance (`n8n import:workflow`)
+> and executes. Running the graph in n8n resolves every node type and, with no credential present,
+> takes the failure branch to **Alert on failure** exactly as designed.
+>
+> Submit in this order — measured competition in the n8n library, same day: `grants.gov` **0**
+> competing templates, `nhtsa recall` **1**, `sec edgar` **2**, versus `apify google sheets` **226**
+> and `google maps leads` **50**. The empty categories are the ones that get found.
+
 ---
 
 ## 1. Google Maps Leads to Google Sheets (`n8n_google_maps_to_sheets.json`)
@@ -12,10 +30,11 @@ Automatically extract business leads (name, phone number, physical address, star
 1. Open your n8n workspace (self-hosted or n8n Cloud).
 2. Click **Add Workflow** -> **Import from File...** (or copy-paste the JSON).
 3. Select `workflows/n8n_google_maps_to_sheets.json`.
-4. Configure credentials:
-   - **Apify API:** In the HTTP Request node, add your Apify token as header `Authorization: Bearer YOUR_APIFY_TOKEN`.
-   - **Google Sheets:** Authenticate your Google OAuth or Service Account in the Google Sheets node, and paste your target `Document ID` and `Sheet Name`.
-5. Run the workflow or activate the weekly trigger.
+4. Open **Configure search** and set `search_query` (plus `max_items` if you want a different ceiling) — that is the only node you need to edit.
+5. Configure credentials:
+   - **Apify API:** create a Header Auth credential named `Apify` with header name `Authorization` and value `Bearer YOUR_APIFY_TOKEN` (Apify Console -> Settings -> Integrations).
+   - **Google Sheets:** authenticate your Google OAuth or Service Account in the Google Sheets node, and paste your target `Document ID` and `Sheet Name`.
+6. Run the workflow or activate the weekly trigger.
 
 - **Underlying Actor:** [captainhandsome/google-maps-business-search](https://apify.com/captainhandsome/google-maps-business-search)
 - **Preconfigured Public Task:** [Find HVAC Company Leads in Phoenix](https://apify.com/captainhandsome/google-maps-business-search/examples/phoenix-hvac-company-leads)

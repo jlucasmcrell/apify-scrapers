@@ -1,6 +1,21 @@
 {
-  "name": "Daily NHTSA Vehicle Recall Monitor to Slack or Discord",
+  "name": "Monitor NHTSA vehicle recalls with Apify and Slack",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## NHTSA recall monitor\n\n**What it does**\nChecks NHTSA for new vehicle recall campaigns and posts each new campaign to Slack or Discord.\n\n**Setup (2 minutes)**\n1. Create a Header Auth credential named `Apify` (name `Authorization`, value `Bearer YOUR_APIFY_TOKEN`) from Apify Console -> Settings -> Integrations.\n2. Open **Configure search** and set `make` and `max_items` - that is the only place you need to edit.\n3. Paste your Slack or Discord webhook URL into **Send the alert**.\n\n**How it behaves**\n- Runs on a schedule; every run asks the Actor for the current rows.\n- Rows already sent are skipped, so you are alerted once per record rather than\n  once per run. The seen-list lives in the workflow's static data and is trimmed\n  to the newest 1,000 keys.\n- A row with no campaign_number + make + model + year is dropped rather than written, because a\n  record with no identifier cannot be deduplicated later.\n- If the run fails or returns nothing, the failure branch posts an alert instead\n  of ending silently.\n\n**Actor used:** https://apify.com/captainhandsome/captainhandsome/nhtsa-vehicle-recall-search\n",
+        "height": 420,
+        "width": 1000
+      },
+      "id": "note-1",
+      "name": "How this works",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        40
+      ]
+    },
     {
       "parameters": {
         "rule": {
@@ -12,13 +27,43 @@
           ]
         }
       },
-      "id": "77777777-0000-0000-0000-000000000001",
+      "id": "trig-1",
       "name": "Every 24 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        250,
-        300
+        220,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-1",
+              "name": "make",
+              "value": "Honda",
+              "type": "string"
+            },
+            {
+              "id": "cfg-2",
+              "name": "max_items",
+              "value": 20,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "cfg-1",
+      "name": "Configure search",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        520
       ]
     },
     {
@@ -30,30 +75,105 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"make\": \"Honda\",\n  \"model\": \"Civic\",\n  \"model_year\": 2020,\n  \"max_items\": 20\n}",
-        "options": {}
+        "body": "={\n  \"make\": \"={{ $json.make }}\",\n  \"model\": \"Civic\",\n  \"model_year\": 2020,\n  \"max_items\": \"={{ $json.max_items }}\"\n}",
+        "options": {
+          "timeout": 300000
+        }
       },
-      "id": "77777777-0000-0000-0000-000000000002",
-      "name": "Search NHTSA Recalls",
+      "id": "http-1",
+      "name": "Run Apify Actor",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        480,
-        300
+        660,
+        520
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "Retries twice, then routes to the failure branch."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-rows",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-1",
+      "name": "Any records returned?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.0,
+      "position": [
+        880,
+        520
       ]
     },
     {
       "parameters": {
         "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = [row.campaign_number, row.make, row.model, row.model_year].filter(Boolean).join('|');\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 2000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
       },
-      "id": "77777777-0000-0000-0000-000000000003",
-      "name": "Only New Recall Campaigns",
+      "id": "code-1",
+      "name": "Keep only new rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        700,
-        300
-      ]
+        1100,
+        400
+      ],
+      "notes": "Deduplicates against previous executions using workflow static data."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-present",
+              "leftValue": "={{ $json.campaign_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filt-1",
+      "name": "Drop rows with no identifier",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        400
+      ],
+      "notes": "A record without an identifier cannot be deduplicated on the next run."
     },
     {
       "parameters": {
@@ -65,14 +185,36 @@
         "body": "={{ JSON.stringify({ text: '*New NHTSA vehicle recall*\\n*Vehicle:* ' + $json.model_year + ' ' + $json.make + ' ' + $json.model + '\\n*Campaign:* ' + $json.campaign_number + '\\n*Component:* ' + $json.component + '\\n*Park-it warning:* ' + $json.park_it + '\\n*Summary:* ' + $json.summary + '\\n*Remedy:* ' + $json.remedy }) }}",
         "options": {}
       },
-      "id": "77777777-0000-0000-0000-000000000004",
-      "name": "Send Recall Alert",
+      "id": "dest-1",
+      "name": "Send the alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        920,
-        300
-      ]
+        1540,
+        400
+      ],
+      "notes": "Paste your Slack or Discord webhook URL here."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: ':warning: Apify run failed or returned no records for ' + 'Monitor NHTSA vehicle recalls with Apify and Slack' }) }",
+        "options": {}
+      },
+      "id": "alert-1",
+      "name": "Alert on failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        660
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "Runs when the Actor call errors or returns nothing."
     }
   ],
   "connections": {
@@ -80,29 +222,76 @@
       "main": [
         [
           {
-            "node": "Search NHTSA Recalls",
+            "node": "Configure search",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Search NHTSA Recalls": {
+    "Configure search": {
       "main": [
         [
           {
-            "node": "Only New Recall Campaigns",
+            "node": "Run Apify Actor",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Only New Recall Campaigns": {
+    "Run Apify Actor": {
       "main": [
         [
           {
-            "node": "Send Recall Alert",
+            "node": "Any records returned?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any records returned?": {
+      "main": [
+        [
+          {
+            "node": "Keep only new rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep only new rows": {
+      "main": [
+        [
+          {
+            "node": "Drop rows with no identifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drop rows with no identifier": {
+      "main": [
+        [
+          {
+            "node": "Send the alert",
             "type": "main",
             "index": 0
           }
@@ -110,9 +299,10 @@
       ]
     }
   },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "meta": {
-    "templateId": "apify-nhtsa-vehicle-recall-monitor",
-    "instanceId": "community-template",
-    "description": "Monitor official NHTSA vehicle recalls with captainhandsome/nhtsa-vehicle-recall-search, suppress previously seen campaign and vehicle combinations, and send new safety alerts to Slack or Discord."
+    "templateCredsSetupCompleted": false
   }
 }

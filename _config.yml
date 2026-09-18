@@ -12,7 +12,7 @@ url: https://apify.revenuesystemslabs.com
 # Supported: goatcounter (free, id = subdomain) | plausible (paid, id = domain) |
 # umami (free tier, id = website UUID). All cookie-less, no consent banner.
 analytics:
-  provider: ""
+  provider: "goatcounter"
   id: ""
 exclude:
   - build

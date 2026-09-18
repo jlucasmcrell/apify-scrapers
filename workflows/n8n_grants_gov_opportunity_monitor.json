@@ -1,6 +1,21 @@
 {
-  "name": "Daily Grants.gov Opportunity Monitor to Slack or Discord",
+  "name": "Monitor Grants.gov funding opportunities with Apify and Slack",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## Grants.gov opportunity monitor\n\n**What it does**\nChecks Grants.gov for newly posted funding opportunities and posts each new one to Slack or Discord.\n\n**Setup (2 minutes)**\n1. Create a Header Auth credential named `Apify` (name `Authorization`, value `Bearer YOUR_APIFY_TOKEN`) from Apify Console -> Settings -> Integrations.\n2. Open **Configure search** and set `keyword` and `max_items` - that is the only place you need to edit.\n3. Paste your Slack or Discord webhook URL into **Send the alert**.\n\n**How it behaves**\n- Runs on a schedule; every run asks the Actor for the current rows.\n- Rows already sent are skipped, so you are alerted once per record rather than\n  once per run. The seen-list lives in the workflow's static data and is trimmed\n  to the newest 1,000 keys.\n- A row with no opportunity_number, grants_gov_url or title is dropped rather than written, because a\n  record with no identifier cannot be deduplicated later.\n- If the run fails or returns nothing, the failure branch posts an alert instead\n  of ending silently.\n\n**Actor used:** https://apify.com/captainhandsome/captainhandsome/grants-gov-opportunity-search\n",
+        "height": 420,
+        "width": 1000
+      },
+      "id": "note-1",
+      "name": "How this works",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        40
+      ]
+    },
     {
       "parameters": {
         "rule": {
@@ -12,13 +27,43 @@
           ]
         }
       },
-      "id": "44444444-0000-0000-0000-000000000001",
+      "id": "trig-1",
       "name": "Every 24 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        250,
-        300
+        220,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-1",
+              "name": "keyword",
+              "value": "small business innovation research",
+              "type": "string"
+            },
+            {
+              "id": "cfg-2",
+              "name": "max_items",
+              "value": 10,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "cfg-1",
+      "name": "Configure search",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        520
       ]
     },
     {
@@ -30,30 +75,105 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"keyword\": \"small business innovation research\",\n  \"statuses\": [\"posted\"],\n  \"include_details\": true,\n  \"max_items\": 10\n}",
-        "options": {}
+        "body": "={\n  \"keyword\": \"={{ $json.keyword }}\",\n  \"statuses\": [\n    \"posted\"\n  ],\n  \"include_details\": true,\n  \"max_items\": \"={{ $json.max_items }}\"\n}",
+        "options": {
+          "timeout": 300000
+        }
       },
-      "id": "44444444-0000-0000-0000-000000000002",
-      "name": "Search Grants.gov",
+      "id": "http-1",
+      "name": "Run Apify Actor",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        480,
-        300
+        660,
+        520
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "Retries twice, then routes to the failure branch."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-rows",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-1",
+      "name": "Any records returned?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.0,
+      "position": [
+        880,
+        520
       ]
     },
     {
       "parameters": {
         "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.opportunity_number || row.grants_gov_url || row.title;\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 1000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
       },
-      "id": "44444444-0000-0000-0000-000000000005",
-      "name": "Only New Opportunities",
+      "id": "code-1",
+      "name": "Keep only new rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        700,
-        300
-      ]
+        1100,
+        400
+      ],
+      "notes": "Deduplicates against previous executions using workflow static data."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-present",
+              "leftValue": "={{ $json.opportunity_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filt-1",
+      "name": "Drop rows with no identifier",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        400
+      ],
+      "notes": "A record without an identifier cannot be deduplicated on the next run."
     },
     {
       "parameters": {
@@ -65,14 +185,36 @@
         "body": "={{ JSON.stringify({ text: '*New Grants.gov opportunity*\\n*Title:* ' + $json.title + '\\n*Agency:* ' + $json.agency_name + '\\n*Closes:* ' + $json.close_date + '\\n*Opportunity:* ' + $json.opportunity_number + '\\n*Link:* ' + $json.grants_gov_url }) }}",
         "options": {}
       },
-      "id": "44444444-0000-0000-0000-000000000006",
-      "name": "Send Grant Alert",
+      "id": "dest-1",
+      "name": "Send the alert",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        920,
-        300
-      ]
+        1540,
+        400
+      ],
+      "notes": "Paste your Slack or Discord webhook URL here."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: ':warning: Apify run failed or returned no records for ' + 'Monitor Grants.gov funding opportunities with Apify and Slack' }) }",
+        "options": {}
+      },
+      "id": "alert-1",
+      "name": "Alert on failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        660
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "Runs when the Actor call errors or returns nothing."
     }
   ],
   "connections": {
@@ -80,29 +222,76 @@
       "main": [
         [
           {
-            "node": "Search Grants.gov",
+            "node": "Configure search",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Search Grants.gov": {
+    "Configure search": {
       "main": [
         [
           {
-            "node": "Only New Opportunities",
+            "node": "Run Apify Actor",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Only New Opportunities": {
+    "Run Apify Actor": {
       "main": [
         [
           {
-            "node": "Send Grant Alert",
+            "node": "Any records returned?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any records returned?": {
+      "main": [
+        [
+          {
+            "node": "Keep only new rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep only new rows": {
+      "main": [
+        [
+          {
+            "node": "Drop rows with no identifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drop rows with no identifier": {
+      "main": [
+        [
+          {
+            "node": "Send the alert",
             "type": "main",
             "index": 0
           }
@@ -110,9 +299,10 @@
       ]
     }
   },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "meta": {
-    "templateId": "apify-grants-gov-opportunity-monitor",
-    "instanceId": "community-template",
-    "description": "Monitor posted Grants.gov opportunities with captainhandsome/grants-gov-opportunity-search, suppress previously seen notices, and send new funding links to Slack or Discord."
+    "templateCredsSetupCompleted": false
   }
 }

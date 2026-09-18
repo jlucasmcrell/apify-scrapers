@@ -1,6 +1,21 @@
 {
-  "name": "Export Google Maps Leads to Google Sheets on a Schedule",
+  "name": "Build local B2B lead lists from Google Maps into Google Sheets",
   "nodes": [
+    {
+      "parameters": {
+        "content": "## Google Maps leads -> Google Sheets\n\n**What it does**\nSearches Google Maps for a business category in a location and appends only the leads not seen before to a Google Sheet.\n\n**Setup (2 minutes)**\n1. Create a Header Auth credential named `Apify` (name `Authorization`, value `Bearer YOUR_APIFY_TOKEN`) from Apify Console -> Settings -> Integrations.\n2. Open **Configure search** and set `search_query` and `max_items` - that is the only place you need to edit.\n3. Set your spreadsheet ID and sheet name in **Append to Google Sheets**.\n\n**How it behaves**\n- Runs on a schedule; every run asks the Actor for the current rows.\n- Rows already sent are skipped, so you are alerted once per record rather than\n  once per run. The seen-list lives in the workflow's static data and is trimmed\n  to the newest 1,000 keys.\n- A row with no place_id, place_url, or name+address is dropped rather than written, because a\n  record with no identifier cannot be deduplicated later.\n- If the run fails or returns nothing, the failure branch posts an alert instead\n  of ending silently.\n\n**Actor used:** https://apify.com/captainhandsome/captainhandsome/google-maps-business-search\n",
+        "height": 420,
+        "width": 1000
+      },
+      "id": "note-1",
+      "name": "How this works",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        40
+      ]
+    },
     {
       "parameters": {
         "rule": {
@@ -12,13 +27,43 @@
           ]
         }
       },
-      "id": "11111111-0000-0000-0000-000000000001",
+      "id": "trig-1",
       "name": "Weekly Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        250,
-        300
+        220,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-1",
+              "name": "search_query",
+              "value": "commercial electricians",
+              "type": "string"
+            },
+            {
+              "id": "cfg-2",
+              "name": "max_items",
+              "value": 50,
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "cfg-1",
+      "name": "Configure search",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        520
       ]
     },
     {
@@ -30,30 +75,105 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={\n  \"search_query\": \"commercial electricians\",\n  \"location\": \"Dallas, Texas\",\n  \"max_items\": 50,\n  \"include_details\": true\n}",
-        "options": {}
+        "body": "={\n  \"search_query\": \"={{ $json.search_query }}\",\n  \"location\": \"Dallas, Texas\",\n  \"max_items\": \"={{ $json.max_items }}\",\n  \"include_details\": true\n}",
+        "options": {
+          "timeout": 300000
+        }
       },
-      "id": "11111111-0000-0000-0000-000000000002",
-      "name": "Start Google Maps Scraper",
+      "id": "http-1",
+      "name": "Run Apify Actor",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        480,
-        300
+        660,
+        520
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "Retries twice, then routes to the failure branch."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-rows",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-1",
+      "name": "Any records returned?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.0,
+      "position": [
+        880,
+        520
       ]
     },
     {
       "parameters": {
         "jsCode": "const store = $getWorkflowStaticData('global');\nstore.seen = store.seen || {};\nconst output = [];\nfor (const item of $input.all()) {\n  const rows = Array.isArray(item.json) ? item.json : [item.json];\n  for (const row of rows) {\n    const key = row.place_id || row.place_url || (row.name + '|' + row.address);\n    if (key && !store.seen[key]) {\n      store.seen[key] = Date.now();\n      output.push({ json: row });\n    }\n  }\n}\nconst newest = Object.entries(store.seen).sort((a, b) => b[1] - a[1]).slice(0, 5000);\nstore.seen = Object.fromEntries(newest);\nreturn output;"
       },
-      "id": "11111111-0000-0000-0000-000000000003",
-      "name": "Only New Leads",
+      "id": "code-1",
+      "name": "Keep only new rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        700,
-        300
-      ]
+        1100,
+        400
+      ],
+      "notes": "Deduplicates against previous executions using workflow static data."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-present",
+              "leftValue": "={{ $json.place_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filt-1",
+      "name": "Drop rows with no identifier",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        400
+      ],
+      "notes": "A record without an identifier cannot be deduplicated on the next run."
     },
     {
       "parameters": {
@@ -74,14 +194,36 @@
         },
         "options": {}
       },
-      "id": "11111111-0000-0000-0000-000000000005",
+      "id": "dest-1",
       "name": "Append to Google Sheets",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
       "position": [
-        920,
-        300
-      ]
+        1540,
+        400
+      ],
+      "notes": "Set the spreadsheet ID and sheet name here."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OR_DISCORD_WEBHOOK_URL",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: ':warning: Apify run failed or returned no records for ' + 'Build local B2B lead lists from Google Maps into Google Sheets' }) }",
+        "options": {}
+      },
+      "id": "alert-1",
+      "name": "Alert on failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        660
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "Runs when the Actor call errors or returns nothing."
     }
   ],
   "connections": {
@@ -89,25 +231,72 @@
       "main": [
         [
           {
-            "node": "Start Google Maps Scraper",
+            "node": "Configure search",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Start Google Maps Scraper": {
+    "Configure search": {
       "main": [
         [
           {
-            "node": "Only New Leads",
+            "node": "Run Apify Actor",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Only New Leads": {
+    "Run Apify Actor": {
+      "main": [
+        [
+          {
+            "node": "Any records returned?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any records returned?": {
+      "main": [
+        [
+          {
+            "node": "Keep only new rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert on failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep only new rows": {
+      "main": [
+        [
+          {
+            "node": "Drop rows with no identifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drop rows with no identifier": {
       "main": [
         [
           {
@@ -119,9 +308,10 @@
       ]
     }
   },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "meta": {
-    "templateId": "apify-google-maps-to-sheets",
-    "instanceId": "community-template",
-    "description": "Automatically extract business leads (name, phone, address, rating, website) using captainhandsome/google-maps-business-search on Apify and append them to Google Sheets."
+    "templateCredsSetupCompleted": false
   }
 }
