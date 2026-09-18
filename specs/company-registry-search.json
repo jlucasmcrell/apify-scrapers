@@ -3,17 +3,60 @@
   "tool": {
     "name": "company_registry_search",
     "title": "UK, France and Global Company Registry Search",
-    "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/company-registry-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries official public company registers.\n- Authentication: Requires APIFY_TOKEN; no registry credential is required for normal bounded searches.\n- Latency & Limits: Typical runs take 10-60 seconds; detail enrichment is slower; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for cross-border company lookup, entity resolution, status verification, LEI matching, and company enrichment across the UK, France, and GLEIF.\n- When NOT to use: Do not use for US Secretary of State records, contractor licences, sanctions screening, or investment advice.\n- Named alternatives: Use 'us_business_entity_search' for Florida, Alabama, Iowa, and Wisconsin; 'gleif_lei_search' for a focused LEI lookup; or 'french_company_search' for France-only searches.",
+    "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/company-registry-search'.\n- Side Effects: Creates a billed Actor run and dataset on your Apify account; queries official public company registers.\n- Authentication: Requires APIFY_TOKEN; no registry credential is required for normal bounded searches.\n- Latency & Limits: Typical runs take 10-60 seconds; detail enrichment is slower; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for cross-border company lookup, entity resolution, status verification, LEI matching, and company enrichment across the UK, France, and GLEIF.\n- When NOT to use: Do not use for US Secretary of State records, contractor licences, sanctions screening, or investment advice.\n- Named alternatives: Use 'us_business_entity_search' for Florida, Alabama, and Wisconsin; 'gleif_lei_search' for a focused LEI lookup; or 'french_company_search' for France-only searches.",
     "inputSchema": {
       "type": "object",
       "properties": {
-        "search_queries": {"type": "array", "items": {"type": "string", "minLength": 2}, "minItems": 1, "maxItems": 25, "description": "One or more full or partial company names."},
-        "sources": {"type": "array", "items": {"type": "string", "enum": ["uk", "france", "global"]}, "minItems": 1, "uniqueItems": true, "default": ["uk", "france", "global"], "description": "Official registries to search."},
-        "include_details": {"type": "boolean", "default": false, "description": "Add source-specific detail such as UK officers and filings or GLEIF parent relationships."},
-        "active_only": {"type": "boolean", "default": true, "description": "Exclude dissolved, ceased, and lapsed entities."},
-        "max_results": {"type": "integer", "minimum": 1, "maximum": 100, "default": 10, "description": "Maximum records returned and billed across all queries and registries."}
+        "search_queries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2
+          },
+          "minItems": 1,
+          "maxItems": 25,
+          "description": "One or more full or partial company names."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "uk",
+              "france",
+              "global"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": [
+            "uk",
+            "france",
+            "global"
+          ],
+          "description": "Official registries to search."
+        },
+        "include_details": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add source-specific detail such as UK officers and filings or GLEIF parent relationships."
+        },
+        "active_only": {
+          "type": "boolean",
+          "default": true,
+          "description": "Exclude dissolved, ceased, and lapsed entities."
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Maximum records returned and billed across all queries and registries."
+        }
       },
-      "required": ["search_queries"],
+      "required": [
+        "search_queries"
+      ],
       "additionalProperties": false
     },
     "outputSchema": {
@@ -24,39 +67,173 @@
           "items": {
             "type": "object",
             "properties": {
-              "source_registry": {"type": ["string", "null"], "description": "companies_house, sirene, or gleif."},
-              "jurisdiction": {"type": ["string", "null"], "description": "Registration jurisdiction code."},
-              "company_name": {"type": ["string", "null"], "description": "Registered legal name."},
-              "registration_number": {"type": ["string", "null"], "description": "National company number."},
-              "status": {"type": ["string", "null"], "description": "Normalized registry status."},
-              "company_type": {"type": ["string", "null"], "description": "Legal form."},
-              "incorporation_date": {"type": ["string", "null"], "description": "Entity creation date."},
-              "address": {"type": ["string", "null"], "description": "Registered office address."},
-              "lei": {"type": ["string", "null"], "description": "Legal Entity Identifier when present."},
-              "sic_codes": {"type": ["string", "null"], "description": "Published activity codes."},
-              "revenue": {"type": ["integer", "null"], "description": "Most recent public turnover where available."},
-              "officers": {"type": ["string", "null"], "description": "Named officers where published and requested."},
-              "ultimate_parent_name": {"type": ["string", "null"], "description": "Ultimate parent from GLEIF detail data."},
-              "url": {"type": ["string", "null"], "description": "Official public record URL."}
+              "source_registry": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "companies_house, sirene, or gleif."
+              },
+              "jurisdiction": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Registration jurisdiction code."
+              },
+              "company_name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Registered legal name."
+              },
+              "registration_number": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "National company number."
+              },
+              "status": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Normalized registry status."
+              },
+              "company_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Legal form."
+              },
+              "incorporation_date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Entity creation date."
+              },
+              "address": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Registered office address."
+              },
+              "lei": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Legal Entity Identifier when present."
+              },
+              "sic_codes": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Published activity codes."
+              },
+              "revenue": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "Most recent public turnover where available."
+              },
+              "officers": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Named officers where published and requested."
+              },
+              "ultimate_parent_name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Ultimate parent from GLEIF detail data."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Official public record URL."
+              }
             }
           }
         },
-        "status": {"type": "string", "enum": ["success", "empty_unverified", "partial", "error"]},
-        "error": {"type": "object"},
-        "run": {"type": "object"}
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
       },
-      "required": ["results", "status"]
+      "required": [
+        "results",
+        "status"
+      ]
     },
-    "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
   },
   "payload_mapping": {
-    "search_queries": {"key": "search_terms", "transform": "identity", "required": true},
-    "sources": {"key": "sources", "transform": "identity"},
-    "include_details": {"key": "include_details", "transform": "identity"},
-    "active_only": {"key": "active_only", "transform": "identity"},
-    "max_results": {"key": "max_items", "transform": "int"}
+    "search_queries": {
+      "key": "search_terms",
+      "transform": "identity",
+      "required": true
+    },
+    "sources": {
+      "key": "sources",
+      "transform": "identity"
+    },
+    "include_details": {
+      "key": "include_details",
+      "transform": "identity"
+    },
+    "active_only": {
+      "key": "active_only",
+      "transform": "identity"
+    },
+    "max_results": {
+      "key": "max_items",
+      "transform": "int"
+    }
   },
   "fixed_payload": {},
-  "example_call": {"search_queries": ["Vodafone"], "sources": ["uk"], "max_results": 3},
-  "verification": {"run_id": "8ehsyxvxtAx82Islp", "items": 3, "token": "vodafone", "relevant": true, "note": "Production relevance canary returned three UK company records matching Vodafone."}
+  "example_call": {
+    "search_queries": [
+      "Vodafone"
+    ],
+    "sources": [
+      "uk"
+    ],
+    "max_results": 3
+  },
+  "verification": {
+    "run_id": "8ehsyxvxtAx82Islp",
+    "items": 3,
+    "token": "vodafone",
+    "relevant": true,
+    "note": "Production relevance canary returned three UK company records matching Vodafone."
+  }
 }

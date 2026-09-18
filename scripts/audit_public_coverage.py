@@ -90,6 +90,14 @@ def audit(username: str) -> dict:
     }
 
 
+# Public Actors deliberately kept OUT of the MCP catalogue, with the reason.
+# They are not blockers: shipping a tool whose source refuses datacenter
+# traffic wastes a buyer's first call.
+HELD_PUBLIC = {
+    "ia-business-entity-search": "Iowa SoS blocks Apify datacenter IPs (Cloudflare 403); pending Console unpublish",
+}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--username", default="captainhandsome")
@@ -98,10 +106,11 @@ def main() -> int:
     args = parser.parse_args()
 
     report = audit(args.username)
+    report["held_public_actors"] = {a: r for a, r in HELD_PUBLIC.items() if a in report["public_actors_without_mcp_tools"]}
     blockers = (
         report["mcp_tools_with_private_actors"]
-        + report["public_actors_without_mcp_tools"]
-        + sorted(set(report["verified_specs_without_mcp_tools"]) & set(report["public_actors_without_mcp_tools"]))
+        + [a for a in report["public_actors_without_mcp_tools"] if a not in HELD_PUBLIC]
+        + sorted((set(report["verified_specs_without_mcp_tools"]) & set(report["public_actors_without_mcp_tools"])) - set(HELD_PUBLIC))
         + report["public_mcp_tools_not_agentic"]
     )
     report["release_ready"] = not blockers
