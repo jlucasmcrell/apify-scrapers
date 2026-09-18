@@ -1,3 +1,9 @@
+---
+layout: default
+title: "n8n workflow templates"
+description: "Six importable n8n workflows that run Apify public-data Actors on a schedule and write rows to Sheets or Slack."
+---
+
 # Production Workflow Automation Templates (n8n, Make, Zapier)
 
 Ready-to-import visual workflow templates for automating lead extraction, filing alerts, and market intelligence using Apify actors.

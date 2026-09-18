@@ -32,5 +32,8 @@ exclude:
   - specs
   - tests
   - MANIFEST.in
+  # HF dataset cards: the canonical page is the Hugging Face card, and as site
+  # pages they were thin duplicates that only existed at /README.html.
+  - datasets/*/README.md
   - articles/reddit_community_responses.md
   - templates/google_sheets_lead_machine/gumroad_listing_copy.md

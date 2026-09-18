@@ -1,5 +1,5 @@
 ---
-title: How to Scrape Normalized Job Posting Dates from Glassdoor in Python
+title: "Glassdoor posting dates, explained"
 published: true
 tags: webscraping, python, jobs, dataengineering
 canonical_url: https://apify.revenuesystemslabs.com/articles/glassdoor_posting_dates_guide.html

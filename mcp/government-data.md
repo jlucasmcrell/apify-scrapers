@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "MCP server for US government data: USAspending, FEC, EPA, Census, CMS, openFDA, ClinicalTrials.gov"
+title: "US government data MCP server"
 description: "An MCP server for US government data letting an AI agent query USAspending, FEC, EPA, Census, CMS, openFDA, and ClinicalTrials.gov data records."
 permalink: /mcp/government-data/
 ---

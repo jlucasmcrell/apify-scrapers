@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "MCP server for job search: LinkedIn and Glassdoor listings"
+title: "Jobs MCP server: LinkedIn, Glassdoor"
 description: "An MCP server for job search that lets an AI agent fetch LinkedIn and Glassdoor job listings, company names, locations, and salary estimates as JSON."
 permalink: /mcp/job-search/
 ---

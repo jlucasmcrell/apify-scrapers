@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "MCP server for Google Maps data and business leads"
+title: "Google Maps leads MCP server"
 description: "This MCP server lets an AI agent fetch Google Maps business listings, phone numbers, websites, addresses, ratings, and review counts on demand."
 permalink: /mcp/google-maps/
 ---

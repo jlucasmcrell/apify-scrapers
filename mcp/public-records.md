@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "MCP server for public records: business registries, licences and providers"
+title: "Public records MCP server"
 description: "An MCP server that lets AI agents pull US and French business registries, contractor licenses, LEI records, and Medicare provider data as Apify Actors."
 permalink: /mcp/public-records/
 ---

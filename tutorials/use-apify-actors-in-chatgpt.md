@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "How to use Apify public-data Actors directly in ChatGPT"
+title: "Use Apify Actors in ChatGPT"
 description: "Connect focused Apify public-data tools to ChatGPT through the hosted MCP server, then search business, regulatory, procurement, safety, and news data."
 permalink: /tutorials/use-apify-actors-in-chatgpt/
 ---

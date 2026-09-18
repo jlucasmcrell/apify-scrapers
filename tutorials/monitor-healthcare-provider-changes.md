@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "How to monitor CMS healthcare-provider changes"
+title: "Monitor healthcare provider changes"
 description: "Compare scheduled CMS provider snapshots to detect ownership, rating, staffing, inspection, penalty, and service changes for facilities you follow."
 permalink: /tutorials/monitor-healthcare-provider-changes/
 ---

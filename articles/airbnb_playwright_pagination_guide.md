@@ -1,5 +1,5 @@
 ---
-title: How to Bypass Headless Pagination and Translation Modals on Airbnb with Playwright
+title: "Airbnb pagination with Playwright"
 published: true
 tags: webscraping, python, playwright, automation
 canonical_url: https://apify.revenuesystemslabs.com/articles/airbnb_playwright_pagination_guide.html

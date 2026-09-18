@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "How to build a contractor lead list from Google Maps"
+title: "Contractor lead generation, step by step"
 description: "Build a qualified local contractor lead list with Google Maps phone, website, rating, category, and address data, then verify selected licences."
 permalink: /tutorials/contractor-lead-generation/
 ---

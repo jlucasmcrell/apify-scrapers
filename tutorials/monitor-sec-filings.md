@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "How to monitor SEC EDGAR filings automatically"
+title: "Monitor SEC EDGAR filings"
 description: "Build a scheduled SEC EDGAR monitor for 10-K, 10-Q, and 8-K filings, deduplicate by accession number, and send each new filing into your workflow."
 permalink: /tutorials/monitor-sec-filings/
 ---
