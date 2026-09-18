@@ -18,14 +18,23 @@ consent banner is required. Pick one and set both keys; no other change needed.
   umami       : free tier hosted. id = the website UUID. https://umami.is
 {%- endcomment -%}
 {%- assign a = site.analytics -%}
-{%- if a and a.provider and a.id -%}
-{%- case a.provider -%}
+{%- assign prov = a.provider | default: "" | strip -%}
+{%- assign ident = a.id | default: "" | strip -%}
+{%- comment -%}
+An empty string is TRUTHY in Liquid (only nil and false are falsy), so the
+guard must compare against "" explicitly. The first version of this file tested
+`if a and a.provider and a.id`, which was true for the empty config, fell into a
+case that matched no `when`, and silently emitted nothing at all - an off switch
+that also disabled the off state.
+{%- endcomment -%}
+{%- if prov != "" and ident != "" -%}
+{%- case prov -%}
 {%- when "goatcounter" -%}
-<script data-goatcounter="https://{{ a.id }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://{{ ident }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 {%- when "plausible" -%}
-<script defer data-domain="{{ a.id }}" src="https://plausible.io/js/script.js"></script>
+<script defer data-domain="{{ ident }}" src="https://plausible.io/js/script.js"></script>
 {%- when "umami" -%}
-<script defer src="https://cloud.umami.is/script.js" data-website-id="{{ a.id }}"></script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="{{ ident }}"></script>
 {%- endcase -%}
 {%- else -%}
 <!-- analytics: disabled (set analytics.provider and analytics.id in _config.yml) -->
