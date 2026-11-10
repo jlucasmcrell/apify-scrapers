@@ -22,12 +22,12 @@ For a repeatable watchlist rather than a one-off lookup, follow the [CMS healthc
 
 ### us_business_entity_search - US Multi-State Business Entity Search
 
-Searches Florida, Alabama, Iowa, and Wisconsin registries in one call.
+Searches Florida and Alabama registries in one call.
 
 | Argument | Required | What it does |
 |---|---|---|
 | search_query | Yes | Business name to search. |
-| states | No | States to search; default: florida, alabama, iowa, wisconsin. |
+| states | No | States to search; default: florida, alabama. |
 | max_results | No | Records to bill; default: 10. |
 | include_details | No | Adds formation date, agent; default: false. |
 

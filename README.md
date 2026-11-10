@@ -132,7 +132,7 @@ Also available: [Cross-border company registry search](https://apify.com/captain
 
 ### Government & public records
 
-Also available: [SEC Form 4 insider transactions](https://apify.com/captainhandsome/sec-form-4-insider-transactions), [OFAC sanctions](https://apify.com/captainhandsome/ofac-sanctions-search), [CourtListener cases](https://apify.com/captainhandsome/courtlistener-case-search), and [NVD/CISA vulnerability intelligence](https://apify.com/captainhandsome/nvd-cisa-vulnerability-intelligence).
+Also available: [SEC Form 4 insider transactions](https://apify.com/captainhandsome/sec-form-4-insider-transactions), [OFAC sanctions](https://apify.com/captainhandsome/ofac-sanctions-search), and [NVD/CISA vulnerability intelligence](https://apify.com/captainhandsome/nvd-cisa-vulnerability-intelligence).
 
 | Tool | Store Link | Key Output Fields | Best For |
 |---|---|---|---|

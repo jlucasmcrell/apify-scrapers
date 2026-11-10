@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "long_description": "40 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
@@ -131,7 +131,7 @@
     },
     {
       "name": "us_business_entity_search",
-      "description": "Search public Secretary of State business registries across Florida, Alabama, Iowa, and Wisconsin in one call, returning a normalized, source-tagged record per state match."
+      "description": "Search public Secretary of State business registries across Florida and Alabama in one call, returning a normalized, source-tagged record per state match."
     },
     {
       "name": "us_contractor_license_search",
@@ -186,10 +186,6 @@
       "description": "Search UK Companies House, French SIRENE, and the global GLEIF LEI register in one call. Returns normalized company identity, status, registration, address, industry, financial, officer, and ownership fields where available."
     },
     {
-      "name": "courtlistener_case_search",
-      "description": "Search published judicial opinions or federal RECAP dockets through CourtListener. Returns case names, courts, dates, citations, judges, parties, filings, snippets, and canonical record links where available."
-    },
-    {
       "name": "cve_vulnerability_intelligence",
       "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references."
     },
@@ -212,10 +208,6 @@
     {
       "name": "us_nonprofit_search",
       "description": "Search US nonprofit and charity records from ProPublica Nonprofit Explorer. Returns organization identity, EIN, location, classification, and reported revenue, with optional IRS Business Master File and Form 990 financial detail."
-    },
-    {
-      "name": "wisconsin_business_search",
-      "description": "Search the official Wisconsin DFI corporate registry by company name. Returns entity ID, legal name, entity type, registration date, and status, with optional agent, office, annual-report, former-name, and foreign-organization detail."
     },
     {
       "name": "app_store_reviews_search",

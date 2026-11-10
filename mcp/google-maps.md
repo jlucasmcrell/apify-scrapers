@@ -44,7 +44,7 @@ Not for: employment job listings, corporate regulatory filings, federal procurem
 A google_maps_search result gives an agent a name, address, and website; these four tools take that lead further without leaving the same MCP server.
 
 - tech_stack_detector - checks the CMS, ecommerce platform, and contact links on a lead's website - [Store](https://apify.com/captainhandsome/tech-stack-detector)
-- us_business_entity_search - confirms a lead's corporate registration across Florida, Alabama, Iowa, and Wisconsin - [Store](https://apify.com/captainhandsome/us-business-entity-search)
+- us_business_entity_search - confirms a lead's corporate registration across Florida and Alabama - [Store](https://apify.com/captainhandsome/us-business-entity-search)
 - us_contractor_license_search - verifies a contracting lead's California or Oregon license status - [Store](https://apify.com/captainhandsome/us-contractor-license-search)
 - us_census_geocoder - turns a lead's street address into census tract, county, and district geography - [Store](https://apify.com/captainhandsome/us-census-geocoder)
 
