@@ -16,7 +16,9 @@
 set -euo pipefail
 V="${1:?version required, e.g. 1.0.8}"
 REPO="${APIFY_SCRAPERS_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"; ENV="${APIFY_FLEET_ROOT:-$REPO/../apify-fleet}/.env"
-MP="$REPO/bin/mcp-publisher.exe"   # from github.com/modelcontextprotocol/registry releases; bin/ is gitignored
+# mcp-publisher from github.com/modelcontextprotocol/registry releases (bin/ is gitignored);
+# on Linux/CI it is expected on PATH.
+MP="$REPO/bin/mcp-publisher.exe"; [ -x "$MP" ] || MP="$(command -v mcp-publisher)"
 PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2-)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2-)"
 mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
 cd "$REPO" || exit 1
@@ -47,7 +49,8 @@ PY
 [ $? -eq 0 ] || exit 3
 
 echo; echo "=== 3. MCP registry publish + verify ==="
-"$MP" login github --token "$(gh auth token)" 2>&1 | mask | tail -1
+if [ "${GITHUB_ACTIONS:-}" = "true" ]; then "$MP" login github-oidc 2>&1 | mask | tail -1   # needs id-token: write
+else "$MP" login github --token "$(gh auth token)" 2>&1 | mask | tail -1; fi
 "$MP" publish 2>&1 | mask | tail -2
 python - "$V" <<'PY'
 import sys, httpx
@@ -79,6 +82,7 @@ curl --fail --silent --show-error "https://api.smithery.ai/servers/jlucasmcrell%
 j=json.loads(sys.stdin.read()); t=j.get('tools') or []; c=(j.get('connections') or [{}])[0]
 print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))
 sys.exit(0 if len(t)==int(sys.argv[1]) else 5)" "$TOOL_COUNT"
+if [ "${SKIP_GH_RELEASE:-}" = "1" ]; then echo; echo "=== 5. GitHub release skipped (SKIP_GH_RELEASE=1) ==="; echo "=== done: $V on PyPI, MCP registry, Smithery ==="; exit 0; fi
 echo; echo "=== 5. GitHub release + verify ==="
 GH_REPO="jlucasmcrell/apify-scrapers"
 if ! gh release view "v$V" --repo "$GH_REPO" >/dev/null 2>&1; then
