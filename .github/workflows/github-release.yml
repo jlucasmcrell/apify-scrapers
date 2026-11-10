@@ -1,0 +1,47 @@
+# Creates the GitHub release for a version already published to PyPI.
+# Assets: the exact wheel + sdist from PyPI (sha256-verified) and the MCPB bundle.
+name: GitHub release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version already on PyPI, e.g. 1.4.1"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch PyPI artifacts and verify digests
+        env:
+          V: ${{ github.event.inputs.version }}
+        run: |
+          grep -q "version=\"$V\"" setup.py || { echo "::error::setup.py is not at $V"; exit 1; }
+          mkdir -p "dist/$V"
+          python - <<'PY'
+          import hashlib, json, os, urllib.request
+          v = os.environ["V"]
+          d = json.load(urllib.request.urlopen(f"https://pypi.org/pypi/apify-data-scrapers/{v}/json"))
+          for u in d["urls"]:
+              data = urllib.request.urlopen(u["url"]).read()
+              assert hashlib.sha256(data).hexdigest() == u["digests"]["sha256"], u["filename"]
+              open(f"dist/{v}/{u['filename']}", "wb").write(data)
+              print("verified", u["filename"])
+          PY
+          python scripts/build_smithery_bundle.py dist/apify-scrapers.mcpb
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ github.event.inputs.version }}
+        run: |
+          gh release view "v$V" >/dev/null 2>&1 && { echo "v$V already exists"; exit 0; }
+          gh release create "v$V" dist/$V/* dist/apify-scrapers.mcpb --target "$GITHUB_SHA" --latest --title "v$V" --generate-notes
+          gh release view "v$V" --json tagName,assets --jq '.tagName, (.assets[].name)'
