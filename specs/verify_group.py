@@ -2,7 +2,7 @@
 
 Runs each Actor with a small example payload, polls to completion, fetches
 dataset items, and checks a relevance token appears. Read-only against the
-Actors; writes nothing back to G:\\apify-fleet or G:\\apify-scrapers.
+Actors; writes nothing back to either repository.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from pathlib import Path
 import httpx
 from dotenv import load_dotenv
 
-FLEET_ROOT = Path(r"G:\apify-fleet")
+FLEET_ROOT = Path(__import__("os").environ.get("APIFY_FLEET_ROOT") or Path(__file__).resolve().parents[1].parent / "apify-fleet")
 BASE = "https://api.apify.com/v2"
 OWNER = "captainhandsome"
 

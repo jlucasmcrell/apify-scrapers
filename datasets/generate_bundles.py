@@ -2,16 +2,17 @@ import os
 import json
 import csv
 import dotenv
+from pathlib import Path
 import httpx
 
-token = dotenv.dotenv_values(r"G:\apify-fleet\.env")["APIFY_TOKEN"]
+token = dotenv.dotenv_values(Path(__import__("os").environ.get("APIFY_FLEET_ROOT") or Path(__file__).resolve().parents[1].parent / "apify-fleet") / ".env")["APIFY_TOKEN"]
 headers = {"Authorization": f"Bearer {token}"}
 
 targets = [
     {
         "name": "phoenix_hvac_leads",
         "dataset_id": "c81ia5q15g7epMOvL",
-        "dir": r"G:\apify-scrapers\datasets\phoenix_hvac_leads",
+        "dir": str(Path(__file__).resolve().parent) + r"/phoenix_hvac_leads",
         "base": "phoenix_hvac_leads",
         "title": "Phoenix HVAC Contractor & Local Business Leads (2026)",
         "actor": "captainhandsome/google-maps-business-search",
@@ -21,7 +22,7 @@ targets = [
     {
         "name": "austin_software_jobs",
         "dataset_id": "FS30hdcH8ke4TQ30m",
-        "dir": r"G:\apify-scrapers\datasets\austin_software_jobs",
+        "dir": str(Path(__file__).resolve().parent) + r"/austin_software_jobs",
         "base": "austin_software_jobs",
         "title": "Austin Software Engineer Job Postings with Normalized Dates",
         "actor": "captainhandsome/glassdoor-jobs-scraper",
@@ -31,7 +32,7 @@ targets = [
     {
         "name": "california_contractors",
         "dataset_id": "Iq8SfYU8K6lrYbyug",
-        "dir": r"G:\apify-scrapers\datasets\california_solar_contractors",
+        "dir": str(Path(__file__).resolve().parent) + r"/california_solar_contractors",
         "base": "california_licensed_contractors",
         "title": "California State Licensed Contractors Sample Registry",
         "actor": "captainhandsome/ca-contractor-license-search",

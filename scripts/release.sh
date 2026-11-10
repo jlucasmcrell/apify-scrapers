@@ -3,7 +3,7 @@
 #
 #   0. verify every MCP tool targets a public, agentic-eligible Actor
 #   1. build sdist + wheel                    (python -m build)
-#   2. PyPI upload + JSON-API verify          (twine; PYPI_TOKEN from G:/apify-fleet/.env)
+#   2. PyPI upload + JSON-API verify          (twine; PYPI_TOKEN from $APIFY_FLEET_ROOT/.env)
 #   3. official MCP registry publish + verify (mcp-publisher; gh token, non-interactive)
 #   4. Smithery bundle build + publish + verify (scripts/build_smithery_bundle.py; SMITHERY_API_KEY)
 #   5. GitHub release + artifact checksum verification
@@ -15,7 +15,7 @@
 # usage: bash scripts/release.sh <version>
 set -euo pipefail
 V="${1:?version required, e.g. 1.0.8}"
-REPO="G:/apify-scrapers"; ENV="G:/apify-fleet/.env"
+REPO="${APIFY_SCRAPERS_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"; ENV="${APIFY_FLEET_ROOT:-$REPO/../apify-fleet}/.env"
 MP="$REPO/bin/mcp-publisher.exe"   # from github.com/modelcontextprotocol/registry releases; bin/ is gitignored
 PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2-)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2-)"
 mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }

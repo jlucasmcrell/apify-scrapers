@@ -4,11 +4,13 @@ import time
 import urllib.request
 import urllib.error
 import os
+from pathlib import Path
 
-sys.path.insert(0, "G:/apify-fleet")
+_FLEET = Path(__import__("os").environ.get("APIFY_FLEET_ROOT") or Path(__file__).resolve().parents[1].parent / "apify-fleet")
+sys.path.insert(0, str(_FLEET))
 from dotenv import load_dotenv
 
-load_dotenv("G:/apify-fleet/.env")
+load_dotenv(_FLEET / ".env")
 TOKEN = os.environ.get("APIFY_TOKEN")
 if not TOKEN:
     raise SystemExit("APIFY_TOKEN not found in env")
