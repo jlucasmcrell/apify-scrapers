@@ -5,7 +5,7 @@
   "icon": "icon.png",
   "version": "1.4.1",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
-  "long_description": "40 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "long_description": "38 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
