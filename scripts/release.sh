@@ -5,7 +5,8 @@
 #   1. build sdist + wheel                    (python -m build)
 #   2. PyPI upload + JSON-API verify          (twine; PYPI_TOKEN from $APIFY_FLEET_ROOT/.env)
 #   3. official MCP registry publish + verify (mcp-publisher; gh token, non-interactive)
-#   4. Smithery bundle build + publish + verify (scripts/build_smithery_bundle.py; SMITHERY_API_KEY)
+#   4. MCPB bundle build (attached to the GitHub release). Smithery's API, keys and CLI
+#      shut down 2026-10-31 after the Arcade acquisition, so there is nothing to publish there.
 #   5. GitHub release + artifact checksum verification
 #
 # Preconditions: version already bumped in setup.py/package.json/server.json/manifest.json
@@ -19,10 +20,9 @@ REPO="${APIFY_SCRAPERS_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"; ENV="${APIFY_F
 # mcp-publisher from github.com/modelcontextprotocol/registry releases (bin/ is gitignored);
 # on Linux/CI it is expected on PATH.
 MP="$REPO/bin/mcp-publisher.exe"; [ -x "$MP" ] || MP="$(command -v mcp-publisher)"
-PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2- || true)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2- || true)"
+PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2- || true)"
 [ -n "$PYPI" ] || { echo "ABORT: PYPI_TOKEN missing from $ENV"; exit 2; }
-[ -n "$SM" ] || { echo "ABORT: SMITHERY_API_KEY missing from $ENV"; exit 2; }
-mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
+mask() { sed -E "s/${PYPI}/<pypi>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
 cd "$REPO" || exit 1
 grep -q "version=\"$V\"" setup.py || { echo "ABORT: setup.py is not at $V"; exit 2; }
 
@@ -64,27 +64,9 @@ print("   registry latest is", v, ":", ok); sys.exit(0 if ok else 4)
 PY
 [ $? -eq 0 ] || exit 4
 
-echo; echo "=== 4. Smithery bundle + publish + verify ==="
+echo; echo "=== 4. MCPB bundle (GitHub release asset; Smithery publishing ended 2026-10-31) ==="
 python scripts/build_smithery_bundle.py dist/apify-scrapers.mcpb | sed 's/^/   /'
-SMITHERY_API_KEY="$SM" npx -y @smithery/cli mcp publish dist/apify-scrapers.mcpb -n jlucasmcrell/apify-scrapers --json 2>&1 | mask | tail -2
-TOOL_COUNT="$(python -c 'import json; print(len(json.load(open("manifest.json", encoding="utf-8"))["tools"]))')"
-SMITHERY_API_KEY="$SM" python - "$TOOL_COUNT" <<'PY'
-import os, sys, httpx
-count = int(sys.argv[1])
-description = (f"MCP server exposing {count} read-only Apify public-data tools: leads, news, SEO, "
-               "jobs, SEC filings, procurement, health, registries, and more.")
-r = httpx.patch(
-    "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers",
-    headers={"Authorization": f"Bearer {os.environ['SMITHERY_API_KEY']}"},
-    json={"description": description}, timeout=30)
-r.raise_for_status()
-print(f"   Smithery description: {count} tools")
-PY
-curl --fail --silent --show-error "https://api.smithery.ai/servers/jlucasmcrell%2Fapify-scrapers" -H "Authorization: Bearer $SM" | mask | python -c "import sys,json
-j=json.loads(sys.stdin.read()); t=j.get('tools') or []; c=(j.get('connections') or [{}])[0]
-print('   Smithery tools:',len(t),'| connection:',c.get('type'),c.get('runtime'))
-sys.exit(0 if len(t)==int(sys.argv[1]) else 5)" "$TOOL_COUNT"
-if [ "${SKIP_GH_RELEASE:-}" = "1" ]; then echo; echo "=== 5. GitHub release skipped (SKIP_GH_RELEASE=1) ==="; echo "=== done: $V on PyPI, MCP registry, Smithery ==="; exit 0; fi
+if [ "${SKIP_GH_RELEASE:-}" = "1" ]; then echo; echo "=== 5. GitHub release skipped (SKIP_GH_RELEASE=1) ==="; echo "=== done: $V on PyPI and the MCP registry ==="; exit 0; fi
 echo; echo "=== 5. GitHub release + verify ==="
 GH_REPO="jlucasmcrell/apify-scrapers"
 if ! gh release view "v$V" --repo "$GH_REPO" >/dev/null 2>&1; then
@@ -109,4 +91,4 @@ for path in paths:
 print(f"GitHub: v{version} latest; {len(paths)} artifact checksums verified")
 PY
 
-echo; echo "=== done: $V on PyPI, MCP registry, Smithery, GitHub ==="
+echo; echo "=== done: $V on PyPI, MCP registry, GitHub ==="
