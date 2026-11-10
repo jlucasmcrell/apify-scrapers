@@ -19,7 +19,9 @@ REPO="${APIFY_SCRAPERS_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"; ENV="${APIFY_F
 # mcp-publisher from github.com/modelcontextprotocol/registry releases (bin/ is gitignored);
 # on Linux/CI it is expected on PATH.
 MP="$REPO/bin/mcp-publisher.exe"; [ -x "$MP" ] || MP="$(command -v mcp-publisher)"
-PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2-)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2-)"
+PYPI="$(grep -oE '^PYPI_TOKEN=.*' "$ENV" | cut -d= -f2- || true)"; SM="$(grep -oE '^SMITHERY_API_KEY=.*' "$ENV" | cut -d= -f2- || true)"
+[ -n "$PYPI" ] || { echo "ABORT: PYPI_TOKEN missing from $ENV"; exit 2; }
+[ -n "$SM" ] || { echo "ABORT: SMITHERY_API_KEY missing from $ENV"; exit 2; }
 mask() { sed -E "s/${PYPI}/<pypi>/g; s/${SM}/<smithery>/g; s/(gho_|ghp_|github_pat_)[A-Za-z0-9_]+/<gh>/g; s/[A-Za-z0-9_-]{40,}/<redacted>/g"; }
 cd "$REPO" || exit 1
 grep -q "version=\"$V\"" setup.py || { echo "ABORT: setup.py is not at $V"; exit 2; }
