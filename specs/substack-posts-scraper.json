@@ -4,7 +4,7 @@
   "tool": {
     "name": "substack_posts",
     "title": "Substack Publication Posts & Keyword Search",
-    "description": "Read public Substack publications and get post metadata in one call: the newest posts of each publication you name, or the posts matching keywords inside each publication's own archive search. Each row carries post id, title, subtitle, canonical URL, author, publication name/subdomain/domain, publication date, post type (newsletter or podcast), audience (everyone / only_paid), wordcount, reaction count, comment count, restack count, a short description and the cover image URL. A call must name at least one publication.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/substack-posts-scraper'.\n- Side Effects: Reads each publication's public /api/v1/archive endpoint and creates a billed Actor run and dataset on your Apify account. No login, no cookies, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 2-15 seconds. $0.002 per row ($2 per 1,000 posts), no per-run start fee. This tool sends at most 4 publications, at most 2 keywords, and at most 10 posts per publication or per keyword-publication pair, so one call bills at most 80 rows.\n\nUsage Guidelines:\n- When to use: Use for newsletter/media monitoring, tracking what a writer published and when, finding older posts on a topic inside a publication, or building post-metadata datasets for analysis and AI pipelines.\n- When NOT to use: Do not use when you need the post body text (this returns metadata and URLs only; paywalled posts stay paywalled), for cross-Substack keyword search (this Actor searches inside each publication you name), or for private/paid-only publications you cannot read.\n- Named alternatives: Use 'apple_podcasts_data' for Apple Podcasts shows and episodes; use a general web scraper when the target is not a Substack publication.\n\nHonest limits: newest-first only, no date filter; reaction/comment/restack counts are a point-in-time snapshot; posts marked audience 'only_paid' have no public text; a run that can read nothing fails loudly instead of billing for an empty dataset; publication and keyword lists are sent explicitly on every call, so nothing is scraped that the caller did not name.",
+    "description": "Read public Substack publications and get post metadata in one call: the newest posts of each publication you name, or the posts matching keywords inside each publication's own archive search. Each row carries post id, title, subtitle, canonical URL, author, publication name/subdomain/domain, publication date, post type (newsletter or podcast), audience (everyone / only_paid), wordcount, reaction count, comment count, restack count, a short description and the cover image URL. A call must name at least one publication; a call that names none is refused before any billed run starts.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/substack-posts-scraper'.\n- Side Effects: Reads each publication's public /api/v1/archive endpoint and creates a billed Actor run and dataset on your Apify account. No login, no cookies, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 2-15 seconds. $0.002 per row ($2 per 1,000 posts), no per-run start fee. This tool sends at most 4 publications, at most 2 keywords, and at most 10 posts per publication or per keyword-publication pair, so one call bills at most 80 rows.\n\nUsage Guidelines:\n- When to use: Use for newsletter/media monitoring, tracking what a writer published and when, finding older posts on a topic inside a publication, or building post-metadata datasets for analysis and AI pipelines.\n- When NOT to use: Do not use when you need the post body text (this returns metadata and URLs only; paywalled posts stay paywalled), for cross-Substack keyword search (this Actor searches inside each publication you name), or for private/paid-only publications you cannot read.\n- Named alternatives: Use 'apple_podcasts_data' for Apple Podcasts shows and episodes; use a general web scraper when the target is not a Substack publication.\n\nHonest limits: newest-first only, no date filter; reaction/comment/restack counts are a point-in-time snapshot; posts marked audience only_paid have no public text; a run that can read nothing fails loudly instead of billing for an empty dataset; publication and keyword lists are sent explicitly on every call, so nothing is scraped that the caller did not name.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -15,7 +15,8 @@
             "minLength": 1
           },
           "maxItems": 4,
-          "description": "Up to 4 publications to read: a subdomain ('noahpinion'), a URL ('https://noahpinion.substack.com'), or a custom domain ('https://www.noahpinion.blog'). Required: a call must name at least one."
+          "minItems": 1,
+          "description": "Up to 4 publications to read: a subdomain ('noahpinion'), a URL ('https://noahpinion.substack.com'), or a custom domain ('https://www.noahpinion.blog'). Required: a call must name at least one; a call with an empty list is refused."
         },
         "max_posts_per_publication": {
           "type": "integer",
@@ -41,6 +42,9 @@
           "description": "Matching posts to take per keyword per publication, when search_terms are given (hard maximum 10). Each row is billed."
         }
       },
+      "required": [
+        "publications"
+      ],
       "additionalProperties": false
     },
     "outputSchema": {
@@ -153,7 +157,7 @@
                   "null"
                 ],
                 "title": "Audience",
-                "description": "'everyone' for free posts, 'only_paid' for paywalled ones."
+                "description": "everyone for free posts, only_paid for paywalled ones."
               },
               "wordcount": {
                 "type": [
@@ -209,7 +213,7 @@
                   "null"
                 ],
                 "title": "Found by",
-                "description": "'publication' for newest posts, 'search' for keyword matches."
+                "description": "publication for newest posts, search for keyword matches."
               },
               "searchTerm": {
                 "type": [
@@ -290,7 +294,7 @@
   "verification": {
     "token": "noahpinion",
     "how": "Apify test runs of actor gL9yNy9DPNYXit1IF on 2026-11-12: the exact payload this spec sends for the example call ({\"publications\":[\"noahpinion\"],\"maxPostsPerPublication\":3,\"searchTerms\":[],\"maxPostsPerTerm\":5}) and earlier a keyword-mode run (searchTerms ['China'], maxPostsPerTerm 2).",
-    "result": "SUCCEEDED with real rows: post ids, titles (e.g. 'India is quietly doing great'), canonical URLs, author 'Noah Smith', publication name 'Noahpinion', dates, audience, wordcount, reaction/comment/restack counts. The keyword-mode run returned genuine older posts about China; missing fields were null rather than invented.",
+    "result": "SUCCEEDED with real rows: post ids, titles (e.g. 'India is quietly doing great'), canonical URLs, author 'Noah Smith', publication name 'Noahpinion', dates, audience, wordcount, reaction/comment/restack counts. The keyword-mode run returned genuine older posts about China; missing fields were null rather than invented. Publications is now required with minItems 1, so a call that names none is refused before any billed run.",
     "items": 3,
     "relevant": true,
     "max_rows": 80,
