@@ -15,9 +15,9 @@
         "max_results": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 1000,
+          "maximum": 100,
           "default": 10,
-          "description": "Maximum number of licence records to return and bill. Defaults to 10."
+          "description": "Maximum number of licence records to return and bill. Defaults to 10. At most 100 per call."
         },
         "include_details": {
           "type": "boolean",

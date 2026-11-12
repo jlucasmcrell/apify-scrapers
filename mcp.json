@@ -1,6 +1,6 @@
 {
   "name": "apify-scrapers-mcp",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "homepage": "https://apify.revenuesystemslabs.com/",
   "repository": {
@@ -2394,9 +2394,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of entity records to return and bill. Defaults to 10."
+            "description": "Maximum number of entity records to return and bill. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -2525,9 +2525,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of licence records to return and bill. Defaults to 10."
+            "description": "Maximum number of licence records to return and bill. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -3110,9 +3110,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of entity records to return and bill. Defaults to 10."
+            "description": "Maximum number of entity records to return and bill. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -3241,9 +3241,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of officer-to-entity records to return and bill. Defaults to 10."
+            "description": "Maximum number of officer-to-entity records to return and bill. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -3517,9 +3517,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
+            "maximum": 100,
             "default": 25,
-            "description": "Maximum number of review records to return per app. Defaults to 25."
+            "description": "Maximum number of review records to return per app. Defaults to 25. At most 100 per call."
           },
           "scores": {
             "type": "array",
@@ -3670,9 +3670,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 200,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of job listings to retrieve. Defaults to 10."
+            "description": "Maximum number of job listings to retrieve. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -3972,9 +3972,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 2000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of normalized entity records to return and bill across all selected states. Defaults to 10."
+            "description": "Maximum number of normalized entity records to return and bill across all selected states. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -4127,9 +4127,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10000,
+            "maximum": 100,
             "default": 10,
-            "description": "Maximum number of licence records to return and bill across all selected states. Defaults to 10."
+            "description": "Maximum number of licence records to return and bill across all selected states. Defaults to 10. At most 100 per call."
           },
           "include_details": {
             "type": "boolean",
@@ -4265,9 +4265,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 500,
+            "maximum": 100,
             "default": 25,
-            "description": "Maximum number of unique video records to return. Defaults to 25."
+            "description": "Maximum number of unique video records to return. Defaults to 25. At most 100 per call."
           }
         },
         "required": [
@@ -7830,9 +7830,9 @@
           "max_results": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 1000,
+            "maximum": 100,
             "default": 25,
-            "description": "Maximum rows to return and bill across every app and storefront. Defaults to 25."
+            "description": "Maximum rows to return and bill across every app and storefront. Defaults to 25. At most 100 per call."
           }
         },
         "required": []

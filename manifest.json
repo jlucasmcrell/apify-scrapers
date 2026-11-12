@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "long_description": "43 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {

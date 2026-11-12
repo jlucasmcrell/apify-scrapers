@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="apify-data-scrapers",
-    version="1.6.1",
+    version="1.6.2",
     author="Joseph McRell",
     description="MCP server exposing 43 Apify public-data scrapers as tools (Google Maps, news, SEO, jobs, SEC, procurement, registries, and more)",
     long_description=open("README.md", "r", encoding="utf-8").read(),
