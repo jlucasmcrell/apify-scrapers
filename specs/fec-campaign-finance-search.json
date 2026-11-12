@@ -3,7 +3,7 @@
   "tool": {
     "name": "fec_campaign_finance_search",
     "title": "FEC Campaign Finance Search",
-    "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+    "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields. Contribution searches cover one two-year election cycle, chosen with cycle (default 2026).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -37,6 +37,13 @@
             "P"
           ],
           "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only."
+        },
+        "cycle": {
+          "type": "integer",
+          "minimum": 1980,
+          "maximum": 2030,
+          "default": 2026,
+          "description": "Two-year FEC election cycle for contribution searches, named by its even year: 2026 covers 2025-2026. An odd year is treated as the cycle it falls in. Defaults to 2026. Candidate and committee searches are not limited to a cycle."
         },
         "max_results": {
           "type": "integer",
@@ -175,6 +182,10 @@
     },
     "max_results": {
       "key": "max_items",
+      "transform": "int"
+    },
+    "cycle": {
+      "key": "two_year_period",
       "transform": "int"
     }
   },
