@@ -1,9 +1,10 @@
 {
   "actor": "apple-podcasts-scraper",
+  "profile": "market",
   "tool": {
     "name": "apple_podcasts_data",
     "title": "Apple Podcasts Search & Episode Feeds",
-    "description": "Get Apple Podcasts data from Apple's public directory plus each show's own public RSS feed in one call: keyword search across store countries, exact shows by Apple id / podcasts.apple.com URL / any RSS feed URL, and the newest episodes of each show with publication date, duration, audio file URL and episode page URL. Podcast rows carry Apple id, name, publisher, genre, artwork, Apple page URL, feed URL and reported episode count; episode rows carry title, episode and season number, publishedAt (ISO 8601), durationSeconds, audioUrl, episodeUrl and feed guid.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/apple-podcasts-scraper'.\n- Side Effects: Reads Apple's public iTunes search/lookup endpoints and public podcast RSS feeds; creates a billed Actor run and dataset on your Apify account. No login, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically a few seconds to a minute depending on how many feeds are read (20s timeout per feed, up to 100 targets per run). Starts from $0.0015 per row plus a small per-run start fee.\n\nUsage Guidelines:\n- When to use: Use to build podcast or episode datasets, monitor new episodes of specific shows, research shows by keyword or genre, or feed episode metadata into transcription and AI pipelines.\n- When NOT to use: Do not use for transcripts or audio files themselves (this returns metadata and audio URLs only), for Apple Podcasts ratings or reviews (Apple publishes no reliably fetchable form of them), or for Spotify-only or private/paywalled shows.\n- Named alternatives: Use 'apple_app_store_data' for App Store apps; use a dedicated transcription Actor when you need spoken-word text.\n\nHonest limits: episodes come from each show's public RSS feed, so fields a publisher does not state (duration, episode number, season) are returned as null rather than invented; shows that publish no public feed are logged and skipped; a run that can read nothing fails loudly instead of charging for an empty dataset. Directory search is capped at 200 shows per keyword by Apple.",
+    "description": "Get Apple Podcasts data from Apple's public directory plus each show's own public RSS feed in one call: keyword search across store countries, exact shows by Apple id / podcasts.apple.com URL / any RSS feed URL, and the newest episodes of each show with publication date, duration, audio file URL and episode page URL. Podcast rows carry Apple id, name, publisher, genre, artwork, Apple page URL, feed URL and reported episode count; episode rows carry title, episode and season number, publishedAt (ISO 8601), durationSeconds, audioUrl, episodeUrl and feed guid.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/apple-podcasts-scraper'.\n- Side Effects: Reads Apple's public iTunes search/lookup endpoints and public podcast RSS feeds; creates a billed Actor run and dataset on your Apify account. No login, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically a few seconds to a minute depending on how many feeds are read (20s timeout per feed, up to 100 targets per run). Starts from $0.0015 per row plus a small per-run start fee. One call returns at most 100 rows, and every row the Actor produces is billed (one row per show plus one per episode), so keep shows x (1 + max_episodes_per_podcast) at or below 100.\n\nUsage Guidelines:\n- When to use: Use to build podcast or episode datasets, monitor new episodes of specific shows, research shows by keyword or genre, or feed episode metadata into transcription and AI pipelines.\n- When NOT to use: Do not use for transcripts or audio files themselves (this returns metadata and audio URLs only), for Apple Podcasts ratings or reviews (Apple publishes no reliably fetchable form of them), or for Spotify-only or private/paywalled shows.\n- Named alternatives: Use 'apple_app_store_data' for App Store apps; use a dedicated transcription Actor when you need spoken-word text.\n\nHonest limits: episodes come from each show's public RSS feed, so fields a publisher does not state (duration, episode number, season) are returned as null rather than invented; shows that publish no public feed are logged and skipped; a run that can read nothing fails loudly instead of charging for an empty dataset. Directory search is capped at 200 shows per keyword by Apple.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -13,8 +14,8 @@
             "type": "string",
             "minLength": 1
           },
-          "maxItems": 20,
-          "description": "Podcast keywords to search in the Apple Podcasts directory. Each keyword returns up to max_podcasts_per_term shows per country. Leave out when you only pass podcast_refs."
+          "maxItems": 5,
+          "description": "Podcast keywords to search in the Apple Podcasts directory. Each keyword returns up to max_podcasts_per_term shows per country. Leave out (or pass []) when you only pass podcast_refs; nothing is searched then."
         },
         "podcast_refs": {
           "type": "array",
@@ -22,7 +23,7 @@
             "type": "string",
             "minLength": 1
           },
-          "maxItems": 100,
+          "maxItems": 20,
           "description": "Exact shows to read: numeric Apple podcast ids ('1236907421'), podcasts.apple.com URLs, or any public RSS feed URL."
         },
         "countries": {
@@ -35,19 +36,20 @@
           "default": [
             "us"
           ],
-          "description": "Two-letter Apple Podcasts store codes (us, gb, de, jp, ...). Each country is searched separately and tagged on the row; defaults to us."
+          "description": "Two-letter Apple Podcasts store codes (us, gb, de, jp, ...). Each country is searched separately and tagged on the row; defaults to us.",
+          "maxItems": 5
         },
         "max_podcasts_per_term": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 200,
+          "maximum": 20,
           "default": 3,
-          "description": "How many shows to take per keyword. Apple caps directory search at 200; defaults to 3."
+          "description": "How many shows to take per keyword. Each show is a billed row and adds its episodes; defaults to 3."
         },
         "max_episodes_per_podcast": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 1000,
+          "maximum": 100,
           "default": 20,
           "description": "How many of the newest episodes to return per show. Set 0 for podcast metadata only. Each row is billed; defaults to 20."
         }
@@ -280,7 +282,8 @@
   "payload_mapping": {
     "search_terms": {
       "key": "searchTerms",
-      "transform": "strlist"
+      "transform": "strlist",
+      "default": []
     },
     "podcast_refs": {
       "key": "podcastRefs",

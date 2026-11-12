@@ -97,6 +97,8 @@ HELD_PUBLIC = {
     "ia-business-entity-search": "Iowa SoS blocks Apify datacenter IPs (Cloudflare 403); pending Console unpublish",
     "courtlistener-case-search": "Retired 2026-11-10 (CourtListener closed anonymous API); monetization cancelled, unpublish after notice period",
     "wi-business-entity-search": "Retired 2026-11-10 (WI DFI refuses Apify egress); monetization cancelled, unpublish after notice period",
+    "substack-posts-scraper": "Published 2026-11-12 by the Survive agent; no reviewed MCP spec yet",
+    "job-postings-scraper": "Published 2026-11-12 by the Survive agent; no reviewed MCP spec yet",
 }
 
 
