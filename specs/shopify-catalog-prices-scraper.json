@@ -1,0 +1,259 @@
+{
+  "actor": "shopify-catalog-prices-scraper",
+  "tool": {
+    "name": "shopify_catalog_products",
+    "title": "Shopify Store Products, Prices & Stock",
+    "description": "Read the full public product catalog of any Shopify store, collection or single product and return one row per product (or one row per variant): title, product URL, vendor, product type, tags, SKU list, price range, compare-at price, stock status, variant-level prices and availability, option names/values, image URLs and updated timestamps.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/shopify-catalog-prices-scraper'.\n- Side Effects: Reads the store's public /products.json feed and creates a billed Actor run and dataset on your Apify account. No login, cookies or proxies are used.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 1-5 seconds per store for a few hundred products; starts from $0.001 per returned row plus a small per-run start fee.\n\nUsage Guidelines:\n- When to use: Use for price monitoring, competitor catalog research, stock checks, SKU harvesting and product-feed building for public Shopify storefronts.\n- When NOT to use: Do not use for stores whose products.json is disabled or password-protected (they return 404 and are reported in the run log), for private customer or order data, or for non-Shopify shops (the WooCommerce Store API is a different endpoint).\n- Named alternatives: Use 'apple_app_store_search' for iOS app metadata and chart rankings; use the marketplace lead-database Actors when you need merchant contact emails rather than product data.\n\nHonest limits: prices are in the store's own currency (Shopify's public feed never states a currency, so none is invented); pagination stops at max_products per store or the end of the feed, whichever comes first; a run that returns zero rows fails loudly rather than reporting success.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "stores": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "description": "Public Shopify stores to read: a domain ('allbirds.com'), a full collection URL ('https://store.com/collections/sale') or a single product URL."
+        },
+        "max_products": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000,
+          "default": 100,
+          "description": "Stop after this many products per store. Each returned product (or variant) is one billed row; defaults to 100."
+        },
+        "one_row_per_variant": {
+          "type": "boolean",
+          "default": false,
+          "description": "Return one row per variant instead of one per product, for SKU-level price and stock data. Each row is billed."
+        },
+        "only_in_stock": {
+          "type": "boolean",
+          "default": false,
+          "description": "Skip products whose variants are all out of stock."
+        }
+      },
+      "required": [
+        "stores"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "storeDomain": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Store domain",
+                "description": "Domain the products were read from."
+              },
+              "productId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Product ID",
+                "description": "Shopify numeric product id as a string; primary key within a store."
+              },
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Product title",
+                "description": "Merchant product name."
+              },
+              "handle": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Handle",
+                "description": "URL slug of the product."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Product URL",
+                "description": "Canonical public product page URL."
+              },
+              "vendor": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Vendor",
+                "description": "Brand or vendor field as set by the merchant."
+              },
+              "productType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Product type",
+                "description": "Merchant product type/category label."
+              },
+              "tags": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Tags",
+                "description": "Merchant tags."
+              },
+              "collection": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Collection",
+                "description": "Collection handle when a collection URL was scraped."
+              },
+              "minPrice": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Min price",
+                "description": "Lowest variant price, in the store's own currency."
+              },
+              "maxPrice": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Max price",
+                "description": "Highest variant price, in the store's own currency."
+              },
+              "compareAtMax": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Max compare-at price",
+                "description": "Highest compare-at (original) price, when the merchant sets one."
+              },
+              "available": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "title": "Any variant in stock",
+                "description": "True if at least one variant is available."
+              },
+              "variantCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Variant count",
+                "description": "Number of variants on the product."
+              },
+              "availableVariantCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Available variants",
+                "description": "Number of variants currently in stock."
+              },
+              "skus": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "SKUs",
+                "description": "All non-empty SKUs of the product."
+              },
+              "updatedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Updated at",
+                "description": "ISO timestamp of the product's last update in the store."
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "results",
+        "status"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "stores": {
+      "key": "stores",
+      "transform": "strlist"
+    },
+    "max_products": {
+      "key": "maxProductsPerStore",
+      "transform": "int"
+    },
+    "one_row_per_variant": {
+      "key": "oneRowPerVariant",
+      "transform": "identity"
+    },
+    "only_in_stock": {
+      "key": "onlyAvailable",
+      "transform": "identity"
+    }
+  },
+  "fixed_payload": {
+    "includeVariants": true,
+    "includeImages": true,
+    "includeDescription": false
+  },
+  "example_call": {
+    "stores": [
+      "allbirds.com"
+    ],
+    "max_products": 3
+  },
+  "verification": {
+    "how": "Apify test run of actor QuRuupSWNf0fzjBOL with input {\"stores\":[\"allbirds.com\"],\"maxProductsPerStore\":3} on 2026-11-12, plus a full public-store run on allbirds.com that paginated 250 products.",
+    "result": "SUCCEEDED in ~1s, 3 rows returned. Sample row: productId 7292464824400, title \"Women's Wool Cruiser - Port (Port Sole)\", url https://allbirds.com/products/womens-wool-cruiser-port-port-sole, minPrice 120, maxPrice 120, 13 variants, 3 available, real SKUs and cdn.shopify.com image URLs.",
+    "items": 3,
+    "relevant": true
+  }
+}
