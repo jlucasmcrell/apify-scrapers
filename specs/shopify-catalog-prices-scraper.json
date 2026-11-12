@@ -255,6 +255,7 @@
     "how": "Apify test run of actor QuRuupSWNf0fzjBOL with input {\"stores\":[\"allbirds.com\"],\"maxProductsPerStore\":3} on 2026-11-12, plus a full public-store run on allbirds.com that paginated 250 products.",
     "result": "SUCCEEDED in ~1s, 3 rows returned. Sample row: productId 7292464824400, title \"Women's Wool Cruiser - Port (Port Sole)\", url https://allbirds.com/products/womens-wool-cruiser-port-port-sole, minPrice 120, maxPrice 120, 13 variants, 3 available, real SKUs and cdn.shopify.com image URLs.",
     "items": 3,
-    "relevant": true
+    "relevant": true,
+    "token": "allbirds"
   }
 }
