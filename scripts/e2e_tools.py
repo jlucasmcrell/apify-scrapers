@@ -186,6 +186,15 @@ def main() -> int:
             print(f"{'OK  ' if ok else 'FAIL'} {name:38} rows={n} {secs}s {why}")
         good = sum(1 for r in results if r[1] == "OK")
         print(f"\n{good}/{len(results)} tools passed end-to-end")
+        # In GitHub Actions, also write a table to the run's summary page.
+        if summary := os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(summary, "a", encoding="utf-8") as f:
+                f.write(f"## End-to-end: {good}/{len(results)} tools passed\n\n")
+                if missing:
+                    f.write(f"Missing test case or unavailable tool: {', '.join(missing)}\n\n")
+                f.write("| Tool | Result | Detail |\n|---|---|---|\n")
+                for name, status, detail in sorted(results, key=lambda r: (r[1] == "OK", r[0])):
+                    f.write(f"| `{name}` | {'✅' if status == 'OK' else '❌ ' + status} | {detail.replace('|', '/')} |\n")
         return 0 if good == len(results) and not missing else 1
     finally:
         srv.close()

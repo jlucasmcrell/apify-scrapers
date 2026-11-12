@@ -1,0 +1,50 @@
+# Daily health check: calls every MCP tool once through the real server
+# (scripts/e2e_tools.py) and fails if any tool returns no rows, the wrong
+# rows, or output that breaks its schema. GitHub emails the repository owner
+# when a scheduled run fails.
+#
+# Each call starts a small, real Actor run billed to the Apify account behind
+# the APIFY_TOKEN secret: about $0.05 a day in total (measured 2026-11-11).
+# APIFY_MAX_CHARGE_USD caps the event charges of every single run.
+#
+# Setup: add a repository secret named APIFY_TOKEN
+# (Settings > Secrets and variables > Actions > New repository secret).
+name: Daily end-to-end
+
+on:
+  schedule:
+    - cron: "45 13 * * *"   # 13:45 UTC = 08:45 US Eastern (standard time), daily
+  workflow_dispatch:        # "Run workflow" button for an on-demand check
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-e2e
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    # Never on forks: they have no secret and must not bill this account.
+    if: github.repository == 'jlucasmcrell/apify-scrapers'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check the token is configured
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          if [ -z "$APIFY_TOKEN" ]; then
+            echo "::error::Repository secret APIFY_TOKEN is not set (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+      - name: Call every tool through the MCP server
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_MAX_CHARGE_USD: '0.10'
+          PYTHONIOENCODING: utf-8
+        run: python scripts/e2e_tools.py
