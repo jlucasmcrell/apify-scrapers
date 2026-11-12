@@ -139,6 +139,22 @@ print(len(names))
             self.assertFalse(self.call('twitch_live_streams', {})['isError'])
         self.assertEqual(run.call_args.args[1]['search_query'], 'minecraft')
 
+    def test_no_tool_advertises_more_rows_than_a_call_returns(self):
+        # run_actor_sync fetches at most 100 dataset rows; a larger advertised
+        # maximum would be cut to 100 without the caller knowing.
+        for tool in server.TOOLS_DEFINITION:
+            limit = tool['inputSchema']['properties'].get('max_results')
+            if limit:
+                with self.subTest(tool=tool['name']):
+                    self.assertLessEqual(limit.get('maximum', 0), 100)
+        with patch.object(server, 'run_actor_sync') as run:
+            result = self.call('youtube_video_search', {'search_query': 'sourdough', 'max_results': 101})
+            self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
+            # Twitch serves only its first ~26-30 streams of a category page to the scraper.
+            result = self.call('twitch_live_streams', {'game_name': 'minecraft', 'max_results': 26})
+            self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
+            run.assert_not_called()
+
     def test_actor_defaults_never_narrow_a_search_silently(self):
         # Each Actor below has an input default that would otherwise apply unseen:
         # CVE query "Microsoft Exchange", EPA violations_only true, FEC cycle 2024,
