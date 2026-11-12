@@ -150,6 +150,9 @@ print(len(names))
         with patch.object(server, 'run_actor_sync') as run:
             result = self.call('youtube_video_search', {'search_query': 'sourdough', 'max_results': 101})
             self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
+            # Twitch serves only its first ~26-30 streams of a category page to the scraper.
+            result = self.call('twitch_live_streams', {'game_name': 'minecraft', 'max_results': 26})
+            self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
             run.assert_not_called()
 
     def test_actor_defaults_never_narrow_a_search_silently(self):

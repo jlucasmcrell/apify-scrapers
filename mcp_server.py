@@ -3455,7 +3455,9 @@ TOOLS_DEFINITION = [
                     '- Side Effects: Reads public sources and creates a billed Actor run and dataset on your '
                     'Apify account.\n'
                     '- Authentication: Requires APIFY_TOKEN environment variable.\n'
-                    '- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds.\n'
+                    '- Latency & Limits: Typical run duration is 10-25 seconds; timeout capped at 120 seconds. '
+                    'Returns at most 25 streams per call: Twitch serves only its first batch of a category page '
+                    'to this scraper.\n'
                     '\n'
                     'Usage Guidelines:\n'
                     '- When to use: Use for live video broadcasting metrics, concurrent esports viewership '
@@ -3478,11 +3480,10 @@ TOOLS_DEFINITION = [
                                                                 "Spanish, 'fr' for French). Defaults to 'en'."},
                                     'max_results': {'type': 'integer',
                                                     'minimum': 1,
-                                                    'maximum': 100,
+                                                    'maximum': 25,
                                                     'default': 10,
-                                                    'description': 'Maximum number of live stream channels to '
-                                                                   'return. Integer between 1 and 100. Defaults '
-                                                                   'to 10.'}},
+                                                    'description': 'Maximum number of live streams to return, up '
+                                                                   'to 25. Defaults to 10.'}},
                      'additionalProperties': False},
      'outputSchema': {'type': 'object',
                       'properties': {'results': {'type': 'array',

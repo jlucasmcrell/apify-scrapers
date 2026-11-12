@@ -395,9 +395,9 @@
       "max_results": {
         "type": "integer",
         "minimum": 1,
-        "maximum": 100,
+        "maximum": 25,
         "default": 10,
-        "description": "Maximum number of live stream channels to return. Integer between 1 and 100. Defaults to 10."
+        "description": "Maximum number of live streams to return, up to 25. Defaults to 10."
       }
     },
     "output_fields": [
