@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
-  "long_description": "38 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "long_description": "41 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -212,6 +212,18 @@
     {
       "name": "app_store_reviews_search",
       "description": "Search the Apple App Store and return customer reviews with star ratings, review text, the app version each review was written against, and full app metadata - across any storefront."
+    },
+    {
+      "name": "apple_app_store_data",
+      "description": "Get Apple App Store data from Apple's own public endpoints in one call: keyword search results, exact app records by id or URL, and the top-free / top-paid / top-grossing charts for any store country. Each row carries app id, bundle id, name, developer, price, rating and rating count, genre, version"
+    },
+    {
+      "name": "apple_podcasts_data",
+      "description": "Get Apple Podcasts data from Apple's public directory plus each show's own public RSS feed in one call: keyword search across store countries, exact shows by Apple id / podcasts.apple.com URL / any RSS feed URL, and the newest episodes of each show with publication date, duration, audio file URL and"
+    },
+    {
+      "name": "shopify_catalog_products",
+      "description": "Read the full public product catalog of any Shopify store, collection or single product and return one row per product (or one row per variant): title, product URL, vendor, product type, tags, SKU list, price range, compare-at price, stock status, variant-level prices and availability, option names/"
     }
   ],
   "compatibility": {
