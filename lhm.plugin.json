@@ -696,7 +696,7 @@
     {
       "name": "sec_edgar_filings",
       "title": "SEC EDGAR Public Corporate Filings Retrieval",
-      "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for public corporate financial statements, audited balance sheets, executive compensation disclosures, and regulatory material event filings.\n- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, or local trade vendor lists.\n- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, 'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends.",
+      "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events, newest first, filed between date_from (default 2016-01-01) and date_to (default today).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/sec-edgar-filings-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for public corporate financial statements, audited balance sheets, executive compensation disclosures, and regulatory material event filings.\n- When NOT to use: Do not use for private non-public company intelligence, real-time stock prices, or local trade vendor lists.\n- Named alternatives: Use 'usaspending_contracts' for federal procurement contracts, 'google_maps_search' for local commercial entities, or 'glassdoor_jobs_search' for hiring trends.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -714,7 +714,18 @@
               "ALL"
             ],
             "default": "10-K",
-            "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing."
+            "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing. 'ALL' returns every form type."
+          },
+          "date_from": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "default": "2016-01-01",
+            "description": "Earliest filing date, YYYY-MM-DD. Defaults to 2016-01-01. Filings are returned newest first."
+          },
+          "date_to": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Latest filing date, YYYY-MM-DD. Defaults to today."
           },
           "max_results": {
             "type": "integer",
@@ -1327,7 +1338,7 @@
     {
       "name": "usaspending_contracts",
       "title": "USAspending Federal Procurement and Defense Awards Search",
-      "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for government contracting intelligence, prime federal vendor tracking, defense obligation amounts, and public procurement research.\n- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, or consumer vacation pricing.\n- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data.",
+      "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database, for awards dated between start_date (default 2020-01-01) and end_date (default today).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/usaspending-federal-awards'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for government contracting intelligence, prime federal vendor tracking, defense obligation amounts, and public procurement research.\n- When NOT to use: Do not use for commercial retail leads, corporate equity SEC filings, or consumer vacation pricing.\n- Named alternatives: Use 'sec_edgar_filings' for corporate 10-K annual reports, 'google_maps_search' for private commercial trade vendors, or 'glassdoor_jobs_search' for company hiring data.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1335,6 +1346,17 @@
             "type": "string",
             "minLength": 2,
             "description": "Legal entity name of the prime contractor, corporate vendor, or recipient institution (e.g. 'Lockheed Martin', 'Palantir Technologies', or 'Boeing')."
+          },
+          "start_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "default": "2020-01-01",
+            "description": "Earliest award action date, YYYY-MM-DD; the earliest USAspending supports is 2007-10-01. Defaults to 2020-01-01."
+          },
+          "end_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Latest award action date, YYYY-MM-DD. Defaults to today."
           },
           "max_results": {
             "type": "integer",
@@ -2814,7 +2836,7 @@
     {
       "name": "epa_facility_search",
       "title": "EPA ECHO Facility Compliance Search",
-      "description": "Search the official EPA ECHO service for US regulated facilities by state, facility name, NAICS code, or environmental program, and export compliance status, inspection, and penalty data. City, ZIP, and violation-only filtering are available in the underlying Actor, not this MCP tool.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
+      "description": "Search the official EPA ECHO service for US regulated facilities by state, facility name, NAICS code, or environmental program, and export compliance status, inspection, and penalty data. Set violations_only to keep only facilities currently in violation. City and ZIP filtering are available in the underlying Actor, not this MCP tool.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/epa-echo-facility-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-35 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for environmental compliance due diligence, regulatory risk screening of a facility or region, industry-wide (NAICS) violation surveys, or enforcement/penalty history lookups.\n- When NOT to use: Do not use for corporate registry, campaign finance, clinical trial, or FDA drug/device data.\n- Named alternatives: Use 'clinical_trials_search' for medical studies, 'openfda_search' for FDA drug/device data, 'fec_campaign_finance_search' for political funding, or 'french_company_search' for the French corporate registry.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2841,6 +2863,11 @@
               "R"
             ],
             "description": "Environmental program to filter by: 'A' Clean Air Act, 'W' Clean Water Act, 'S' Safe Drinking Water Act, 'R' RCRA hazardous waste. Defaults to 'A' (Clean Air Act) when omitted."
+          },
+          "violations_only": {
+            "type": "boolean",
+            "default": false,
+            "description": "Keep only facilities currently showing a violation or significant non-compliance. Defaults to false: all matching facilities, with their compliance status."
           },
           "max_results": {
             "type": "integer",
@@ -2961,7 +2988,7 @@
     {
       "name": "fec_campaign_finance_search",
       "title": "FEC Campaign Finance Search",
-      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
+      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields. Contribution searches cover one two-year election cycle, chosen with cycle (default 2026).\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/fec-campaign-finance-search'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typical run duration is 10-30 seconds; timeout capped at 120 seconds.\n\nUsage Guidelines:\n- When to use: Use for political campaign research, candidate and PAC vetting, donor/contribution geography and industry analysis, or election-cycle fundraising tracking.\n- When NOT to use: Do not use for corporate SEC filings, environmental compliance, clinical trials, or FDA drug/device data. Contributor street addresses are never returned (deliberately excluded upstream).\n- Named alternatives: Use 'french_company_search' for French corporate registry data, 'epa_facility_search' for environmental compliance, 'clinical_trials_search' for medical studies, or 'openfda_search' for FDA drug/device data.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2995,6 +3022,13 @@
               "P"
             ],
             "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only."
+          },
+          "cycle": {
+            "type": "integer",
+            "minimum": 1980,
+            "maximum": 2030,
+            "default": 2026,
+            "description": "Two-year FEC election cycle for contribution searches, named by its even year: 2026 covers 2025-2026. An odd year is treated as the cycle it falls in. Defaults to 2026. Candidate and committee searches are not limited to a cycle."
           },
           "max_results": {
             "type": "integer",
@@ -6669,17 +6703,17 @@
     {
       "name": "cve_vulnerability_intelligence",
       "title": "NVD CVE and CISA KEV Vulnerability Intelligence",
-      "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/nvd-cisa-vulnerability-intelligence'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable; no NVD or CISA credential is required.\n- Latency & Limits: Typical exact and keyword runs take 5-30 seconds; NVD rate limits can slow large filtered jobs; output is capped by max_results.\n\nUsage Guidelines:\n- When to use: Use for CVE research, vulnerability triage, patch prioritization, and identifying active exploitation.\n- When NOT to use: Do not use as a network scanner or as proof that a particular deployed asset is vulnerable.\n- Named alternatives: Use 'tech_stack_detector' to identify public website technologies before researching relevant CVEs.",
+      "description": "Search NIST NVD vulnerabilities and enrich every CVE with CISA Known Exploited Vulnerability status, remediation deadlines, ransomware use, CVSS, CWE, affected CPEs, and references.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/nvd-cisa-vulnerability-intelligence'.\n- Side Effects: Reads public sources and creates a billed Actor run and dataset on your Apify account.\n- Authentication: Requires APIFY_TOKEN environment variable; no NVD or CISA credential is required.\n- Latency & Limits: Typical exact and keyword runs take 5-30 seconds; NVD rate limits can slow large filtered jobs; output is capped by max_results. Every call needs query or cve_id; filters such as severity or known_exploited_only narrow that search rather than replacing it.\n\nUsage Guidelines:\n- When to use: Use for CVE research, vulnerability triage, patch prioritization, and identifying active exploitation.\n- When NOT to use: Do not use as a network scanner or as proof that a particular deployed asset is vulnerable.\n- Named alternatives: Use 'tech_stack_detector' to identify public website technologies before researching relevant CVEs.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "query": {
             "type": "string",
-            "description": "Keyword, vendor, product, or phrase to search in NVD."
+            "description": "Keyword, vendor, product, or phrase to search in NVD. Give query or cve_id; a call with neither is refused before any run starts."
           },
           "cve_id": {
             "type": "string",
-            "description": "Exact CVE ID; overrides query when supplied."
+            "description": "Exact CVE ID, e.g. 'CVE-2021-44228'; overrides query when supplied. Give query or cve_id."
           },
           "severity": {
             "type": "string",
@@ -9220,5 +9254,5 @@
       }
     }
   ],
-  "version": "1.6.0"
+  "version": "1.6.1"
 }

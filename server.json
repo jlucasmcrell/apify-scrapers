@@ -6,12 +6,12 @@
     "url": "https://github.com/jlucasmcrell/apify-scrapers",
     "source": "github"
   },
-  "version": "1.6.0",
+  "version": "1.6.1",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "apify-data-scrapers",
-      "version": "1.6.0",
+      "version": "1.6.1",
       "transport": {
         "type": "stdio"
       },

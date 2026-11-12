@@ -139,6 +139,42 @@ print(len(names))
             self.assertFalse(self.call('twitch_live_streams', {})['isError'])
         self.assertEqual(run.call_args.args[1]['search_query'], 'minecraft')
 
+    def test_actor_defaults_never_narrow_a_search_silently(self):
+        # Each Actor below has an input default that would otherwise apply unseen:
+        # CVE query "Microsoft Exchange", EPA violations_only true, FEC cycle 2024,
+        # SEC date_from 2024-01-01 and USAspending start_date 2024-01-01.
+        with patch.object(server, 'run_actor_sync') as run:
+            for args in [{}, {'severity': 'CRITICAL'}, {'known_exploited_only': True}, {'query': '  '}]:
+                with self.subTest(args=args):
+                    result = self.call('cve_vulnerability_intelligence', args)
+                    self.assertEqual(result['structuredContent']['error']['code'], 'INVALID_INPUT')
+            run.assert_not_called()
+        with patch.object(server, 'run_actor_sync', return_value=[]) as run:
+            self.assertFalse(self.call('cve_vulnerability_intelligence', {'cve_id': 'CVE-2021-44228'})['isError'])
+            self.assertNotIn('query', run.call_args.args[1])
+            self.call('epa_facility_search', {'state': 'RI'})
+            self.assertIs(run.call_args.args[1]['violations_only'], False)
+            self.call('epa_facility_search', {'state': 'RI', 'violations_only': True})
+            self.assertIs(run.call_args.args[1]['violations_only'], True)
+            self.call('fec_campaign_finance_search', {})
+            self.assertEqual(run.call_args.args[1]['two_year_period'], 2026)
+            self.call('fec_campaign_finance_search', {'cycle': 2023})
+            self.assertEqual(run.call_args.args[1]['two_year_period'], 2024)
+            self.call('sec_edgar_filings', {'ticker': 'MSFT'})
+            self.assertEqual(run.call_args.args[1]['forms'], ['10-K'])
+            self.assertEqual(run.call_args.args[1]['date_from'], '2016-01-01')
+            self.call('sec_edgar_filings', {'ticker': 'MSFT', 'form_type': 'ALL'})
+            self.assertEqual(run.call_args.args[1]['forms'], [])
+            self.call('usaspending_contracts', {'recipient_name': 'shipbuilding'})
+            self.assertEqual(run.call_args.args[1]['start_date'], '2020-01-01')
+        with patch.object(server, 'run_actor_sync') as run:
+            for name, args in [('sec_edgar_filings', {'ticker': 'MSFT', 'date_from': '2025-01-01', 'date_to': '2024-01-01'}),
+                               ('sec_edgar_filings', {'ticker': 'MSFT', 'date_from': '2024/01/01'}),
+                               ('usaspending_contracts', {'recipient_name': 'shipbuilding', 'start_date': '2025-01-01', 'end_date': '2024-01-01'})]:
+                with self.subTest(name=name, args=args):
+                    self.assertEqual(self.call(name, args)['structuredContent']['error']['code'], 'INVALID_INPUT')
+            run.assert_not_called()
+
     def test_api_authorization_never_in_url_and_error_body_redacted(self):
         captured = []
         def fail(request, **kwargs):

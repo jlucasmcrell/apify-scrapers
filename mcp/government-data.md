@@ -12,7 +12,7 @@ This is an MCP server for US government data: it exposes tools so an AI agent ca
 
 - What federal contracts has Lockheed Martin been awarded? -> usaspending_contracts(recipient_name="Lockheed Martin", max_results=10)
 - Is there an FEC candidate named Warren running for Senate in Massachusetts? -> fec_campaign_finance_search(data_type="candidates", name="Warren", state="MA", office="S")
-- Which facilities in Rhode Island have Clean Air Act violations? -> epa_facility_search(state="RI", program="A")
+- Which facilities in Rhode Island have Clean Air Act violations? -> epa_facility_search(state="RI", program="A", violations_only=True)
 - What census tract and congressional district is this address in? -> us_census_geocoder(addresses=["1600 Amphitheatre Pkwy, Mountain View, CA 94043"])
 - List Medicare-certified hospitals in Houston, Texas -> cms_healthcare_provider_search(provider_types=["hospital"], state="TX", city="Houston")
 - Has the FDA approved any drugs with semaglutide? -> openfda_search(dataset="drug_approval", search="semaglutide")

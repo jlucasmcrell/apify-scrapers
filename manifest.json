@@ -3,7 +3,7 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
   "long_description": "43 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
@@ -71,11 +71,11 @@
     },
     {
       "name": "sec_edgar_filings",
-      "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events."
+      "description": "Retrieve official United States Securities and Exchange Commission (SEC EDGAR) regulatory filings including 10-K annual reports, 10-Q quarterly reports, and 8-K material events, newest first, filed between date_from (default 2016-01-01) and date_to (default today)."
     },
     {
       "name": "usaspending_contracts",
-      "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database."
+      "description": "Search United States federal procurement contracts, defense department awards, and prime agency obligations from the official USAspending database, for awards dated between start_date (default 2020-01-01) and end_date (default today)."
     },
     {
       "name": "twitch_live_streams",
@@ -99,11 +99,11 @@
     },
     {
       "name": "epa_facility_search",
-      "description": "Search the official EPA ECHO service for US regulated facilities by state, facility name, NAICS code, or environmental program, and export compliance status, inspection, and penalty data. City, ZIP, and violation-only filtering are available in the underlying Actor, not this MCP tool."
+      "description": "Search the official EPA ECHO service for US regulated facilities by state, facility name, NAICS code, or environmental program, and export compliance status, inspection, and penalty data. Set violations_only to keep only facilities currently in violation. City and ZIP filtering are available in the "
     },
     {
       "name": "fec_campaign_finance_search",
-      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields."
+      "description": "Search the US Federal Election Commission's public register of federal candidates, committees/PACs, or individual campaign contributions. A single call returns one record type only, selected with data_type, because candidates, committees, and contributions carry genuinely different fields. Contribut"
     },
     {
       "name": "florida_new_filings_search",

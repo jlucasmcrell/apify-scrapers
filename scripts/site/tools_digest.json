@@ -150,7 +150,18 @@
           "ALL"
         ],
         "default": "10-K",
-        "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing."
+        "description": "SEC form classification: '10-K' for annual reports, '10-Q' for quarterly reports, '8-K' for material events, or 'ALL' for any filing. 'ALL' returns every form type."
+      },
+      "date_from": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "default": "2016-01-01",
+        "description": "Earliest filing date, YYYY-MM-DD. Defaults to 2016-01-01. Filings are returned newest first."
+      },
+      "date_to": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "Latest filing date, YYYY-MM-DD. Defaults to today."
       },
       "max_results": {
         "type": "integer",
@@ -252,6 +263,17 @@
         "type": "string",
         "minLength": 2,
         "description": "Legal entity name of the prime contractor, corporate vendor, or recipient institution (e.g. 'Lockheed Martin', 'Palantir Technologies', or 'Boeing')."
+      },
+      "start_date": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "default": "2020-01-01",
+        "description": "Earliest award action date, YYYY-MM-DD; the earliest USAspending supports is 2007-10-01. Defaults to 2020-01-01."
+      },
+      "end_date": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "Latest award action date, YYYY-MM-DD. Defaults to today."
       },
       "max_results": {
         "type": "integer",
@@ -618,6 +640,11 @@
         ],
         "description": "Environmental program to filter by: 'A' Clean Air Act, 'W' Clean Water Act, 'S' Safe Drinking Water Act, 'R' RCRA hazardous waste. Defaults to 'A' (Clean Air Act) when omitted."
       },
+      "violations_only": {
+        "type": "boolean",
+        "default": false,
+        "description": "Keep only facilities currently showing a violation or significant non-compliance. Defaults to false: all matching facilities, with their compliance status."
+      },
       "max_results": {
         "type": "integer",
         "minimum": 1,
@@ -681,6 +708,13 @@
           "P"
         ],
         "description": "Office sought: 'H' House, 'S' Senate, 'P' President. Applies to candidates only."
+      },
+      "cycle": {
+        "type": "integer",
+        "minimum": 1980,
+        "maximum": 2030,
+        "default": 2026,
+        "description": "Two-year FEC election cycle for contribution searches, named by its even year: 2026 covers 2025-2026. An odd year is treated as the cycle it falls in. Defaults to 2026. Candidate and committee searches are not limited to a cycle."
       },
       "max_results": {
         "type": "integer",
