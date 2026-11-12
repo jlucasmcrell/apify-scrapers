@@ -327,6 +327,7 @@
     "how": "Apify test run of actor aDcOParkmrJYa6Fup on 2026-11-12 covering all three modes: 4 rows from a keyword search, 1 row from an app-id lookup (284882215), and 5 + 5 rows from top-free and top-grossing charts.",
     "result": "SUCCEEDED with 15 real rows: app ids, names, developers, prices, ratings, genres, versions and App Store URLs returned by Apple's public iTunes endpoints.",
     "items": 15,
-    "relevant": true
+    "relevant": true,
+    "token": "meditation"
   }
 }

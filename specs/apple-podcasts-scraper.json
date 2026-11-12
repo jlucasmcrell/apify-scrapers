@@ -319,6 +319,7 @@
     "how": "Three Apify test runs of actor Y6fzv3s95FCvyCNh2 on 2026-11-12: keyword search 'startup' (2 shows, 8 rows), exact refs ['1236907421', 'https://changelog.com/founderstalk/feed'] (6 rows), and keyword search 'climate tech' (3 rows with real episodeNumber/seasonNumber).",
     "result": "SUCCEEDED with real rows in every run: Apple directory metadata plus feed-read episodes with publishedAt, durationSeconds and audioUrl. Missing episode numbers/durations were null rather than invented.",
     "items": 17,
-    "relevant": true
+    "relevant": true,
+    "token": "startup"
   }
 }
