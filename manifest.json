@@ -3,9 +3,9 @@
   "name": "apify-scrapers",
   "display_name": "Apify Public Data & Leads",
   "icon": "icon.png",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "35 public-data MCP tools with optional profiles for leads, markets, government, and research.",
-  "long_description": "41 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
+  "long_description": "43 read-only tools over public data sources, each backed by an Apify Actor. Runs execute on the caller's own Apify account and are billed to it. The server itself is standard-library Python with no third-party dependencies.",
   "author": {
     "name": "Joseph McRell",
     "url": "https://github.com/jlucasmcrell"
@@ -224,6 +224,14 @@
     {
       "name": "shopify_catalog_products",
       "description": "Read the full public product catalog of any Shopify store, collection or single product and return one row per product (or one row per variant): title, product URL, vendor, product type, tags, SKU list, price range, compare-at price, stock status, variant-level prices and availability, option names/"
+    },
+    {
+      "name": "company_job_postings",
+      "description": "Collect live job postings straight from company career boards in one call: one row per open job with company, ATS, job id, title, location, department, employment type, workplace type, posting date, apply URL, salary text when the board publishes it, and the description as plain text (optional). Giv"
+    },
+    {
+      "name": "substack_posts",
+      "description": "Read public Substack publications and get post metadata in one call: the newest posts of each publication you name, or the posts matching keywords inside each publication's own archive search. Each row carries post id, title, subtitle, canonical URL, author, publication name/subdomain/domain, public"
     }
   ],
   "compatibility": {

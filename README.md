@@ -1,6 +1,6 @@
 <!-- mcp-name: io.github.jlucasmcrell/apify-scrapers -->
 mcp-name: io.github.jlucasmcrell/apify-scrapers
-# Apify Public Data MCP: 41 Production Data Tools & Public Records
+# Apify Public Data MCP: 43 Production Data Tools & Public Records
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
@@ -9,7 +9,7 @@ mcp-name: io.github.jlucasmcrell/apify-scrapers
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Smithery](https://img.shields.io/badge/Smithery-jlucasmcrell%2Fapify--scrapers-orange)](https://smithery.ai/servers/jlucasmcrell/apify-scrapers)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/jlucasmcrell/apify-scrapers)
-One MCP server gives an AI agent **41 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch, Google Play, App Store search and charts, Apple Podcasts and Shopify product catalogs - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
+One MCP server gives an AI agent **43 production data extractors** - Google Maps business leads, Google News, Google Autocomplete, LinkedIn and Glassdoor jobs, SEC EDGAR, USAspending, Grants.gov, TED tenders, NHTSA recalls, FEC, EPA, ClinicalTrials.gov, openFDA, Europe PMC, GLEIF, CMS providers, Census geocoding, state business registries, contractor licences, Airbnb, YouTube, Twitch, Google Play, App Store search and charts, Apple Podcasts, Shopify product catalogs, Substack newsletters and company career boards (Greenhouse, Lever, Ashby) - each running as an Actor on your own **[Apify](https://apify.com/captainhandsome)** account. Install with `uvx apify-data-scrapers` (Claude Desktop, Cursor, any MCP client), or call the same Actors directly from Python, Node.js or no-code tools.
 
 Each actor is built with strict schema validation, deterministic field mapping, self-healing DOM selectors, and pay-per-event pricing (per-result rates from **$0.00015**, Actor-start from **$0.0005**; the live Apify Store price is authoritative).
 
@@ -117,6 +117,7 @@ Also available: [Cross-border company registry search](https://apify.com/captain
 | **GLEIF LEI Lookup** | [`captainhandsome/gleif-lei-search`](https://apify.com/captainhandsome/gleif-lei-search) | lei, legal_name, registered_as, legal_form_name, status | Best for KYC and counterparty due diligence: resolving a company's Legal Entity Identifier, registration status, and own national registry number before onboarding. |
 | **US Contractor Licenses** | [`captainhandsome/us-contractor-license-search`](https://apify.com/captainhandsome/us-contractor-license-search) | Contractor name, license number, classification, status, state | Trades verification, subcontractor diligence |
 | **California Contractor License Search** | [`captainhandsome/ca-contractor-license-search`](https://apify.com/captainhandsome/ca-contractor-license-search) | contractor name, name type, license number, city, status | Search California CSLB contractor records by contractor name and expor |
+| **Company Career-Board Job Postings** | [`captainhandsome/job-postings-scraper`](https://apify.com/captainhandsome/job-postings-scraper) | company, ats, title, location, department, postedAt, apply url | Hiring signals for B2B prospecting and tracking open roles at target companies (Greenhouse, Lever, Ashby) |
 
 ### Jobs, market & consumer intelligence
 
@@ -132,6 +133,7 @@ Also available: [Cross-border company registry search](https://apify.com/captain
 | **Shopify Store Products & Prices** | [`captainhandsome/shopify-catalog-prices-scraper`](https://apify.com/captainhandsome/shopify-catalog-prices-scraper) | title, vendor, minPrice, maxPrice, compareAtMax, available, skus | Competitor price monitoring, stock checks and product feeds |
 | **YouTube Video Search** | [`captainhandsome/youtube-search-scraper`](https://apify.com/captainhandsome/youtube-search-scraper) | Title, video URL, channel, views count, duration, publish date | Content tracking, creator outreach |
 | **Twitch Live Streams** | [`captainhandsome/twitch-live-streams-scraper`](https://apify.com/captainhandsome/twitch-live-streams-scraper) | Streamer username, title, viewer count, language, category | Esports analytics, live stream monitoring |
+| **Substack Newsletter Posts** | [`captainhandsome/substack-posts-scraper`](https://apify.com/captainhandsome/substack-posts-scraper) | title, url, authorName, publicationName, postDate, audience, reactionCount, commentCount | Newsletter and media monitoring, tracking what a writer published and when |
 
 ### Government & public records
 
