@@ -1,7 +1,7 @@
 """Integrate validated tool specs into mcp_server.py, manifest.json and the version files.
 
 Input: one JSON spec per Actor (see the mcp-tool-expansion workflow) in SPEC_DIR:
-  { actor, tool{name,title,description,inputSchema,outputSchema,annotations},
+  { actor, profile, tool{name,title,description,inputSchema,outputSchema,annotations},
     payload_mapping{arg -> {key, transform}}, fixed_payload{key -> const}, example_call, verification }
 
 What it emits, and why in this exact shape:
@@ -15,6 +15,7 @@ What it emits, and why in this exact shape:
     that five tools once sent keys the Actors reject.
   - manifest.json tools: name + description ONLY (the MCPB validator rejects
     inputSchema there; scripts/build_smithery_bundle.py enriches at pack time).
+  - TOOL_PROFILES: each new tool joins the profile its spec names ("profile").
   - Version bump in setup.py, package.json, server.json (x2), manifest.json.
 
 Existing schemas must match their specs; drift blocks integration instead of being skipped.
@@ -163,8 +164,9 @@ def main() -> int:
     # every one of them.
     definitions = ast.literal_eval(src.split("TOOLS_DEFINITION = ", 1)[1].split("\n]\n", 1)[0] + "\n]")
     existing = {t["name"]: t for t in definitions}
+    profiles = ast.literal_eval(re.search(r"\nTOOL_PROFILES = (\{\n(?:.*\n)*?\})\n", src).group(1))
     public = {item['name'] for item in store_items('captainhandsome', agentic_only=True)}
-    added = []
+    added, profile_of = [], {}
     actors_block, tools_block, handler_block = [], [], []
     for s in specs:
         name = s["tool"]["name"]
@@ -176,6 +178,10 @@ def main() -> int:
             print(f'  hold {name}: Actor is not public and agentic-eligible'); continue
         if 'status' not in s['tool'].get('outputSchema', {}).get('required', []):
             raise SystemExit(f'{name}: spec needs the structured results/status contract before integration')
+        # Every tool must sit in exactly one APIFY_TOOL_PROFILE, or the profile test fails.
+        if s.get('profile') not in profiles:
+            raise SystemExit(f'{name}: spec needs "profile" set to one of {sorted(profiles)}')
+        profile_of[name] = s['profile']
         key = name.rsplit("_search", 1)[0] if name.endswith("_search") else name
         actors_block.append(f'    "{key}": "captainhandsome/{s["actor"]}",')
         tools_block.append("    " + py_literal(s["tool"]).replace("\n", "\n    ") + ",")
@@ -199,6 +205,12 @@ def main() -> int:
     if not anchor:
         raise SystemExit("could not find the airbnb handler branch to anchor on")
     src = src[:anchor.end()] + "".join(handler_block) + src[anchor.end():]
+    # 4. TOOL_PROFILES: append each new tool to its spec's profile list
+    for name, profile in profile_of.items():
+        src, n = re.subn(rf"(\n    '{re.escape(profile)}': \[\n(?:        '[^'\n]+',\n)*        '[^'\n]+')(\n    \])",
+                         lambda m: m.group(1) + f",\n        {name!r}" + m.group(2), src, count=1)
+        if n != 1:
+            raise SystemExit(f"could not find the {profile!r} list in TOOL_PROFILES")
     ast.parse(src)
 
     manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"), object_pairs_hook=OrderedDict)
