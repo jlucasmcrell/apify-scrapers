@@ -1,0 +1,268 @@
+{
+  "actor": "job-postings-scraper",
+  "profile": "leads",
+  "tool": {
+    "name": "company_job_postings",
+    "title": "Company Job Postings (Greenhouse, Lever, Ashby)",
+    "description": "Collect live job postings straight from company career boards in one call: one row per open job with company, ATS, job id, title, location, department, employment type, workplace type, posting date, apply URL, salary text when the board publishes it, and the description as plain text (optional). Give it board tokens or career-page URLs for Greenhouse ('stripe'), Lever ('leverdemo') or Ashby ('ramp'). A call must name at least one board.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/job-postings-scraper'.\n- Side Effects: Reads each platform's public job-board JSON endpoint (the same data the company's own careers page loads) and creates a billed Actor run and dataset on your Apify account. No login, no API key, no cookies, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 2-20 seconds. $0.003 per job row plus $0.005 per run. Up to 100 boards per platform and 20,000 rows per run; max_jobs_per_company defaults to 100.\n\nUsage Guidelines:\n- When to use: Use for hiring-signal lead lists (which accounts are opening which roles), job-market research across many companies, recruiting and competitor intel, or filling a job board or newsletter with fresh roles from companies you choose.\n- When NOT to use: Do not use for closed or archived postings (boards expose currently open jobs only), for LinkedIn, Indeed or ZipRecruiter aggregator data, or for Workable boards (its public endpoint rate-limits datacenter IPs and is deliberately not supported).\n- Named alternatives: the other tools in this package cover Shopify catalogs, app stores, podcasts and newsletters, not job boards.\n\nHonest limits: only Greenhouse, Lever and Ashby are supported; a private or removed board returns nothing for that company and the run continues with the rest; boards that publish no posting date or salary leave those fields null rather than inventing them; descriptions are trimmed to 4,000 characters. Board lists are sent explicitly on every call, so an omitted platform is skipped, never replaced by a hidden default search.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "greenhouse": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 100,
+          "description": "Greenhouse board tokens or URLs, e.g. 'stripe' or 'https://boards.greenhouse.io/stripe'. Leave out to skip Greenhouse."
+        },
+        "lever": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 100,
+          "description": "Lever board tokens or URLs, e.g. 'leverdemo' or 'https://jobs.lever.co/leverdemo'. Leave out to skip Lever."
+        },
+        "ashby": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 100,
+          "description": "Ashby organisation names or URLs, e.g. 'ramp' or 'https://jobs.ashbyhq.com/ramp'. Leave out to skip Ashby."
+        },
+        "max_jobs_per_company": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 100,
+          "description": "Upper limit of postings returned per company (hard maximum 100). Each row is a billed result."
+        },
+        "include_description": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true, each row carries the posting description as plain text trimmed to 4,000 characters. Set false for a smaller, faster dataset."
+        },
+        "query": {
+          "type": "string",
+          "default": "",
+          "description": "Optional keyword filter applied to job title and description, e.g. 'engineer'. Leave empty for all jobs."
+        },
+        "posted_within_days": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 0,
+          "description": "Keep only jobs posted in the last N days. 0 means no date filter; boards that expose no date are kept."
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rowType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Row type",
+                "description": "Always 'job'."
+              },
+              "ats": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "ATS",
+                "description": "Source platform: greenhouse, lever or ashby."
+              },
+              "company": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Company",
+                "description": "Board/company identifier as requested."
+              },
+              "jobId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Job ID",
+                "description": "Posting id on the source platform."
+              },
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Title",
+                "description": "Job title."
+              },
+              "location": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Location",
+                "description": "Location text as the board states it."
+              },
+              "department": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Department",
+                "description": "Department or team, when the board publishes one."
+              },
+              "employmentType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Employment type",
+                "description": "Full-time, contract, etc. when stated; otherwise null."
+              },
+              "workplaceType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Workplace type",
+                "description": "Remote, hybrid or on-site when stated; otherwise null."
+              },
+              "postedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Posted at",
+                "description": "Posting date, ISO 8601, when the board exposes it."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "URL",
+                "description": "Public apply/listing URL."
+              },
+              "salaryText": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Salary text",
+                "description": "Salary range as published by the board, otherwise null."
+              },
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Description",
+                "description": "Plain-text posting description, max 4,000 characters; null when include_description is false."
+              },
+              "scrapedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Scraped at",
+                "description": "When the row was collected, ISO 8601."
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "results",
+        "status"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "greenhouse": {
+      "key": "greenhouse",
+      "transform": "strlist",
+      "default": []
+    },
+    "lever": {
+      "key": "lever",
+      "transform": "strlist",
+      "default": []
+    },
+    "ashby": {
+      "key": "ashby",
+      "transform": "strlist",
+      "default": []
+    },
+    "max_jobs_per_company": {
+      "key": "maxJobsPerCompany",
+      "transform": "int",
+      "default": 100
+    },
+    "include_description": {
+      "key": "includeDescription",
+      "transform": "identity",
+      "default": true
+    },
+    "query": {
+      "key": "query",
+      "transform": "identity",
+      "default": ""
+    },
+    "posted_within_days": {
+      "key": "postedWithinDays",
+      "transform": "int",
+      "default": 0
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "greenhouse": [
+      "stripe"
+    ],
+    "max_jobs_per_company": 5,
+    "include_description": false
+  },
+  "verification": {
+    "token": "stripe",
+    "how": "Apify test run of actor syc4JysyYTesyVmCu on 2026-11-12 with input {\"greenhouse\":[\"stripe\"],\"lever\":[],\"ashby\":[],\"maxJobsPerCompany\":5,\"includeDescription\":false}.",
+    "result": "SUCCEEDED in about one second: log reported 'greenhouse/stripe: 785 open jobs' and '5 job rows pushed'. Rows carried real job ids, titles (e.g. 'Abuse Investigator', 'Account Executive, AI Sales'), locations, departments, ISO posting dates and apply URLs; fields the board did not publish (employmentType, workplaceType, salaryText) were null rather than invented.",
+    "items": 5,
+    "relevant": true
+  }
+}
