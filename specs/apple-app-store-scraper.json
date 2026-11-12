@@ -1,0 +1,329 @@
+{
+  "actor": "apple-app-store-scraper",
+  "tool": {
+    "name": "apple_app_store_data",
+    "title": "Apple App Store Search, App Details & Top Charts",
+    "description": "Get Apple App Store data from Apple's own public endpoints in one call: keyword search results, exact app records by id or URL, and the top-free / top-paid / top-grossing charts for any store country. Each row carries app id, bundle id, name, developer, price, rating and rating count, genre, version, release/update dates and the App Store URL.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/apple-app-store-scraper'.\n- Side Effects: Reads Apple's public iTunes endpoints and creates a billed Actor run and dataset on your Apify account. No login, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 2-10 seconds; starts from $0.002 per row plus a small per-run start fee. Apple caps search at 200 results per keyword and each chart at 200 entries.\n\nUsage Guidelines:\n- When to use: Use for ASO keyword research, app market and chart tracking, competitor app metadata, or building app datasets for analysis and AI pipelines.\n- When NOT to use: Do not use for app reviews (Apple's public review feeds are not reliably available and this Actor does not ship them), for Google Play or other stores, or for private analytics such as downloads and revenue, which Apple does not publish.\n- Named alternatives: Use 'shopify_catalog_products' for e-commerce catalog data; use a Google Play scraper when the target store is Android.\n\nHonest limits: chart rows come from Apple's legacy top-charts feed and therefore have no rating or version fields (rating is null); keyword search returns whatever Apple returns for that country, and a run that returns zero rows fails loudly instead of charging for an empty dataset.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 20,
+          "description": "App Store search keywords. Each keyword returns up to limit_per_term apps per country. Leave out when you only want app details or charts."
+        },
+        "app_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "description": "Numeric Apple app ids ('284882215') or apps.apple.com URLs to get exact app records instead of search results."
+        },
+        "charts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "top-free",
+              "top-paid",
+              "top-grossing"
+            ]
+          },
+          "maxItems": 3,
+          "description": "Also collect these top charts for each country."
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "default": [
+            "us"
+          ],
+          "description": "Two-letter App Store country codes (us, gb, de, jp, ...). Each country is queried separately; defaults to us."
+        },
+        "limit_per_term": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 50,
+          "description": "Maximum apps returned per keyword. Each row is billed; defaults to 50."
+        },
+        "limit_per_chart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 50,
+          "description": "Maximum entries returned per chart. Each row is billed; defaults to 50."
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rowType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Row type",
+                "description": "'app' for search or lookup rows, 'chart' for top-chart rows."
+              },
+              "appId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "App ID",
+                "description": "Apple track id; primary key of an app."
+              },
+              "bundleId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Bundle ID",
+                "description": "iOS bundle identifier."
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "App name",
+                "description": "App Store name."
+              },
+              "developer": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Developer",
+                "description": "Artist/developer name."
+              },
+              "sellerName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Seller",
+                "description": "Seller name on the App Store record."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "App Store URL",
+                "description": "Canonical public App Store page."
+              },
+              "iconUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Icon URL",
+                "description": "App artwork URL."
+              },
+              "country": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Country",
+                "description": "Store country code the row came from."
+              },
+              "foundBy": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Found by",
+                "description": "How the row was found: search, lookup or chart."
+              },
+              "searchTerm": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Search term",
+                "description": "Keyword that produced the row, when found by search."
+              },
+              "chart": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Chart",
+                "description": "Chart name for chart rows."
+              },
+              "rank": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Rank",
+                "description": "Chart position, starting at 1."
+              },
+              "price": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Price",
+                "description": "Price in the store currency; 0 means free."
+              },
+              "formattedPrice": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Formatted price",
+                "description": "Price as displayed, e.g. 'Free' or '$4.99'."
+              },
+              "currency": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Currency",
+                "description": "Store currency code."
+              },
+              "rating": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "title": "Rating",
+                "description": "Average rating across all versions; null on chart rows."
+              },
+              "ratingsCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Ratings count",
+                "description": "Number of ratings; null on chart rows."
+              },
+              "primaryGenre": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Primary genre",
+                "description": "Main App Store category."
+              },
+              "version": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Version",
+                "description": "Current version string; null on chart rows."
+              },
+              "released": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Released",
+                "description": "Release date."
+              },
+              "updated": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Updated",
+                "description": "Last update date."
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "results",
+        "status"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "search_terms": {
+      "key": "searchTerms",
+      "transform": "strlist"
+    },
+    "app_ids": {
+      "key": "appIds",
+      "transform": "strlist"
+    },
+    "charts": {
+      "key": "charts",
+      "transform": "strlist"
+    },
+    "countries": {
+      "key": "countries",
+      "transform": "strlist"
+    },
+    "limit_per_term": {
+      "key": "limitPerTerm",
+      "transform": "int"
+    },
+    "limit_per_chart": {
+      "key": "limitPerChart",
+      "transform": "int"
+    }
+  },
+  "fixed_payload": {
+    "includeDescription": false
+  },
+  "example_call": {
+    "search_terms": [
+      "meditation timer"
+    ],
+    "countries": [
+      "us"
+    ],
+    "limit_per_term": 3
+  },
+  "verification": {
+    "how": "Apify test run of actor aDcOParkmrJYa6Fup on 2026-11-12 covering all three modes: 4 rows from a keyword search, 1 row from an app-id lookup (284882215), and 5 + 5 rows from top-free and top-grossing charts.",
+    "result": "SUCCEEDED with 15 real rows: app ids, names, developers, prices, ratings, genres, versions and App Store URLs returned by Apple's public iTunes endpoints.",
+    "items": 15,
+    "relevant": true
+  }
+}
