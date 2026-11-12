@@ -1,0 +1,297 @@
+{
+  "actor": "substack-posts-scraper",
+  "profile": "market",
+  "tool": {
+    "name": "substack_posts",
+    "title": "Substack Publication Posts & Keyword Search",
+    "description": "Read public Substack publications and get post metadata in one call: the newest posts of each publication you name, or the posts matching keywords inside each publication's own archive search. Each row carries post id, title, subtitle, canonical URL, author, publication name/subdomain/domain, publication date, post type (newsletter or podcast), audience (everyone / only_paid), wordcount, reaction count, comment count, restack count, a short description and the cover image URL. A call must name at least one publication.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via Apify Actor 'captainhandsome/substack-posts-scraper'.\n- Side Effects: Reads each publication's public /api/v1/archive endpoint and creates a billed Actor run and dataset on your Apify account. No login, no cookies, no API key, no browser.\n- Authentication: Requires APIFY_TOKEN environment variable.\n- Latency & Limits: Typically 2-15 seconds. $0.002 per row ($2 per 1,000 posts), no per-run start fee. Up to 50 publications and 10 keywords per run; 100 posts per publication or per keyword-publication pair.\n\nUsage Guidelines:\n- When to use: Use for newsletter/media monitoring, tracking what a writer published and when, finding older posts on a topic inside a publication, or building post-metadata datasets for analysis and AI pipelines.\n- When NOT to use: Do not use when you need the post body text (this returns metadata and URLs only; paywalled posts stay paywalled), for cross-Substack keyword search (this Actor searches inside each publication you name), or for private/paid-only publications you cannot read.\n- Named alternatives: Use 'apple_podcasts_data' for Apple Podcasts shows and episodes; use a general web scraper when the target is not a Substack publication.\n\nHonest limits: newest-first only, no date filter; reaction/comment/restack counts are a point-in-time snapshot; posts marked audience 'only_paid' have no public text; a run that can read nothing fails loudly instead of billing for an empty dataset; publication and keyword lists are sent explicitly on every call, so nothing is scraped that the caller did not name.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "publications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 50,
+          "description": "Publications to read: a subdomain ('noahpinion'), a URL ('https://noahpinion.substack.com'), or a custom domain ('https://www.noahpinion.blog'). Required: a call must name at least one."
+        },
+        "max_posts_per_publication": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "When no search_terms are given: how many of the newest posts to return per publication. Each row is billed; defaults to 10."
+        },
+        "search_terms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 10,
+          "description": "When set, each publication's own archive search is used and matching posts are returned per publication per keyword, newest first. Leave empty to read the newest posts instead."
+        },
+        "max_posts_per_term": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 10,
+          "description": "Matching posts to take per keyword per publication, when search_terms are given."
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rowType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Row type",
+                "description": "Always 'post'."
+              },
+              "postId": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Post ID",
+                "description": "Substack post id."
+              },
+              "title": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Title",
+                "description": "Post title."
+              },
+              "subtitle": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Subtitle",
+                "description": "Post subtitle, when published."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "URL",
+                "description": "Canonical post URL."
+              },
+              "slug": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Slug",
+                "description": "Post slug."
+              },
+              "authorName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Author",
+                "description": "Author of the post, from the publication's byline."
+              },
+              "publicationName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Publication name",
+                "description": "Publication name."
+              },
+              "publicationSlug": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Publication subdomain",
+                "description": "Publication subdomain."
+              },
+              "publicationUrl": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Publication URL",
+                "description": "Publication domain."
+              },
+              "postDate": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Published at",
+                "description": "Publication date, ISO 8601."
+              },
+              "type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Type",
+                "description": "Post type: newsletter, podcast, etc."
+              },
+              "audience": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Audience",
+                "description": "'everyone' for free posts, 'only_paid' for paywalled ones."
+              },
+              "wordcount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Wordcount",
+                "description": "Word count when published."
+              },
+              "reactionCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Reactions",
+                "description": "Reactions at scrape time."
+              },
+              "commentCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Comments",
+                "description": "Comments at scrape time."
+              },
+              "restackCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Restacks",
+                "description": "Restacks at scrape time."
+              },
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Description",
+                "description": "Short description/subtitle, truncated to 600 characters."
+              },
+              "coverImage": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Cover image",
+                "description": "Cover image URL."
+              },
+              "foundBy": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Found by",
+                "description": "'publication' for newest posts, 'search' for keyword matches."
+              },
+              "searchTerm": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Search term",
+                "description": "Keyword that found the post, when found by search."
+              },
+              "scrapedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Scraped at",
+                "description": "When the row was collected, ISO 8601."
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "results",
+        "status"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "publications": {
+      "key": "publications",
+      "transform": "strlist",
+      "default": []
+    },
+    "max_posts_per_publication": {
+      "key": "maxPostsPerPublication",
+      "transform": "int",
+      "default": 10
+    },
+    "search_terms": {
+      "key": "searchTerms",
+      "transform": "strlist",
+      "default": []
+    },
+    "max_posts_per_term": {
+      "key": "maxPostsPerTerm",
+      "transform": "int",
+      "default": 10
+    }
+  },
+  "fixed_payload": {},
+  "example_call": {
+    "publications": [
+      "noahpinion"
+    ],
+    "max_posts_per_publication": 3
+  },
+  "verification": {
+    "token": "noahpinion",
+    "how": "Two Apify test runs of actor gL9yNy9DPNYXit1IF on 2026-11-12: defaults (newest posts of 'noahpinion', 10 rows) and keyword mode (searchTerms ['China'], maxPostsPerTerm 2).",
+    "result": "SUCCEEDED with real rows in both modes: post ids, titles, canonical URLs, author 'Noah Smith', publication name 'Noahpinion', dates, audience, wordcount, reaction/comment/restack counts. Keyword search returned genuine older posts about China; missing fields were null rather than invented.",
+    "items": 12,
+    "relevant": true
+  }
+}
