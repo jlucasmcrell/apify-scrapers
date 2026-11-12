@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -129,6 +130,59 @@ class Server:
             self.p.stdout.close()
 
 
+# A failed tool is retried this many times (0 or 1) after RETRY_DELAY_S seconds.
+RETRIES = 1 if os.environ.get("E2E_RETRIES", "1") != "0" else 0
+RETRY_DELAY_S = int(os.environ.get("E2E_RETRY_DELAY_S", "20"))
+
+
+def check_tool(srv: Server, definition: dict, name: str, args: dict, token: str) -> tuple[str, str]:
+    """Call one tool once and judge the result: ("OK" | "FAIL" | "ERROR", detail)."""
+    t0 = time.time()
+    try:
+        resp = srv.call("tools/call", {"name": name, "arguments": args}, timeout=240)
+    except Exception as exc:
+        print(f"ERR  {name}: {exc}")
+        return "ERROR", f"{type(exc).__name__}: {str(exc)[:120]}"
+    secs = round(time.time() - t0, 1)
+    if "error" in resp:
+        print(f"FAIL {name} ({secs}s): {json.dumps(resp['error'])[:160]}")
+        return "FAIL", f"rpc error: {json.dumps(resp['error'])[:160]}"
+    res = resp.get("result") or {}
+    structured = res.get('structuredContent')
+    schema_error = None
+    try:
+        validate_value(structured, definition['outputSchema'], code='OUTPUT_SCHEMA_MISMATCH')
+        assert json.loads(res['content'][0]['text']) == structured
+    except Exception as exc:
+        schema_error = type(exc).__name__
+    blob = json.dumps((structured or {}).get('results', [])).lower()
+    # A two-letter token ("ri", "ca") is a substring of almost any JSON;
+    # require a whole-word match for short tokens so the relevance check
+    # cannot pass on noise.
+    token_ok = (re.search(r"\b" + re.escape(token) + r"\b", blob) is not None) if len(token) < 4 else (token in blob)
+    is_err = bool(res.get("isError"))
+    rows = None
+    for c in res.get("content") or []:
+        if c.get("type") == "text":
+            try:
+                parsed = json.loads(c["text"]); rows = parsed.get("results") if isinstance(parsed, dict) else parsed
+            except Exception:
+                pass
+    n = len(rows) if isinstance(rows, list) else None
+    ok = not schema_error and (not is_err) and (n or 0) > 0 and token_ok
+    if ok:
+        why = ""
+    elif schema_error:
+        why = "schema/structured-content mismatch"
+    elif is_err:
+        code = ((structured or {}).get("error") or {}).get("code")
+        why = f"isError {code}" if code else "isError"
+    else:
+        why = "no rows" if not n else f"token {token!r} absent"
+    print(f"{'OK  ' if ok else 'FAIL'} {name:38} rows={n} {secs}s {why}")
+    return ("OK" if ok else "FAIL"), f"{n} rows {secs}s {why}".strip()
+
+
 def main() -> int:
     only = sys.argv[1:]
     srv = Server()
@@ -148,53 +202,30 @@ def main() -> int:
                 continue
             if only and name not in only:
                 continue
-            t0 = time.time()
-            try:
-                resp = srv.call("tools/call", {"name": name, "arguments": args}, timeout=240)
-            except Exception as exc:
-                results.append((name, "ERROR", f"{type(exc).__name__}: {str(exc)[:120]}")); print(f"ERR  {name}: {exc}"); continue
-            secs = round(time.time() - t0, 1)
-            if "error" in resp:
-                results.append((name, "FAIL", f"rpc error: {json.dumps(resp['error'])[:160]}")); print(f"FAIL {name} ({secs}s): {json.dumps(resp['error'])[:160]}"); continue
-            res = resp.get("result") or {}
-            structured = res.get('structuredContent')
-            schema_error = None
-            try:
-                validate_value(structured, definitions[name]['outputSchema'], code='OUTPUT_SCHEMA_MISMATCH')
-                assert json.loads(res['content'][0]['text']) == structured
-            except Exception as exc:
-                schema_error = type(exc).__name__
-            blob = json.dumps((structured or {}).get('results', [])).lower()
-            # A two-letter token ("ri", "ca") is a substring of almost any JSON;
-            # require a whole-word match for short tokens so the relevance check
-            # cannot pass on noise.
-            import re as _re
-            token_ok = (_re.search(r"\b" + _re.escape(token) + r"\b", blob) is not None) if len(token) < 4 else (token in blob)
-            is_err = bool(res.get("isError"))
-            content = res.get("content") or []
-            rows = None
-            for c in content:
-                if c.get("type") == "text":
-                    try:
-                        parsed = json.loads(c["text"]); rows = parsed.get("results") if isinstance(parsed, dict) else parsed
-                    except Exception:
-                        pass
-            n = len(rows) if isinstance(rows, list) else None
-            ok = not schema_error and (not is_err) and (n or 0) > 0 and token_ok
-            why = "" if ok else ("schema/structured-content mismatch" if schema_error else "isError" if is_err else "no rows" if not n else f"token {token!r} absent")
-            results.append((name, "OK" if ok else "FAIL", f"{n} rows {secs}s {why}"))
-            print(f"{'OK  ' if ok else 'FAIL'} {name:38} rows={n} {secs}s {why}")
-        good = sum(1 for r in results if r[1] == "OK")
-        print(f"\n{good}/{len(results)} tools passed end-to-end")
+            status, detail = check_tool(srv, definitions[name], name, args, token)
+            # One retry after a short pause: a single network blip or bot
+            # challenge should not fail the daily run, but a tool that only
+            # passes on retry is still reported as RETRY so flakiness stays visible.
+            if status != "OK" and RETRIES:
+                print(f"     retrying {name} in {RETRY_DELAY_S}s")
+                time.sleep(RETRY_DELAY_S)
+                status2, detail2 = check_tool(srv, definitions[name], name, args, token)
+                status, detail = ("RETRY", f"{detail2}; first try: {detail}") if status2 == "OK" else (status2, f"{detail2}; first try: {detail}")
+            results.append((name, status, detail))
+        good = sum(1 for r in results if r[1] in ("OK", "RETRY"))
+        retried = [r[0] for r in results if r[1] == "RETRY"]
+        print(f"\n{good}/{len(results)} tools passed end-to-end" + (f" ({len(retried)} only on retry: {', '.join(retried)})" if retried else ""))
         # In GitHub Actions, also write a table to the run's summary page.
         if summary := os.environ.get("GITHUB_STEP_SUMMARY"):
+            icon = {"OK": "✅", "RETRY": "⚠️ passed on retry"}
+            order = {"FAIL": 0, "ERROR": 0, "RETRY": 1, "OK": 2}
             with open(summary, "a", encoding="utf-8") as f:
-                f.write(f"## End-to-end: {good}/{len(results)} tools passed\n\n")
+                f.write(f"## End-to-end: {good}/{len(results)} tools passed" + (f", {len(retried)} only on retry" if retried else "") + "\n\n")
                 if missing:
                     f.write(f"Missing test case or unavailable tool: {', '.join(missing)}\n\n")
                 f.write("| Tool | Result | Detail |\n|---|---|---|\n")
-                for name, status, detail in sorted(results, key=lambda r: (r[1] == "OK", r[0])):
-                    f.write(f"| `{name}` | {'✅' if status == 'OK' else '❌ ' + status} | {detail.replace('|', '/')} |\n")
+                for name, status, detail in sorted(results, key=lambda r: (order.get(r[1], 0), r[0])):
+                    f.write(f"| `{name}` | {icon.get(status, '❌ ' + status)} | {detail.replace('|', '/')} |\n")
         return 0 if good == len(results) and not missing else 1
     finally:
         srv.close()
