@@ -1,0 +1,309 @@
+{
+  "actor": "bluesky-search-and-author-scraper",
+  "profile": "market",
+  "tool": {
+    "name": "bluesky_search_posts",
+    "title": "Bluesky Keyword Search - Public Posts with Engagement",
+    "description": "Search public Bluesky posts for one keyword, phrase or hashtag and get clean rows back: post text, author handle and display name, post URL, timestamp, like / repost / reply / quote / bookmark counts, hashtags, links, and whether the post is a reply. Useful for social listening, hashtag and brand monitoring, trend and sentiment research, and finding posts that link to a site. A call must name one search query; a call with an empty query is refused before any billed run starts.\n\nBehavioral Transparency:\n- Execution: Network call executed synchronously in the cloud via the Apify Actor captainhandsome/bluesky-search-and-author-scraper.\n- Side Effects: Reads the public AT Protocol AppView search endpoint and creates a billed Actor run and dataset on the Apify account that owns the token. No login, no cookies, no API key for Bluesky, no browser.\n- Authentication: Requires the APIFY_TOKEN environment variable.\n- Latency and Limits: Typically 2-10 seconds. $0.002 per post row plus $0.001 per run. One call searches at most 1 query and returns at most 30 posts, so one call bills at most 30 rows.\n\nUsage Guidelines:\n- When to use: Use for social listening on Bluesky, tracking a hashtag or product name, finding recent posts by keyword for research or AI pipelines, or checking how much engagement a topic is getting right now.\n- When NOT to use: Do not use to read an entire account history (this tool searches by keyword only), to read private or deleted posts (impossible), to post or interact on Bluesky, or for networks other than Bluesky. For Substack newsletters use substack_posts instead.\n\nHonest limits: Search covers the public Bluesky search index; a brand-new post can take a few seconds to appear, and posts outside that index are not returned. Engagement counts are a point-in-time snapshot. Search supports up to 30 posts per call here to keep billing predictable. A run that returns nothing fails loudly instead of billing for an empty dataset.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The words, phrase or hashtag to search for in public Bluesky posts, for example christmas printables or #etsyseller. Required: an empty query is refused before any billed run starts."
+        },
+        "max_posts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30,
+          "default": 10,
+          "description": "How many posts to return for the query (hard maximum 30). Each post row is billed; defaults to 10."
+        },
+        "lang": {
+          "type": "string",
+          "maxLength": 5,
+          "default": "",
+          "description": "Optional two-letter language code to restrict results, for example en. Leave empty to search every language."
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rowType": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Row type",
+                "description": "Always post."
+              },
+              "foundBy": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Found by",
+                "description": "search for keyword matches."
+              },
+              "query": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Query",
+                "description": "The search query that found the post."
+              },
+              "uri": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "AT URI",
+                "description": "AT Protocol record URI of the post."
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "URL",
+                "description": "Public bsky.app URL of the post."
+              },
+              "cid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "CID",
+                "description": "Content identifier of the post record."
+              },
+              "authorDid": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Author DID",
+                "description": "Decentralised identifier of the author."
+              },
+              "authorHandle": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Author handle",
+                "description": "Author handle, for example someone.bsky.social."
+              },
+              "authorDisplayName": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Author name",
+                "description": "Author display name."
+              },
+              "text": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Text",
+                "description": "Post text, truncated to 1200 characters."
+              },
+              "createdAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Created at",
+                "description": "When the post was published, ISO 8601."
+              },
+              "indexedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Indexed at",
+                "description": "When Bluesky indexed the post."
+              },
+              "langs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Languages",
+                "description": "Language codes declared by the post."
+              },
+              "likeCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Likes",
+                "description": "Likes at scrape time."
+              },
+              "repostCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Reposts",
+                "description": "Reposts at scrape time."
+              },
+              "replyCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Replies",
+                "description": "Replies at scrape time."
+              },
+              "quoteCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Quotes",
+                "description": "Quote posts at scrape time."
+              },
+              "bookmarkCount": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "title": "Bookmarks",
+                "description": "Bookmarks at scrape time."
+              },
+              "isReply": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "title": "Is reply",
+                "description": "Whether the post is a reply to another post."
+              },
+              "hashtags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Hashtags",
+                "description": "Hashtags found in the post."
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Links",
+                "description": "Links from rich-text facets and from an embedded external card."
+              },
+              "quotedPostUri": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Quoted post",
+                "description": "AT URI of a quoted post, when present."
+              },
+              "externalTitle": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "External title",
+                "description": "Title of an embedded link card, when present."
+              },
+              "externalDescription": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "External description",
+                "description": "Description of an embedded link card, truncated to 300 characters."
+              },
+              "scrapedAt": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "title": "Scraped at",
+                "description": "When the row was collected, ISO 8601."
+              }
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "empty_unverified",
+            "partial",
+            "error"
+          ]
+        },
+        "error": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "results",
+        "status"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  "payload_mapping": {
+    "query": {
+      "key": "queries",
+      "transform": "list",
+      "default": []
+    },
+    "max_posts": {
+      "key": "maxPostsPerQuery",
+      "transform": "int",
+      "default": 10
+    },
+    "lang": {
+      "key": "language",
+      "transform": "str",
+      "default": ""
+    }
+  },
+  "fixed_payload": {
+    "authors": [],
+    "maxPostsPerAuthor": 10,
+    "includeReplies": false
+  },
+  "example_call": {
+    "query": "christmas printables",
+    "max_posts": 2
+  },
+  "verification": {
+    "token": "Christmas",
+    "how": "Apify test run 2026-11-18 of actor SpsxhYLeWk9WIEmXM with the exact payload this spec sends for the example call: {\"queries\":[\"christmas printables\"],\"maxPostsPerQuery\":2,\"authors\":[],\"maxPostsPerAuthor\":10,\"language\":\"\",\"includeReplies\":false}. An earlier run with two queries (christmas printables, etsy seller) and maxPostsPerQuery 3 also succeeded.",
+    "result": "SUCCEEDED with real rows: genuine Bluesky posts from handle wobbleboo.com with full text mentioning #Christmas, bsky.app URLs, createdAt 2026-11-17, likeCount 15, repostCount 11, replyCount 0, hashtags [Christmas, Parenting, EarlyLiteracy, Printables] and the product link. The two-query run pushed 6 rows. Missing fields were null rather than invented, and a run that finds nothing fails loudly with no per-result charge.",
+    "items": 2,
+    "relevant": true,
+    "max_rows": 30,
+    "max_rows_how": "1 search query x 30 posts"
+  }
+}
