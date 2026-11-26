@@ -99,6 +99,7 @@ HELD_PUBLIC = {
     "wi-business-entity-search": "Retired 2026-11-10 (WI DFI refuses Apify egress); monetization cancelled, unpublish after notice period",
     "substack-posts-scraper": "Published 2026-11-12 by the Survive agent; no reviewed MCP spec yet",
     "job-postings-scraper": "Published 2026-11-12 by the Survive agent; no reviewed MCP spec yet",
+    "bluesky-search-and-author-scraper": "Published 2026-11-18 by the Survive agent; spec proposed in PR #17, not reviewed yet",
 }
 
 
