@@ -20,7 +20,7 @@ For a repeatable watchlist rather than a one-off lookup, follow the [CMS healthc
 
 ## Tools
 
-### us_business_entity_search - US Multi-State Business Entity Search
+### us_business_entity_search - Florida & Alabama Business Entity Search
 
 Searches Florida and Alabama registries in one call.
 
@@ -29,9 +29,9 @@ Searches Florida and Alabama registries in one call.
 | search_query | Yes | Business name to search. |
 | states | No | States to search; default: florida, alabama. |
 | max_results | No | Records to bill; default: 10. |
-| include_details | No | Adds formation date, agent; default: false. |
+| include_details | No | Adds registered agent, filing date and addresses; Florida also adds officers and FEI/EIN; default: false. |
 
-Returns: source, entity_name, entity_id, status, entity_type, location, date_filed, registered_agent
+Returns: source, entity_name, entity_id, document_number, status, entity_type, location, date_filed, registered_agent, fei_ein, officers_list
 
 Price: $0.0025 per result plus $0.0005 Actor-start per run (free-tier price; 10-30% lower on paid Apify plans)
 
