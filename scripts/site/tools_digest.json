@@ -1099,7 +1099,10 @@
       "entity_type",
       "location",
       "date_filed",
-      "registered_agent"
+      "registered_agent",
+      "document_number",
+      "fei_ein",
+      "officers_list"
     ],
     "pricing": {
       "per_result_usd": 0.0025,
