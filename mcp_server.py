@@ -4104,7 +4104,7 @@ TOOLS_DEFINITION = [
                     '- When NOT to use: Do not use for Florida, California, or nationwide multi-state lookups, '
                     'for contractor licensing, or for company officers/registered-agent name searches.\n'
                     "- Named alternatives: Use 'us_business_entity_search' for a combined "
-                    "Florida/Alabama/Wisconsin lookup, 'florida_new_filings_search' for Florida entities, or "
+                    "Florida and Alabama lookup, 'florida_new_filings_search' for Florida entities, or "
                     "'california_contractor_license_search'/'us_contractor_license_search' for contractor "
                     'licences.',
      'inputSchema': {'type': 'object',
@@ -4895,8 +4895,8 @@ TOOLS_DEFINITION = [
                     "- When NOT to use: Do not use to search by a person's or officer's name (use "
                     "'florida_officer_search' instead), for other states, or for contractor licences.\n"
                     "- Named alternatives: Use 'florida_officer_search' to find companies tied to a person or "
-                    "registered agent, 'us_business_entity_search' for a multi-state lookup that includes "
-                    "Florida, or 'alabama_business_search' for Alabama-only records.",
+                    "registered agent, 'us_business_entity_search' to search Florida and Alabama "
+                    "together, or 'alabama_business_search' for Alabama-only records.",
      'inputSchema': {'type': 'object',
                      'properties': {'search_query': {'type': 'string',
                                                      'minLength': 2,
@@ -5053,7 +5053,7 @@ TOOLS_DEFINITION = [
                     "- When NOT to use: Do not use to search by company name (use 'florida_new_filings_search' "
                     'instead), for other states, or for contractor licences.\n'
                     "- Named alternatives: Use 'florida_new_filings_search' to look up a Florida company by its "
-                    "own name, or 'us_business_entity_search' for a multi-state company-name lookup.",
+                    "own name, or 'us_business_entity_search' for a Florida and Alabama company-name lookup.",
      'inputSchema': {'type': 'object',
                      'properties': {'search_query': {'type': 'string',
                                                      'minLength': 2,
@@ -5798,7 +5798,7 @@ TOOLS_DEFINITION = [
                      'idempotentHint': False,
                      'openWorldHint': True}},
     {'name': 'us_business_entity_search',
-     'title': 'US Multi-State Business Entity Search',
+     'title': 'Florida & Alabama Business Entity Search',
      'description': 'Search public Secretary of State business registries across Florida and Alabama in one '
                     'call, returning a normalized, source-tagged record per state match.\n'
                     '\n'
@@ -5847,12 +5847,7 @@ TOOLS_DEFINITION = [
                                                                    'call.'},
                                     'include_details': {'type': 'boolean',
                                                         'default': False,
-                                                        'description': "When true, opens each result's detail "
-                                                                       'page to add formation date, registered '
-                                                                       'agent, officers, and both address '
-                                                                       'blocks. Adds one request per record and '
-                                                                       'per state; leave off for a fast '
-                                                                       'lookup.'}},
+                                                        'description': "When true, opens each result's detail page. Florida adds entity type, filing date, FEI/EIN, registered agent and address, officers (officers_list: title, name, address), principal and mailing addresses and the latest annual report; Alabama adds formation date, registered agent and office addresses. Slower (one page per record), same price per record; leave off for a fast lookup."}},
                      'required': ['search_query'],
                      'additionalProperties': False},
      'outputSchema': {'type': 'object',
@@ -5921,24 +5916,10 @@ TOOLS_DEFINITION = [
                                                                                                         'Corporations.',
                                                                                          'type': ['string',
                                                                                                   'null']},
-                                                                          'registered_agent': {'title': 'Registered '
-                                                                                                        'agent',
-                                                                                               'description': 'Name '
-                                                                                                              'of '
-                                                                                                              'the '
-                                                                                                              "entity's "
-                                                                                                              'Florida '
-                                                                                                              'registered '
-                                                                                                              'agent. '
-                                                                                                              'Null '
-                                                                                                              'when '
-                                                                                                              'the '
-                                                                                                              'state '
-                                                                                                              'records '
-                                                                                                              'no '
-                                                                                                              'agent.',
-                                                                                               'type': ['string',
-                                                                                                        'null']}},
+                                                                          'registered_agent': {'title': 'Registered agent', 'description': 'Registered agent name (Florida and Alabama, with include_details). Null when the state records no agent.', 'type': ['string', 'null']},
+                                                                          'document_number': {'title': 'Florida document number', 'description': 'Sunbiz document number (Florida rows; Alabama rows use entity_id).', 'type': ['string', 'null']},
+                                                                          'fei_ein': {'title': 'FEI/EIN', 'description': 'Federal employer identification number as shown on Sunbiz (Florida, with include_details). Old records may show 00-0000000.', 'type': ['string', 'null']},
+                                                                          'officers_list': {'title': 'Officers', 'description': "Florida, with include_details: one object per officer, director or authorized person, with title (as printed, e.g. 'PRES', 'MGR'), name and address (lines joined with ' | '). Null when none are listed.", 'type': ['array', 'null'], 'items': {'type': 'object', 'properties': {'title': {'type': ['string', 'null']}, 'name': {'type': ['string', 'null']}, 'address': {'type': ['string', 'null']}}}}},
                                                            'required': ['source', 'entity_name']}},
                                      'status': {'type': 'string',
                                                 'enum': ['success', 'empty_unverified', 'partial', 'error']},
